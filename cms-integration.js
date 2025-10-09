@@ -98,7 +98,13 @@ class EstalaraAdmin {
                 investors: {
                     heroTitle: "Invest <span class=\"text-white\">WORLDWIDE</span>",
                     heroSubtitle: "Discover and fund exceptional real estate opportunities across borders. Access exclusive properties streamed live and make informed decisions with real‑time data."
-                }
+            },
+            // Added page definition for agencies. Without this key the agencies page
+            // would fallback to the default hero and subtitle defined on the home page.
+            agencies: {
+                heroTitle: "Agencies Go <span class=\"text-white\">ENTERPRISE</span>",
+                heroSubtitle: "Transform your real estate agency into a global powerhouse. Scale operations, manage multiple agents, and expand internationally with Estalara's enterprise solutions designed for growing agencies."
+            }
             },
             settings: {
                 currency: "EUR",
@@ -246,6 +252,8 @@ class EstalaraAdmin {
             pageKey = 'agents';
         } else if (path.includes('investors.html')) {
             pageKey = 'investors';
+        } else if (path.includes('agencies.html')) {
+            pageKey = 'agencies';
         }
 
         const page = this.content.pages[pageKey];
