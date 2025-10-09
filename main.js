@@ -325,12 +325,19 @@ window.EstalaraUtils = {
 
 // Mobile hamburger toggle (safe, idempotent)
 (function () {
-    document.addEventListener('DOMContentLoaded', function () {
+    /**
+     * Initialise the hamburger menu toggle. If the DOM has already been loaded
+     * when this script runs (e.g. because the script is placed at the end of
+     * the document), the handler is executed immediately. Otherwise it waits
+     * for the DOMContentLoaded event.
+     */
+    function initMobileMenu() {
         var btn  = document.getElementById('menu-toggle');
         var menu = document.getElementById('mobile-menu');
         if (!btn || !menu) return;
 
-        // Always start with menu hidden on mobile
+        // Start with menu hidden on mobile viewports; on desktop the hidden class
+        // will be overridden by the md:flex Tailwind utility.
         if (getComputedStyle(btn).display !== 'none') {
             menu.classList.add('hidden');
         }
@@ -361,5 +368,12 @@ window.EstalaraUtils = {
                 btn.setAttribute('aria-expanded', 'false');
             }
         });
-    });
+    }
+
+    // Run immediately if the document is ready; otherwise attach to DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
+    } else {
+        initMobileMenu();
+    }
 })();
