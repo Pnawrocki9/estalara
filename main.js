@@ -322,3 +322,44 @@ window.EstalaraUtils = {
     throttle,
     animateCounter
 };
+
+// Mobile hamburger toggle (safe, idempotent)
+(function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        var btn  = document.getElementById('menu-toggle');
+        var menu = document.getElementById('mobile-menu');
+        if (!btn || !menu) return;
+
+        // Always start with menu hidden on mobile
+        if (getComputedStyle(btn).display !== 'none') {
+            menu.classList.add('hidden');
+        }
+
+        // Toggle menu visibility on click
+        btn.addEventListener('click', function () {
+            var isHidden = menu.classList.toggle('hidden');
+            btn.setAttribute('aria-expanded', String(!isHidden));
+        });
+
+        // Hide menu after clicking a link on mobile
+        menu.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('click', function () {
+                if (getComputedStyle(btn).display !== 'none') {
+                    menu.classList.add('hidden');
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+
+        // Reset menu state on window resize
+        window.addEventListener('resize', function () {
+            if (getComputedStyle(btn).display === 'none') {
+                menu.classList.remove('hidden');
+                btn.setAttribute('aria-expanded', 'true');
+            } else {
+                menu.classList.add('hidden');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+})();
