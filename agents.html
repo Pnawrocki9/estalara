@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estalara for Agents - Go LIVE. Go GLOBAL.</title>
+    <meta name="description" content="Attract and convert high-value global investors effortlessly with Estalara's livestreaming and AI-powered lead generation platform.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    
+    <style>
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-text {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 0.9;
+            font-weight: 900;
+        }
+        
+        .section-text {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            font-weight: 700;
+        }
+        
+        .body-text {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.6;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        /* USUNIĘTO KLASĘ REVEAL - treść jest zawsze widoczna */
+        .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        .btn-secondary {
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .feature-card {
+            background: var(--white);
+            color: var(--black);
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-number {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particle-bg" class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="font-display text-2xl font-bold">
+                    <a href="index.html">ESTALARA</a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-gray-300 transition-colors">Home</a>
+                    <a href="agents.html" class="text-white font-semibold">For Agents</a>
+                    <a href="agencies.html" class="hover:text-gray-300 transition-colors">For Agencies</a>
+                    <a href="investors.html" class="hover:text-gray-300 transition-colors">For Investors</a>
+                    <a href="about.html" class="hover:text-gray-300 transition-colors">About</a>
+                    <a href="index.html#live-properties" class="hover:text-gray-300 transition-colors">LIVE Properties</a>
+                </div>
+                <button class="btn-primary px-6 py-2 font-semibold">
+                    <a href="https://app.estalara.com" target="_blank">Launch App</a>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div>
+                <h1 class="hero-text font-display mb-8">
+                    Agents Go <span class="text-white">GLOBAL</span>
+                </h1>
+                <p class="body-text max-w-3xl mx-auto mb-12 text-gray-300">
+                    Attract and convert high-value global investors effortlessly. Livestream your listings and engage 
+                    verified buyers in real time with AI-powered lead generation and automatic landing pages.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="btn-primary px-8 py-4 font-semibold text-lg">
+                        <a href="https://app.estalara.com" target="_blank">Start Livestreaming →</a>
+                    </button>
+                    <button class="btn-secondary px-8 py-4 font-semibold text-lg">
+                        <a href="#features">Explore Features</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="py-20 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="stat-number font-display text-black">500+</div>
+                    <p class="text-gray-600 font-semibold">Active Agents</p>
+                </div>
+                <div>
+                    <div class="stat-number font-display text-black">10K+</div>
+                    <p class="text-gray-600 font-semibold">Global Investors</p>
+                </div>
+                <div>
+                    <div class="stat-number font-display text-black">€2.5B+</div>
+                    <p class="text-gray-600 font-semibold">Property Value</p>
+                </div>
+                <div>
+                    <div class="stat-number font-display text-black">95%</div>
+                    <p class="text-gray-600 font-semibold">Close Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="section-text font-display mb-8">Everything You Need to Succeed</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Powerful tools designed specifically for real estate agents to expand their global reach
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card p-8">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">📺</div>
+                    <h3 class="text-2xl font-bold mb-4">Live Property Shows</h3>
+                    <p class="text-gray-600 mb-6">Stream your listings to hundreds of verified investors simultaneously with our advanced livestreaming platform.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• HD video streaming</li>
+                        <li>• Real-time chat translation</li>
+                        <li>• Instant lead capture</li>
+                        <li>• Automated follow-up</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🤖</div>
+                    <h3 class="text-2xl font-bold mb-4">AI Lead Generation</h3>
+                    <p class="text-gray-600 mb-6">Our AI analyzes investor behavior and preferences to deliver qualified leads directly to your dashboard.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Behavioral analysis</li>
+                        <li>• Preference matching</li>
+                        <li>• Automated scoring</li>
+                        <li>• Priority notifications</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🌐</div>
+                    <h3 class="text-2xl font-bold mb-4">Global Reach</h3>
+                    <p class="text-gray-600 mb-6">Connect with investors from over 50 countries through our multilingual platform and translation services.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• 25+ languages supported</li>
+                        <li>• Real-time translation</li>
+                        <li>• Currency conversion</li>
+                        <li>• Cultural insights</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">📱</div>
+                    <h3 class="text-2xl font-bold mb-4">Mobile Studio</h3>
+                    <p class="text-gray-600 mb-6">Professional livestreaming capabilities from your smartphone with broadcast-quality results.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• One-tap streaming</li>
+                        <li>• Professional filters</li>
+                        <li>• Stabilization technology</li>
+                        <li>• Multi-device support</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">📊</div>
+                    <h3 class="text-2xl font-bold mb-4">Smart Analytics</h3>
+                    <p class="text-gray-600 mb-6">Track viewer engagement, lead conversion, and ROI with comprehensive analytics dashboard.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Real-time metrics</li>
+                        <li>• Conversion tracking</li>
+                        <li>• Performance insights</li>
+                        <li>• ROI calculations</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">⚡</div>
+                    <h3 class="text-2xl font-bold mb-4">Instant Matching</h3>
+                    <p class="text-gray-600 mb-6">Get notified immediately when investors show interest in your properties during live streams.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Real-time alerts</li>
+                        <li>• Interest scoring</li>
+                        <li>• Contact automation</li>
+                        <li>• Meeting scheduling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="section-text font-display mb-8 text-black">Your Success Journey</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    From signup to closing deals - your path to global real estate success
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">1</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Sign Up</h3>
+                    <p class="text-gray-600">Create your agent profile and verify your credentials</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">2</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">List Properties</h3>
+                    <p class="text-gray-600">Upload your listings with photos and detailed information</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">3</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Go Live</h3>
+                    <p class="text-gray-600">Start streaming to global investors and engage in real-time</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">4</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Close Deals</h3>
+                    <p class="text-gray-600">Convert leads into sales with our streamlined process</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="section-text font-display mb-8">What Agents Say</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Hear from real estate professionals who transformed their business with Estalara
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white text-black p-8">
+                    <p class="text-lg mb-6 italic">"Estalara completely changed my business. I went from local sales to closing deals with international investors in just 3 months."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <p class="font-bold">Maria Rodriguez</p>
+                            <p class="text-gray-600 text-sm">Madrid, Spain</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white text-black p-8">
+                    <p class="text-lg mb-6 italic">"The AI lead generation is incredible. I'm getting qualified leads daily without any additional marketing spend."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <p class="font-bold">James Chen</p>
+                            <p class="text-gray-600 text-sm">London, UK</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white text-black p-8">
+                    <p class="text-lg mb-6 italic">"Livestreaming my listings to global audiences has opened up entirely new markets I never thought possible."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <p class="font-bold">Sophia Laurent</p>
+                            <p class="text-gray-600 text-sm">Paris, France</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div>
+                <h2 class="section-text font-display mb-8 text-black">Ready to Go Global?</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12 text-gray-600">
+                    Join thousands of agents who are already expanding their reach and closing more deals with Estalara. 
+                    Start your journey today.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="bg-black text-white px-12 py-4 font-semibold text-xl hover:bg-gray-800 transition-colors">
+                        <a href="https://app.estalara.com" target="_blank">Start Livestreaming →</a>
+                    </button>
+                    <button class="border-2 border-black text-black px-12 py-4 font-semibold text-xl hover:bg-black hover:text-white transition-colors">
+                        <a href="investors.html">Learn About Investors</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="font-display text-2xl font-bold mb-4">ESTALARA</div>
+                    <p class="text-gray-400 text-sm">
+                        Time2Show, Inc., Dover, DE, USA<br>
+                        estalara@estalara.com
+                    </p>
+                </div>
+                
+                <div class="flex space-x-8 text-sm">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">TikTok</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Instagram</a>
+                    <a href="admin-login.html" class="text-gray-400 hover:text-white transition-colors">Admin Login</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Defer our custom scripts to improve performance -->
+    <script src="cms-integration.js" defer></script>
+    <!-- Load main.js synchronously to ensure animations initialise correctly -->
+    <script src="main.js"></script>
+</body>
+</html>

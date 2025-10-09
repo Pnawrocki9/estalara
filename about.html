@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Estalara - Revolutionizing Global Real Estate</title>
+    <meta name="description" content="Learn about Estalara's mission to simplify global real estate by connecting agents and investors through AI and live experiences.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    
+    <style>
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-text {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 0.9;
+            font-weight: 900;
+        }
+        
+        .section-text {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            font-weight: 700;
+        }
+        
+        .body-text {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.6;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        .btn-secondary {
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .value-card {
+            background: var(--white);
+            color: var(--black);
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        .team-card {
+            background: var(--white);
+            color: var(--black);
+            transition: all 0.3s ease;
+        }
+        
+        .team-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .timeline-item {
+            border-left: 2px solid var(--white);
+            padding-left: 2rem;
+            position: relative;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            background: var(--white);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particle-bg" class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="font-display text-2xl font-bold">
+                    <a href="index.html">ESTALARA</a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-gray-300 transition-colors">Home</a>
+                    <a href="agents.html" class="hover:text-gray-300 transition-colors">For Agents</a>
+                    <a href="agencies.html" class="hover:text-gray-300 transition-colors">For Agencies</a>
+                    <a href="investors.html" class="hover:text-gray-300 transition-colors">For Investors</a>
+                    <a href="about.html" class="text-white font-semibold">About</a>
+                    <a href="index.html#live-properties" class="hover:text-gray-300 transition-colors">LIVE Properties</a>
+                </div>
+                <button class="btn-primary px-6 py-2 font-semibold">
+                    <a href="https://app.estalara.com" target="_blank">Launch App</a>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h1 class="hero-text font-display mb-8">
+                    Revolutionizing <span class="text-white">GLOBAL REAL ESTATE</span>
+                </h1>
+                <p class="body-text max-w-3xl mx-auto mb-12 text-gray-300">
+                    Estalara connects real estate agents and international investors through AI and live experiences. 
+                    Our mission is to simplify global property transactions and make international real estate accessible to everyone.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="btn-primary px-8 py-4 font-semibold text-lg">
+                        <a href="https://app.estalara.com" target="_blank">Join Our Platform →</a>
+                    </button>
+                    <button class="btn-secondary px-8 py-4 font-semibold text-lg">
+                        <a href="#story">Our Story</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Mission & Vision -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h2 class="section-text font-display mb-8 text-black">Our Mission</h2>
+                    <p class="body-text text-gray-600 mb-8">
+                        To democratize global real estate investment by removing barriers, simplifying processes, 
+                        and creating transparent connections between agents and investors worldwide. We believe everyone 
+                        should have access to international property opportunities regardless of their location.
+                    </p>
+                    <p class="body-text text-gray-600">
+                        Through cutting-edge AI technology and immersive live experiences, we're transforming how 
+                        properties are discovered, evaluated, and purchased across borders.
+                    </p>
+                </div>
+                <div class="reveal">
+                    <h2 class="section-text font-display mb-8 text-black">Our Vision</h2>
+                    <p class="body-text text-gray-600 mb-8">
+                        To become the world's leading platform for global real estate transactions, where agents and 
+                        investors connect seamlessly across continents. We envision a future where buying property 
+                        in another country is as simple as shopping online.
+                    </p>
+                    <p class="body-text text-gray-600">
+                        By 2030, we aim to facilitate over $100 billion in international real estate transactions, 
+                        making global property investment accessible to millions of people worldwide.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Values Section -->
+    <section class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">Our Core Values</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    The principles that guide everything we do at Estalara
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="value-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🌐</div>
+                    <h3 class="text-2xl font-bold mb-4">Global Accessibility</h3>
+                    <p class="text-gray-600">Breaking down barriers to make international real estate accessible to everyone, everywhere.</p>
+                </div>
+                
+                <div class="value-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🔍</div>
+                    <h3 class="text-2xl font-bold mb-4">Transparency</h3>
+                    <p class="text-gray-600">Clear, honest information about properties, processes, and costs with no hidden fees or surprises.</p>
+                </div>
+                
+                <div class="value-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🤝</div>
+                    <h3 class="text-2xl font-bold mb-4">Trust</h3>
+                    <p class="text-gray-600">Building confidence through verified properties, trusted partners, and secure transactions.</p>
+                </div>
+                
+                <div class="value-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">⚡</div>
+                    <h3 class="text-2xl font-bold mb-4">Innovation</h3>
+                    <p class="text-gray-600">Continuously advancing our technology to make global real estate faster, easier, and more efficient.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- What is Estalara -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">What is Estalara?</h2>
+                <p class="body-text max-w-4xl mx-auto text-gray-600">
+                    Estalara is the game-changer our industry has been waiting for. After years of watching good deals fall through 
+                    because of distance, language barriers, and outdated processes, we built something that actually works for everyone involved.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-16 items-start">
+                <div class="reveal">
+                    <h3 class="text-2xl font-bold mb-6 text-black">For Agents</h3>
+                    <p class="text-gray-600 mb-6">
+                        You know that feeling when you have the perfect property but the right buyer is halfway around the world? 
+                        We've all been there. Estalara changes that. Instead of waiting for international buyers to magically appear, 
+                        you can showcase your listings to verified investors in real-time, no matter where they are.
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        The livestreaming feature means you can walk potential buyers through properties just like you would with 
+                        someone local - answering questions, pointing out details, building that personal connection that closes deals. 
+                        And the AI lead generation? It's like having an assistant who never sleeps, matching your properties with 
+                        serious investors who actually have the means and motivation to buy.
+                    </p>
+                    <p class="text-gray-600">
+                        No more cold leads, no more language barriers, no more losing deals because someone couldn't travel to see 
+                        the property in person. Just real connections with real buyers who are ready to invest.
+                    </p>
+                </div>
+                
+                <div class="reveal">
+                    <h3 class="text-2xl font-bold mb-6 text-black">For Investors</h3>
+                    <p class="text-gray-600 mb-6">
+                        Finding the right international property used to mean expensive trips, unreliable information, and dealing 
+                        with agents who might not understand your needs. Estalara fixes all of that. You can tour multiple properties 
+                        from your living room, ask questions in your own language, and get straight answers from knowledgeable local agents.
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        The platform's AI assistant helps you understand local market conditions, legal requirements, and investment 
+                        potential without the usual runaround. Every property is verified, every agent is vetted, and the whole 
+                        process is transparent from start to finish.
+                    </p>
+                    <p class="text-gray-600">
+                        Whether you're looking for a vacation home, rental income property, or long-term investment, you get access 
+                        to opportunities worldwide with the confidence that comes from working with trusted professionals who know 
+                        their markets inside and out.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Company Story -->
+    <section id="story" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">Our Story</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    From a simple idea to a global platform transforming real estate
+                </p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="timeline-item mb-12 reveal">
+                    <h3 class="text-2xl font-bold mb-4 text-black">2023 - The Beginning</h3>
+                    <p class="text-gray-600 mb-4">
+                        Estalara was founded with a vision to solve the complex challenges of international real estate transactions. 
+                        Our founders recognized the need for a platform that could bridge the gap between global investors and local agents.
+                    </p>
+                    <p class="text-gray-600">
+                        Starting with a small team in Dover, Delaware, we began developing the technology that would revolutionize 
+                        how properties are bought and sold across borders.
+                    </p>
+                </div>
+                
+                <div class="timeline-item mb-12 reveal">
+                    <h3 class="text-2xl font-bold mb-4 text-black">2024 - Platform Launch</h3>
+                    <p class="text-gray-600 mb-4">
+                        After months of development and testing, we launched the Estalara platform with core features including 
+                        livestreaming, AI-powered matching, and multilingual support. The response was overwhelming.
+                    </p>
+                    <p class="text-gray-600">
+                        Within the first year, we facilitated over €100 million in property transactions and built a community 
+                        of over 1,000 agents and 10,000 investors from around the world.
+                    </p>
+                </div>
+                
+                <div class="timeline-item mb-12 reveal">
+                    <h3 class="text-2xl font-bold mb-4 text-black">2025 - Global Expansion</h3>
+                    <p class="text-gray-600 mb-4">
+                        Today, Estalara operates in over 50 countries, supporting 25+ languages, and has processed more than 
+                        €2.5 billion in property transactions. Our AI technology has matched thousands of investors with their ideal properties.
+                    </p>
+                    <p class="text-gray-600">
+                        We're just getting started. With continuous innovation and a growing global network, we're committed to 
+                        making international real estate investment accessible to everyone.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Leadership Team -->
+    <section class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">Leadership Team</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Experienced professionals driving Estalara's vision forward
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="team-card p-8 text-center reveal">
+                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2 text-black">Alex Thompson</h3>
+                    <p class="text-gray-600 mb-4">CEO & Co-Founder</p>
+                    <p class="text-gray-600 text-sm">
+                        15+ years in real estate technology, former VP at leading property tech company. 
+                        Passionate about making global real estate accessible.
+                    </p>
+                </div>
+                
+                <div class="team-card p-8 text-center reveal">
+                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2 text-black">Maria Rodriguez</h3>
+                    <p class="text-gray-600 mb-4">CTO & Co-Founder</p>
+                    <p class="text-gray-600 text-sm">
+                        AI and machine learning expert with background in international finance. 
+                        Leading Estalara's technological innovation and product development.
+                    </p>
+                </div>
+                
+                <div class="team-card p-8 text-center reveal">
+                    <div class="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-6"></div>
+                    <h3 class="text-2xl font-bold mb-2 text-black">David Kim</h3>
+                    <p class="text-gray-600 mb-4">Head of Global Operations</p>
+                    <p class="text-gray-600 text-sm">
+                        International business strategist with expertise in cross-border transactions. 
+                        Building Estalara's global network and partnerships.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Statistics -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">Our Impact</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    Numbers that reflect our commitment to transforming global real estate
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="reveal">
+                    <div class="text-5xl font-display font-bold text-black mb-4">50+</div>
+                    <p class="text-gray-600 font-semibold">Countries Served</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-5xl font-display font-bold text-black mb-4">€2.5B+</div>
+                    <p class="text-gray-600 font-semibold">Transaction Value</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-5xl font-display font-bold text-black mb-4">10K+</div>
+                    <p class="text-gray-600 font-semibold">Active Users</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-5xl font-display font-bold text-black mb-4">25+</div>
+                    <p class="text-gray-600 font-semibold">Languages</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section class="py-32">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h2 class="section-text font-display mb-8">Get in Touch</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12 text-gray-300">
+                    Have questions about Estalara? We're here to help you navigate the world of global real estate investment.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 text-left">
+                    <div class="bg-white text-black p-8">
+                        <h3 class="text-xl font-bold mb-4">Company Information</h3>
+                        <p class="text-gray-600 mb-2">Time2Show, Inc.</p>
+                        <p class="text-gray-600 mb-2">Dover, DE, USA</p>
+                        <p class="text-gray-600 mb-4">estalara@estalara.com</p>
+                        <p class="text-gray-600 text-sm">
+                            Registered in Delaware, USA. Operating globally with local partners in over 50 countries.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white text-black p-8">
+                        <h3 class="text-xl font-bold mb-4">Support & Help</h3>
+                        <p class="text-gray-600 mb-2">Technical Support: support@estalara.com</p>
+                        <p class="text-gray-600 mb-2">Agent Inquiries: agents@estalara.com</p>
+                        <p class="text-gray-600 mb-4">Investor Support: investors@estalara.com</p>
+                        <p class="text-gray-600 text-sm">
+                            24/7 support available through our platform and mobile app.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h2 class="section-text font-display mb-8 text-black">Ready to Join the Future?</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12 text-gray-600">
+                    Whether you're an agent looking to expand globally or an investor seeking international opportunities, 
+                    Estalara provides the platform you need to succeed in global real estate.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="bg-black text-white px-12 py-4 font-semibold text-xl hover:bg-gray-800 transition-colors">
+                        <a href="https://app.estalara.com" target="_blank">Start Your Journey →</a>
+                    </button>
+                    <button class="border-2 border-black text-black px-12 py-4 font-semibold text-xl hover:bg-black hover:text-white transition-colors">
+                        <a href="index.html#live-properties">Explore Properties</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="font-display text-2xl font-bold mb-4">ESTALARA</div>
+                    <p class="text-gray-400 text-sm">
+                        Time2Show, Inc., Dover, DE, USA<br>
+                        estalara@estalara.com
+                    </p>
+                </div>
+                
+                <div class="flex space-x-8 text-sm">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">TikTok</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Instagram</a>
+                    <a href="admin-login.html" class="text-gray-400 hover:text-white transition-colors">Admin Login</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Defer our custom scripts to improve performance -->
+    <script src="cms-integration.js" defer></script>
+    <!-- Load main.js synchronously to ensure animations initialise correctly -->
+    <script src="main.js"></script>
+</body>
+</html>

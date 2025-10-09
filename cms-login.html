@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Login - Estalara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .login-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .login-card { background: white; border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .login-input { border: 2px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; transition: all 0.3s ease; }
+        .login-input:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .login-btn { background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; transition: all 0.3s ease; }
+        .login-btn:hover { background: #2563eb; transform: translateY(-1px); }
+    </style>
+</head>
+<body class="login-bg min-h-screen flex items-center justify-center p-4">
+    <div class="login-card w-full max-w-md p-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Estalara CMS</h1>
+            <p class="text-gray-600">Content Management System</p>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="login-input w-full" 
+                    placeholder="Enter your username" 
+                    required
+                >
+            </div>
+            
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="login-input w-full" 
+                    placeholder="Enter your password" 
+                    required
+                >
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <label class="flex items-center">
+                    <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                </label>
+                <a href="#" class="text-sm text-blue-600 hover:text-blue-500">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="login-btn w-full">
+                Sign In to CMS
+            </button>
+        </form>
+
+        <!-- Demo Credentials -->
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h3 class="text-sm font-medium text-blue-800 mb-2">Demo Credentials</h3>
+            <div class="text-sm text-blue-700 space-y-1">
+                <div><strong>Username:</strong> admin</div>
+                <div><strong>Password:</strong> demo123</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-500">
+                <a href="index.html" class="text-blue-600 hover:text-blue-500">← Back to Website</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple authentication (in production, this would connect to a backend)
+            if (username === 'admin' && password === 'demo123') {
+                // Store login session
+                localStorage.setItem('cmsLoggedIn', 'true');
+                localStorage.setItem('cmsUsername', username);
+                
+                // Redirect to CMS dashboard
+                window.location.href = 'cms.html';
+            } else {
+                alert('Invalid username or password. Please try again.');
+            }
+        });
+
+        // Check if already logged in
+        if (localStorage.getItem('cmsLoggedIn') === 'true') {
+            window.location.href = 'cms.html';
+        }
+    </script>
+</body>
+</html>

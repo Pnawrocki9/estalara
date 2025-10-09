@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estalara Admin - Content Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .admin-nav { background: #000000; }
+        .admin-sidebar { background: #111827; }
+        .admin-content { background: #f9fafb; }
+        .admin-card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .admin-input { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; }
+        .admin-btn { padding: 8px 16px; border-radius: 6px; font-weight: 500; cursor: pointer; }
+        .admin-btn-primary { background: #000000; color: white; border: 2px solid #000000; }
+        .admin-btn-primary:hover { background: #ffffff; color: #000000; }
+        .admin-btn-secondary { background: #6b7280; color: white; }
+        .admin-btn-success { background: #10b981; color: white; }
+        .admin-btn-danger { background: #ef4444; color: white; }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        .admin-table th { background: #f9fafb; font-weight: 600; }
+        .admin-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .admin-badge-live { background: #dcfce7; color: #166534; }
+        .admin-badge-draft { background: #fef3c7; color: #92400e; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="admin-nav text-white p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-xl font-bold">Estalara Admin</h1>
+                <span class="text-sm text-gray-300">Content Management</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm">Welcome, Admin</span>
+                <button class="admin-btn admin-btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="admin-sidebar text-white w-64 min-h-screen p-4">
+            <nav class="space-y-2">
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('dashboard')">
+                    📊 Dashboard
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('properties')">
+                    🏠 Properties
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('content')">
+                    📝 Content
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('settings')">
+                    ⚙️ Settings
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 admin-content p-6">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Dashboard</h2>
+                    <p class="text-gray-600">Manage your Estalara website content from here.</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="admin-card p-6 text-center">
+                        <div class="text-3xl mb-4">🏠</div>
+                        <h3 class="font-semibold mb-2">Manage Properties</h3>
+                        <p class="text-gray-600 text-sm mb-4">Add, edit, or remove property listings</p>
+                        <button class="admin-btn admin-btn-primary" onclick="showSection('properties')">Manage Properties</button>
+                    </div>
+                    <div class="admin-card p-6 text-center">
+                        <div class="text-3xl mb-4">📝</div>
+                        <h3 class="font-semibold mb-2">Edit Content</h3>
+                        <p class="text-gray-600 text-sm mb-4">Update website text and descriptions</p>
+                        <button class="admin-btn admin-btn-primary" onclick="showSection('content')">Edit Content</button>
+                    </div>
+                    <div class="admin-card p-6 text-center">
+                        <div class="text-3xl mb-4">⚙️</div>
+                        <h3 class="font-semibold mb-2">Site Settings</h3>
+                        <p class="text-gray-600 text-sm mb-4">Configure website settings</p>
+                        <button class="admin-btn admin-btn-primary" onclick="showSection('settings')">Site Settings</button>
+                    </div>
+                </div>
+
+                <!-- Current Status -->
+                <div class="admin-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Current Status</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-600" id="propertyCount">6</div>
+                            <div class="text-gray-600 text-sm">Active Properties</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600" id="contentSections">4</div>
+                            <div class="text-gray-600 text-sm">Content Sections</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-600">€6.37M</div>
+                            <div class="text-gray-600 text-sm">Total Value</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-orange-600">Live</div>
+                            <div class="text-gray-600 text-sm">Site Status</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Section -->
+            <div id="properties" class="section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Properties</h2>
+                        <p class="text-gray-600">Manage your property listings that appear on the website.</p>
+                    </div>
+                    <button class="admin-btn admin-btn-primary" onclick="showPropertyModal()">+ Add Property</button>
+                </div>
+
+                <!-- Properties Table -->
+                <div class="admin-card overflow-hidden">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Location</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propertiesTable">
+                            <!-- Properties will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div id="content" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Content Management</h2>
+                    <p class="text-gray-600">Edit website content and text.</p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Hero Content -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">Hero Section</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hero Title</label>
+                                <input type="text" id="heroTitle" class="admin-input w-full" value="Go LIVE. Go GLOBAL.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hero Subtitle</label>
+                                <textarea id="heroSubtitle" class="admin-input w-full" rows="4">Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.</textarea>
+                            </div>
+                            <button class="admin-btn admin-btn-primary" onclick="updateHeroContent()">Update Hero Content</button>
+                        </div>
+                    </div>
+
+                    <!-- Site Info -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">Site Information</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Title</label>
+                                <input type="text" id="siteTitle" class="admin-input w-full" value="Estalara - Go LIVE. Go GLOBAL.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
+                                <textarea id="siteDescription" class="admin-input w-full" rows="3">Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                                <input type="email" id="contactEmail" class="admin-input w-full" value="estalara@estalara.com">
+                            </div>
+                            <button class="admin-btn admin-btn-primary" onclick="updateSiteInfo()">Update Site Info</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Settings</h2>
+                    <p class="text-gray-600">Configure your website settings.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- General Settings -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">General Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Default Currency</label>
+                                <select id="currency" class="admin-input w-full">
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Default Language</label>
+                                <select id="language" class="admin-input w-full">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                </select>
+                            </div>
+                            <button class="admin-btn admin-btn-primary" onclick="updateSettings()">Save Settings</button>
+                        </div>
+                    </div>
+
+                    <!-- Export/Import -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">Data Management</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Export Data</label>
+                                <button class="admin-btn admin-btn-secondary" onclick="exportData()">Export All Data</button>
+                                <p class="text-xs text-gray-500 mt-1">Download all your content as JSON</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Import Data</label>
+                                <input type="file" id="importFile" accept=".json" class="admin-input w-full mb-2">
+                                <button class="admin-btn admin-btn-secondary" onclick="importData()">Import Data</button>
+                                <p class="text-xs text-gray-500 mt-1">Upload a JSON file with your content</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Modal -->
+    <div id="propertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Add New Property</h3>
+                <button onclick="hidePropertyModal()" class="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+            <form id="propertyForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Title</label>
+                        <input type="text" name="title" class="admin-input w-full" placeholder="e.g., Modern Apartment in Barcelona" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                        <input type="text" name="location" class="admin-input w-full" placeholder="e.g., Barcelona, Spain" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Price (€)</label>
+                        <input type="number" name="price" class="admin-input w-full" placeholder="450000" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
+                        <select name="type" class="admin-input w-full" required>
+                            <option value="">Select Type</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="house">House</option>
+                            <option value="villa">Villa</option>
+                            <option value="penthouse">Penthouse</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea name="description" class="admin-input w-full" rows="4" placeholder="Property description..." required></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Image URL</label>
+                    <input type="url" name="image" class="admin-input w-full" placeholder="https://example.com/image.jpg" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Estalara App Link</label>
+                    <input type="url" name="link" class="admin-input w-full" placeholder="https://app.estalara.com/listing/..." required>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="hidePropertyModal()" class="admin-btn admin-btn-secondary">Cancel</button>
+                    <button type="submit" class="admin-btn admin-btn-primary">Save Property</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Admin JavaScript functionality
+        let adminData = {
+            properties: [
+                {
+                    id: 1,
+                    title: "Modern Apartment in Cádiz",
+                    location: "Cádiz, Spain",
+                    price: 450000,
+                    image: "https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp",
+                    description: "Stunning property in the heart of Cádiz with ocean views and modern amenities.",
+                    link: "https://app.estalara.com/listing/-cadiz-cadiz-na-d19331b5-846d-4139-a78e-2d9695ff73d0",
+                    status: "live"
+                },
+                {
+                    id: 2,
+                    title: "Luxury Penthouse in Madrid",
+                    location: "Madrid, Spain",
+                    price: 1200000,
+                    image: "https://kimi-web-img.moonshot.cn/img/www.valcucine.com/23a9f04943354e7f0279fbe99bcc358000b108f4.jpg",
+                    description: "Exclusive penthouse in Madrid's premium district with panoramic city views.",
+                    link: "https://app.estalara.com/listing/-madrid-madrid-na-8a9b2c1d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
+                    status: "live"
+                },
+                {
+                    id: 3,
+                    title: "Beachfront Villa in Barcelona",
+                    location: "Barcelona, Spain",
+                    price: 2800000,
+                    image: "https://kimi-web-img.moonshot.cn/img/antonovich-design.com/c4dc761e62d99ae8976671614b35f23c72bda4df.jpg",
+                    description: "Spectacular beachfront villa with private pool and direct beach access.",
+                    link: "https://app.estalara.com/listing/-barcelona-barcelona-na-5f6e7d8c-9a0b-1c2d-3e4f-5a6b7c8d9e0f",
+                    status: "live"
+                },
+                {
+                    id: 4,
+                    title: "Historic Building in Valencia",
+                    location: "Valencia, Spain",
+                    price: 750000,
+                    image: "https://kimi-web-img.moonshot.cn/img/www.elegantinterior.info/c0b1fd32f4cdc3abdaccf6a5f411e8f3fb8e6e92.png",
+                    description: "Beautifully restored historic building in Valencia's old town with modern interiors.",
+                    link: "https://app.estalara.com/listing/-valencia-valencia-na-2a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d",
+                    status: "live"
+                },
+                {
+                    id: 5,
+                    title: "Traditional House in Seville",
+                    location: "Seville, Spain",
+                    price: 320000,
+                    image: "https://kimi-web-img.moonshot.cn/img/idea.3dbrute.com/eaa4c4cbb5ccbf57f4732305104dd9187d2276a4.jpg",
+                    description: "Authentic Andalusian house with patio, perfect for cultural immersion.",
+                    link: "https://app.estalara.com/listing/-seville-seville-na-9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f",
+                    status: "live"
+                },
+                {
+                    id: 6,
+                    title: "Modern Villa in Malaga",
+                    location: "Malaga, Spain",
+                    price: 1850000,
+                    image: "https://kimi-web-img.moonshot.cn/img/archello.s3.eu-central-1.amazonaws.com/e68f5c11f478a0669779d5422a04c826a028dca0.jpg",
+                    description: "Contemporary villa with stunning sea views and infinity pool in Costa del Sol.",
+                    link: "https://app.estalara.com/listing/-malaga-malaga-na-7d6e5f4a-3b2c-1d0e-9f8a-7b6c5d4e3f2a",
+                    status: "live"
+                }
+            ],
+            content: {
+                siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
+                siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.",
+                contactEmail: "estalara@estalara.com",
+                heroTitle: "Go LIVE. Go GLOBAL.",
+                heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.",
+                currency: "EUR",
+                language: "en"
+            }
+        };
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Load section-specific content
+            if (sectionId === 'properties') {
+                loadProperties();
+            } else if (sectionId === 'content') {
+                loadContent();
+            } else if (sectionId === 'settings') {
+                loadSettings();
+            }
+        }
+
+        function loadProperties() {
+            const tbody = document.getElementById('propertiesTable');
+            tbody.innerHTML = '';
+
+            adminData.properties.forEach(property => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="flex items-center space-x-3">
+                            <img src="${property.image}" alt="${property.title}" class="w-12 h-12 object-cover rounded">
+                            <div>
+                                <div class="font-medium">${property.title}</div>
+                                <div class="text-sm text-gray-500">${property.type || 'Property'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${property.location}</td>
+                    <td>€${property.price.toLocaleString()}</td>
+                    <td><span class="admin-badge admin-badge-${property.status}">${property.status.toUpperCase()}</span></td>
+                    <td>
+                        <button class="admin-btn admin-btn-secondary text-sm mr-2" onclick="editProperty(${property.id})">Edit</button>
+                        <button class="admin-btn admin-btn-danger text-sm" onclick="deleteProperty(${property.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Update property count
+            document.getElementById('propertyCount').textContent = adminData.properties.length;
+        }
+
+        function loadContent() {
+            document.getElementById('heroTitle').value = adminData.content.heroTitle;
+            document.getElementById('heroSubtitle').value = adminData.content.heroSubtitle;
+            document.getElementById('siteTitle').value = adminData.content.siteTitle;
+            document.getElementById('siteDescription').value = adminData.content.siteDescription;
+            document.getElementById('contactEmail').value = adminData.content.contactEmail;
+        }
+
+        function loadSettings() {
+            document.getElementById('currency').value = adminData.content.currency;
+            document.getElementById('language').value = adminData.content.language;
+        }
+
+        function showPropertyModal() {
+            document.getElementById('propertyModal').classList.remove('hidden');
+            document.getElementById('propertyModal').classList.add('flex');
+        }
+
+        function hidePropertyModal() {
+            document.getElementById('propertyModal').classList.add('hidden');
+            document.getElementById('propertyModal').classList.remove('flex');
+            document.getElementById('propertyForm').reset();
+        }
+
+        function editProperty(id) {
+            const property = adminData.properties.find(p => p.id === id);
+            if (property) {
+                // Fill form with property data
+                const form = document.getElementById('propertyForm');
+                form.title.value = property.title;
+                form.location.value = property.location;
+                form.price.value = property.price;
+                form.type.value = property.type || '';
+                form.description.value = property.description;
+                form.image.value = property.image;
+                form.link.value = property.link;
+                
+                // Change form to edit mode
+                form.dataset.editId = id;
+                
+                showPropertyModal();
+            }
+        }
+
+        function deleteProperty(id) {
+            if (confirm('Are you sure you want to delete this property?')) {
+                adminData.properties = adminData.properties.filter(p => p.id !== id);
+                saveData();
+                loadProperties();
+                alert('Property deleted successfully!');
+            }
+        }
+
+        function updateHeroContent() {
+            adminData.content.heroTitle = document.getElementById('heroTitle').value;
+            adminData.content.heroSubtitle = document.getElementById('heroSubtitle').value;
+            saveData();
+            alert('Hero content updated successfully!');
+        }
+
+        function updateSiteInfo() {
+            adminData.content.siteTitle = document.getElementById('siteTitle').value;
+            adminData.content.siteDescription = document.getElementById('siteDescription').value;
+            adminData.content.contactEmail = document.getElementById('contactEmail').value;
+            saveData();
+            alert('Site information updated successfully!');
+        }
+
+        function updateSettings() {
+            adminData.content.currency = document.getElementById('currency').value;
+            adminData.content.language = document.getElementById('language').value;
+            saveData();
+            alert('Settings updated successfully!');
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(adminData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'estalara-content.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData() {
+            const fileInput = document.getElementById('importFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a JSON file to import.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (confirm('This will replace all your current data. Are you sure?')) {
+                        adminData = importedData;
+                        saveData();
+                        alert('Data imported successfully! Please refresh the page.');
+                    }
+                } catch (error) {
+                    alert('Error importing data. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function saveData() {
+            localStorage.setItem('estalaraAdminData', JSON.stringify(adminData));
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem('estalaraAdminData');
+            if (stored) {
+                adminData = JSON.parse(stored);
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        // Property Form Handler
+        document.getElementById('propertyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const propertyData = Object.fromEntries(formData);
+            propertyData.price = parseInt(propertyData.price);
+            
+            const editId = e.target.dataset.editId;
+            
+            if (editId) {
+                // Update existing property
+                const index = adminData.properties.findIndex(p => p.id == editId);
+                if (index !== -1) {
+                    adminData.properties[index] = { ...adminData.properties[index], ...propertyData };
+                }
+                delete e.target.dataset.editId;
+            } else {
+                // Add new property
+                propertyData.id = Date.now();
+                propertyData.status = 'live';
+                adminData.properties.push(propertyData);
+            }
+            
+            saveData();
+            loadProperties();
+            hidePropertyModal();
+            alert('Property saved successfully!');
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            showSection('dashboard');
+        });
+    </script>
+</body>
+</html>

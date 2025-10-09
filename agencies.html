@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estalara for Real Estate Agencies - Scale Globally</title>
+    <meta name="description" content="Transform your real estate agency into a global powerhouse. Scale operations, manage multiple agents, and expand internationally with Estalara's enterprise solutions.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    
+    <style>
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-text {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 0.9;
+            font-weight: 900;
+        }
+        
+        .section-text {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            font-weight: 700;
+        }
+        
+        .body-text {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.6;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        .btn-secondary {
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .feature-card {
+            background: var(--white);
+            color: var(--black);
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-number {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+        }
+        
+        .agency-card {
+            background: var(--white);
+            color: var(--black);
+            transition: all 0.3s ease;
+        }
+        
+        .agency-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particle-bg" class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="font-display text-2xl font-bold">
+                    <a href="index.html">ESTALARA</a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-gray-300 transition-colors">Home</a>
+                    <a href="agents.html" class="hover:text-gray-300 transition-colors">For Agents</a>
+                    <a href="agencies.html" class="text-white font-semibold">For Agencies</a>
+                    <a href="investors.html" class="hover:text-gray-300 transition-colors">For Investors</a>
+                    <a href="about.html" class="hover:text-gray-300 transition-colors">About</a>
+                    <a href="index.html#live-properties" class="hover:text-gray-300 transition-colors">LIVE Properties</a>
+                </div>
+                <button class="btn-primary px-6 py-2 font-semibold">
+                    <a href="https://app.estalara.com" target="_blank">Launch App</a>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h1 class="hero-text font-display mb-8">
+                    Agencies Go <span class="text-white">ENTERPRISE</span>
+                </h1>
+                <p class="body-text max-w-3xl mx-auto mb-12 text-gray-300">
+                    Transform your real estate agency into a global powerhouse. Scale operations, manage multiple agents, 
+                    and expand internationally with Estalara's enterprise solutions designed for growing agencies.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="btn-primary px-8 py-4 font-semibold text-lg">
+                        <a href="https://app.estalara.com" target="_blank">Scale Your Agency →</a>
+                    </button>
+                    <button class="btn-secondary px-8 py-4 font-semibold text-lg">
+                        <a href="#enterprise-features">Explore Solutions</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Enterprise Stats -->
+    <section class="py-20 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="reveal">
+                    <div class="stat-number font-display text-black">500+</div>
+                    <p class="text-gray-600 font-semibold">Partner Agencies</p>
+                </div>
+                <div class="reveal">
+                    <div class="stat-number font-display text-black">10K+</div>
+                    <p class="text-gray-600 font-semibold">Agents Empowered</p>
+                </div>
+                <div class="reveal">
+                    <div class="stat-number font-display text-black">50+</div>
+                    <p class="text-gray-600 font-semibold">Countries Served</p>
+                </div>
+                <div class="reveal">
+                    <div class="stat-number font-display text-black">€2.5B+</div>
+                    <p class="text-gray-600 font-semibold">Agency Volume</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Enterprise Features Section -->
+    <section id="enterprise-features" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">Enterprise Solutions for Growing Agencies</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Comprehensive tools and features designed to help real estate agencies scale operations and expand globally
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🏢</div>
+                    <h3 class="text-2xl font-bold mb-4">Multi-Agent Management</h3>
+                    <p class="text-gray-600 mb-6">Manage all your agents from a single dashboard. Track performance, assign properties, and monitor global activities in real-time.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Centralized agent dashboard</li>
+                        <li>• Performance analytics</li>
+                        <li>• Role-based permissions</li>
+                        <li>• Activity monitoring</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🌐</div>
+                    <h3 class="text-2xl font-bold mb-4">Global Market Access</h3>
+                    <p class="text-gray-600 mb-6">Expand your agency's reach to international markets with our global network and multilingual platform capabilities.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• 50+ country access</li>
+                        <li>• Multi-language support</li>
+                        <li>• Currency conversion</li>
+                        <li>• Cultural insights</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">📊</div>
+                    <h3 class="text-2xl font-bold mb-4">Advanced Analytics</h3>
+                    <p class="text-gray-600 mb-6">Get comprehensive insights into your agency's performance with detailed analytics, market trends, and ROI calculations.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Revenue tracking</li>
+                        <li>• Market analysis</li>
+                        <li>• Agent performance metrics</li>
+                        <li>• Client behavior insights</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🔧</div>
+                    <h3 class="text-2xl font-bold mb-4">White-Label Solutions</h3>
+                    <p class="text-gray-600 mb-6">Customize the platform with your agency's branding while leveraging Estalara's powerful technology infrastructure.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Custom branding</li>
+                        <li>• Branded livestreams</li>
+                        <li>• Custom domain support</li>
+                        <li>• Agency-specific features</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">⚡</div>
+                    <h3 class="text-2xl font-bold mb-4">Automated Workflows</h3>
+                    <p class="text-gray-600 mb-6">Streamline your agency operations with automated processes for lead distribution, client matching, and follow-ups.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Smart lead distribution</li>
+                        <li>• Automated follow-ups</li>
+                        <li>• Client matching algorithms</li>
+                        <li>• Workflow optimization</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🤝</div>
+                    <h3 class="text-2xl font-bold mb-4">Partnership Network</h3>
+                    <p class="text-gray-600 mb-6">Join our exclusive network of partner agencies and benefit from shared resources, referrals, and collaborative opportunities.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Partner referrals</li>
+                        <li>• Shared resources</li>
+                        <li>• Collaborative opportunities</li>
+                        <li>• Network benefits</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Agency Benefits -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">Why Agencies Choose Estalara</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    Discover the key benefits that make Estalara the preferred platform for growing real estate agencies
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h3 class="text-2xl font-bold mb-6 text-black">Scale Without Limits</h3>
+                    <p class="text-gray-600 mb-6">
+                        Traditional real estate agencies are limited by geography and local market conditions. Estalara breaks 
+                        these barriers by providing access to global markets, allowing your agency to scale operations 
+                        internationally without the usual overhead and complexity.
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        Our platform handles the technical challenges of international real estate - from language barriers 
+                        to currency conversion, legal compliance to cultural differences - so you can focus on what you do 
+                        best: connecting properties with the right buyers.
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-600 mr-2">✓</span>
+                            Expand to new markets instantly
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-600 mr-2">✓</span>
+                            Reduce operational overhead
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-600 mr-2">✓</span>
+                            Access global investor networks
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="reveal">
+                    <h3 class="text-2xl font-bold mb-6 text-black">Technology That Works</h3>
+                    <p class="text-gray-600 mb-6">
+                        Stop struggling with outdated systems and multiple platforms. Estalara provides an all-in-one 
+                        solution that integrates seamlessly with your existing workflows while adding powerful new 
+                        capabilities like AI-driven lead generation and live streaming.
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        Our enterprise-grade infrastructure ensures reliability and performance, while our intuitive 
+                        interface means your team can be productive from day one. No complex training, no steep 
+                        learning curves - just powerful technology that works.
+                    </p>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="text-green-600 mr-2">✓</span>
+                            All-in-one platform solution
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-600 mr-2">✓</span>
+                            Enterprise-grade reliability
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-green-600 mr-2">✓</span>
+                            Intuitive user experience
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Success Stories -->
+    <section class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">Agency Success Stories</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    See how real estate agencies are transforming their business with Estalara
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="agency-card p-8 reveal">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-gray-300 rounded-full mb-4"></div>
+                        <h3 class="text-xl font-bold mb-2">Madrid Premium Properties</h3>
+                        <p class="text-gray-600 text-sm">Madrid, Spain</p>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">
+                        "Estalara helped us expand from a local Madrid agency to serving international clients across 
+                        Europe. Our revenue increased by 300% in the first year."
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <p><strong>Challenge:</strong> Limited to local market</p>
+                        <p><strong>Solution:</strong> Global platform access</p>
+                        <p><strong>Result:</strong> 300% revenue growth</p>
+                    </div>
+                </div>
+                
+                <div class="agency-card p-8 reveal">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-gray-300 rounded-full mb-4"></div>
+                        <h3 class="text-xl font-bold mb-2">Barcelona Coastal Group</h3>
+                        <p class="text-gray-600 text-sm">Barcelona, Spain</p>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">
+                        "The multi-agent management features transformed how we operate. We now efficiently manage 
+                        50+ agents across multiple regions with ease."
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <p><strong>Challenge:</strong> Complex agent coordination</p>
+                        <p><strong>Solution:</strong> Centralized management</p>
+                        <p><strong>Result:</strong> 50+ agents managed efficiently</p>
+                    </div>
+                </div>
+                
+                <div class="agency-card p-8 reveal">
+                    <div class="mb-6">
+                        <div class="w-16 h-16 bg-gray-300 rounded-full mb-4"></div>
+                        <h3 class="text-xl font-bold mb-2">Valencia Heritage Properties</h3>
+                        <p class="text-gray-600 text-sm">Valencia, Spain</p>
+                    </div>
+                    <p class="text-gray-600 mb-6 italic">
+                        "The analytics and insights helped us understand our market better and make data-driven 
+                        decisions that doubled our conversion rates."
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        <p><strong>Challenge:</strong> Limited market insights</p>
+                        <p><strong>Solution:</strong> Advanced analytics</p>
+                        <p><strong>Result:</strong> 2x conversion rates</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Enterprise Process -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">Your Agency Transformation Journey</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    Simple steps to transform your agency into a global enterprise
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">1</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Assessment</h3>
+                    <p class="text-gray-600">We analyze your agency's current operations and identify growth opportunities</p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">2</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Setup</h3>
+                    <p class="text-gray-600">Configure your agency's branded platform and train your team</p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">3</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Launch</h3>
+                    <p class="text-gray-600">Go live with global capabilities and start expanding your reach</p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">4</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Scale</h3>
+                    <p class="text-gray-600">Continuously optimize and expand into new markets with our support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-32">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h2 class="section-text font-display mb-8">Ready to Scale Your Agency?</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12 text-gray-300">
+                    Join hundreds of successful real estate agencies that have transformed their business with Estalara. 
+                    Start your journey to global expansion today.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="btn-primary px-12 py-4 font-semibold text-xl">
+                        <a href="https://app.estalara.com" target="_blank">Start Your Transformation →</a>
+                    </button>
+                    <button class="btn-secondary px-12 py-4 font-semibold text-xl">
+                        <a href="about.html">Learn More About Us</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="font-display text-2xl font-bold mb-4">ESTALARA</div>
+                    <p class="text-gray-400 text-sm">
+                        Time2Show, Inc., Dover, DE, USA<br>
+                        estalara@estalara.com
+                    </p>
+                </div>
+                
+                <div class="flex space-x-8 text-sm">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">TikTok</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Instagram</a>
+                    <a href="admin-login.html" class="text-gray-400 hover:text-white transition-colors">Admin Login</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Defer our custom scripts to improve performance -->
+    <script src="cms-integration.js" defer></script>
+    <!-- Load main.js synchronously to ensure animations initialise correctly -->
+    <script src="main.js"></script>
+</body>
+</html>

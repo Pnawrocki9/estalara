@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estalara CMS - Content Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .cms-nav { background: #1f2937; }
+        .cms-sidebar { background: #111827; }
+        .cms-content { background: #f9fafb; }
+        .cms-card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .cms-input { border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; }
+        .cms-btn { padding: 8px 16px; border-radius: 6px; font-weight: 500; cursor: pointer; }
+        .cms-btn-primary { background: #3b82f6; color: white; }
+        .cms-btn-secondary { background: #6b7280; color: white; }
+        .cms-btn-success { background: #10b981; color: white; }
+        .cms-btn-danger { background: #ef4444; color: white; }
+        .cms-table { width: 100%; border-collapse: collapse; }
+        .cms-table th, .cms-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        .cms-table th { background: #f9fafb; font-weight: 600; }
+        .cms-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .cms-badge-live { background: #dcfce7; color: #166534; }
+        .cms-badge-draft { background: #fef3c7; color: #92400e; }
+        .cms-badge-archived { background: #f3f4f6; color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="cms-nav text-white p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <h1 class="text-xl font-bold">Estalara CMS</h1>
+                <span class="text-sm text-gray-300">Content Management System</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm">Welcome, Admin</span>
+                <button class="cms-btn cms-btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="cms-sidebar text-white w-64 min-h-screen p-4">
+            <nav class="space-y-2">
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('dashboard')">
+                    📊 Dashboard
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('properties')">
+                    🏠 Properties
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('pages')">
+                    📄 Pages
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('media')">
+                    🖼️ Media Library
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('users')">
+                    👥 Users
+                </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('settings')">
+                    ⚙️ Settings
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 cms-content p-6">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Dashboard</h2>
+                    <p class="text-gray-600">Welcome to Estalara CMS. Manage your content and properties from here.</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="cms-card p-6">
+                        <div class="text-3xl font-bold text-blue-600">24</div>
+                        <div class="text-gray-600">Active Properties</div>
+                    </div>
+                    <div class="cms-card p-6">
+                        <div class="text-3xl font-bold text-green-600">156</div>
+                        <div class="text-gray-600">Total Users</div>
+                    </div>
+                    <div class="cms-card p-6">
+                        <div class="text-3xl font-bold text-purple-600">12</div>
+                        <div class="text-gray-600">Live Streams</div>
+                    </div>
+                    <div class="cms-card p-6">
+                        <div class="text-3xl font-bold text-orange-600">€2.8M</div>
+                        <div class="text-gray-600">Total Value</div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="cms-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded">
+                            <span class="text-green-600">●</span>
+                            <span>New property added: Modern Apartment in Barcelona</span>
+                            <span class="text-gray-500 text-sm ml-auto">2 hours ago</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded">
+                            <span class="text-blue-600">●</span>
+                            <span>Live stream started: Luxury Villa Tour</span>
+                            <span class="text-gray-500 text-sm ml-auto">4 hours ago</span>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded">
+                            <span class="text-purple-600">●</span>
+                            <span>New user registered: Maria Rodriguez</span>
+                            <span class="text-gray-500 text-sm ml-auto">6 hours ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Section -->
+            <div id="properties" class="section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Properties</h2>
+                        <p class="text-gray-600">Manage your property listings</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" onclick="showPropertyModal()">+ Add Property</button>
+                </div>
+
+                <!-- Properties Table -->
+                <div class="cms-card overflow-hidden">
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Location</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propertiesTable">
+                            <tr>
+                                <td>
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp" alt="Property" class="w-12 h-12 object-cover rounded">
+                                        <div>
+                                            <div class="font-medium">Modern Apartment in Cádiz</div>
+                                            <div class="text-sm text-gray-500">Stunning property with ocean views</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Cádiz, Spain</td>
+                                <td>€450,000</td>
+                                <td><span class="cms-badge cms-badge-live">Live</span></td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editProperty(1)">Edit</button>
+                                    <button class="cms-btn cms-btn-danger text-sm" onclick="deleteProperty(1)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="flex items-center space-x-3">
+                                        <img src="https://kimi-web-img.moonshot.cn/img/www.valcucine.com/23a9f04943354e7f0279fbe99bcc358000b108f4.jpg" alt="Property" class="w-12 h-12 object-cover rounded">
+                                        <div>
+                                            <div class="font-medium">Luxury Penthouse in Madrid</div>
+                                            <div class="text-sm text-gray-500">Exclusive penthouse with city views</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>Madrid, Spain</td>
+                                <td>€1,200,000</td>
+                                <td><span class="cms-badge cms-badge-live">Live</span></td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editProperty(2)">Edit</button>
+                                    <button class="cms-btn cms-btn-danger text-sm" onclick="deleteProperty(2)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pages Section -->
+            <div id="pages" class="section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Pages</h2>
+                        <p class="text-gray-600">Manage your website content</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" onclick="showPageModal()">+ Add Page</button>
+                </div>
+
+                <!-- Pages Table -->
+                <div class="cms-card overflow-hidden">
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th>Page</th>
+                                <th>URL</th>
+                                <th>Last Modified</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-medium">Home</div>
+                                        <div class="text-sm text-gray-500">Main landing page</div>
+                                    </div>
+                                </td>
+                                <td>/index.html</td>
+                                <td>Oct 8, 2025</td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('index')">Edit</button>
+                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('index')">Preview</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-medium">For Agents</div>
+                                        <div class="text-sm text-gray-500">Agent-focused content</div>
+                                    </div>
+                                </td>
+                                <td>/agents.html</td>
+                                <td>Oct 8, 2025</td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('agents')">Edit</button>
+                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('agents')">Preview</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-medium">For Investors</div>
+                                        <div class="text-sm text-gray-500">Investor-focused content</div>
+                                    </div>
+                                </td>
+                                <td>/investors.html</td>
+                                <td>Oct 8, 2025</td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('investors')">Edit</button>
+                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('investors')">Preview</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-medium">About</div>
+                                        <div class="text-sm text-gray-500">Company information</div>
+                                    </div>
+                                </td>
+                                <td>/about.html</td>
+                                <td>Oct 8, 2025</td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('about')">Edit</button>
+                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('about')">Preview</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Media Section -->
+            <div id="media" class="section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Media Library</h2>
+                        <p class="text-gray-600">Manage your images and media files</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" onclick="showUploadModal()">+ Upload Media</button>
+                </div>
+
+                <!-- Media Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div class="cms-card p-3">
+                        <img src="https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp" alt="Property Image" class="w-full h-24 object-cover rounded mb-2">
+                        <div class="text-xs text-gray-600 truncate">apartment-interior.jpg</div>
+                        <button class="cms-btn cms-btn-danger text-xs w-full mt-2" onclick="deleteMedia(1)">Delete</button>
+                    </div>
+                    <div class="cms-card p-3">
+                        <img src="https://kimi-web-img.moonshot.cn/img/www.valcucine.com/23a9f04943354e7f0279fbe99bcc358000b108f4.jpg" alt="Property Image" class="w-full h-24 object-cover rounded mb-2">
+                        <div class="text-xs text-gray-600 truncate">luxury-kitchen.jpg</div>
+                        <button class="cms-btn cms-btn-danger text-xs w-full mt-2" onclick="deleteMedia(2)">Delete</button>
+                    </div>
+                    <div class="cms-card p-3">
+                        <img src="https://kimi-web-img.moonshot.cn/img/antonovich-design.com/c4dc761e62d99ae8976671614b35f23c72bda4df.jpg" alt="Property Image" class="w-full h-24 object-cover rounded mb-2">
+                        <div class="text-xs text-gray-600 truncate">villa-exterior.jpg</div>
+                        <button class="cms-btn cms-btn-danger text-xs w-full mt-2" onclick="deleteMedia(3)">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="users" class="section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Users</h2>
+                        <p class="text-gray-600">Manage your platform users</p>
+                    </div>
+                    <button class="cms-btn cms-btn-primary" onclick="showUserModal()">+ Add User</button>
+                </div>
+
+                <!-- Users Table -->
+                <div class="cms-card overflow-hidden">
+                    <table class="cms-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-medium">Maria Rodriguez</div>
+                                        <div class="text-sm text-gray-500">Real Estate Agent</div>
+                                    </div>
+                                </td>
+                                <td>maria@example.com</td>
+                                <td>Agent</td>
+                                <td><span class="cms-badge cms-badge-live">Active</span></td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editUser(1)">Edit</button>
+                                    <button class="cms-btn cms-btn-danger text-sm" onclick="deleteUser(1)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-medium">David Lim</div>
+                                        <div class="text-sm text-gray-500">Property Investor</div>
+                                    </div>
+                                </td>
+                                <td>david@example.com</td>
+                                <td>Investor</td>
+                                <td><span class="cms-badge cms-badge-live">Active</span></td>
+                                <td>
+                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editUser(2)">Edit</button>
+                                    <button class="cms-btn cms-btn-danger text-sm" onclick="deleteUser(2)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Settings</h2>
+                    <p class="text-gray-600">Configure your platform settings</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- General Settings -->
+                    <div class="cms-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">General Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Title</label>
+                                <input type="text" class="cms-input w-full" value="Estalara - Go LIVE. Go GLOBAL.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
+                                <textarea class="cms-input w-full" rows="3">Estalara connects real estate agents and international investors through AI and live experiences.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                                <input type="email" class="cms-input w-full" value="estalara@estalara.com">
+                            </div>
+                        </div>
+                        <button class="cms-btn cms-btn-primary mt-4">Save Changes</button>
+                    </div>
+
+                    <!-- Platform Settings -->
+                    <div class="cms-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">Platform Settings</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Default Currency</label>
+                                <select class="cms-input w-full">
+                                    <option>EUR (€)</option>
+                                    <option>USD ($)</option>
+                                    <option>GBP (£)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Default Language</label>
+                                <select class="cms-input w-full">
+                                    <option>English</option>
+                                    <option>Spanish</option>
+                                    <option>French</option>
+                                    <option>German</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Upload Size</label>
+                                <input type="text" class="cms-input w-full" value="10MB">
+                            </div>
+                        </div>
+                        <button class="cms-btn cms-btn-primary mt-4">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Modal -->
+    <div id="propertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Add New Property</h3>
+                <button onclick="hidePropertyModal()" class="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+            <form id="propertyForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Title</label>
+                        <input type="text" name="title" class="cms-input w-full" placeholder="e.g., Modern Apartment in Barcelona" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                        <input type="text" name="location" class="cms-input w-full" placeholder="e.g., Barcelona, Spain" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Price (€)</label>
+                        <input type="number" name="price" class="cms-input w-full" placeholder="450000" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
+                        <select name="type" class="cms-input w-full" required>
+                            <option value="">Select Type</option>
+                            <option value="apartment">Apartment</option>
+                            <option value="house">House</option>
+                            <option value="villa">Villa</option>
+                            <option value="penthouse">Penthouse</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea name="description" class="cms-input w-full" rows="4" placeholder="Property description..." required></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Image URL</label>
+                    <input type="url" name="image" class="cms-input w-full" placeholder="https://example.com/image.jpg" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Link</label>
+                    <input type="url" name="link" class="cms-input w-full" placeholder="https://app.estalara.com/listing/..." required>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="hidePropertyModal()" class="cms-btn cms-btn-secondary">Cancel</button>
+                    <button type="submit" class="cms-btn cms-btn-primary">Save Property</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // CMS JavaScript functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        function showPropertyModal() {
+            document.getElementById('propertyModal').classList.remove('hidden');
+            document.getElementById('propertyModal').classList.add('flex');
+        }
+
+        function hidePropertyModal() {
+            document.getElementById('propertyModal').classList.add('hidden');
+            document.getElementById('propertyModal').classList.remove('flex');
+        }
+
+        function showPageModal() {
+            alert('Page editor coming soon! For now, you can edit pages directly in the Pages section.');
+        }
+
+        function showUploadModal() {
+            alert('Media upload coming soon! You can currently add image URLs directly in property forms.');
+        }
+
+        function showUserModal() {
+            alert('User management coming soon!');
+        }
+
+        function editProperty(id) {
+            alert('Property editor coming soon!');
+        }
+
+        function deleteProperty(id) {
+            if (confirm('Are you sure you want to delete this property?')) {
+                alert('Property deleted successfully!');
+            }
+        }
+
+        function editPage(pageId) {
+            alert('Page editor coming soon! For now, you can edit HTML files directly.');
+        }
+
+        function previewPage(pageId) {
+            window.open(`/${pageId}.html`, '_blank');
+        }
+
+        function deleteMedia(id) {
+            if (confirm('Are you sure you want to delete this media file?')) {
+                alert('Media file deleted successfully!');
+            }
+        }
+
+        function editUser(id) {
+            alert('User editor coming soon!');
+        }
+
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                alert('User deleted successfully!');
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/cms-login';
+            }
+        }
+
+        // Property Form Handler
+        document.getElementById('propertyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const propertyData = Object.fromEntries(formData);
+            
+            // Here you would normally send this data to your backend
+            console.log('New Property Data:', propertyData);
+            
+            alert('Property saved successfully!');
+            hidePropertyModal();
+            e.target.reset();
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('dashboard');
+        });
+    </script>
+</body>
+</html>

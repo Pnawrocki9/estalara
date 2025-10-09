@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estalara for Agents - TEST VERSION</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #000000; color: #FFFFFF; }
+        .font-display { font-family: 'Playfair Display', serif; }
+        .hero-text { font-size: 4rem; font-weight: 900; line-height: 0.9; }
+        .section-text { font-size: 2.5rem; font-weight: 700; line-height: 1.1; }
+        .body-text { font-size: 1.25rem; line-height: 1.6; }
+        
+        /* USUNIĘTO KLASĘ REVEAL - treść jest zawsze widoczna */
+        .feature-card { background: #FFFFFF; color: #000000; padding: 2rem; margin: 1rem; border-radius: 8px; }
+        .btn-primary { background: #FFFFFF; color: #000000; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block; margin: 10px; }
+        .btn-secondary { background: #000000; color: #FFFFFF; border: 2px solid #FFFFFF; padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block; margin: 10px; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav style="background: rgba(0,0,0,0.9); padding: 1rem; position: fixed; width: 100%; top: 0; z-index: 50;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <div class="font-display" style="font-size: 1.5rem; font-weight: bold;">ESTALARA</div>
+            <div style="display: flex; gap: 2rem;">
+                <a href="index.html" style="color: white;">Home</a>
+                <a href="agents.html" style="color: white; font-weight: bold;">For Agents</a>
+                <a href="agencies.html" style="color: white;">For Agencies</a>
+                <a href="investors.html" style="color: white;">For Investors</a>
+                <a href="about.html" style="color: white;">About</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section style="padding-top: 120px; min-height: 100vh; display: flex; align-items: center; text-align: center;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+            <!-- USUNIĘTO KLASĘ REVEAL -->
+            <div>
+                <h1 class="hero-text font-display mb-8">
+                    Agents Go <span style="color: white;">GLOBAL</span>
+                </h1>
+                <p class="body-text max-w-3xl mx-auto mb-12" style="color: #D1D5DB;">
+                    Attract and convert high-value global investors effortlessly. Livestream your listings and engage 
+                    verified buyers in real time with AI-powered lead generation and automatic landing pages.
+                </p>
+                <div>
+                    <a href="https://app.estalara.com" target="_blank" class="btn-primary">Start Livestreaming →</a>
+                    <a href="#features" class="btn-secondary">Explore Features</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section style="background: white; color: black; padding: 5rem 2rem; text-align: center;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+                <!-- USUNIĘTO KLASĘ REVEAL -->
+                <div>
+                    <div style="font-size: 3rem; font-weight: 900; color: black;">500+</div>
+                    <p style="color: #6B7280; font-weight: 600;">Active Agents</p>
+                </div>
+                <div>
+                    <div style="font-size: 3rem; font-weight: 900; color: black;">10K+</div>
+                    <p style="color: #6B7280; font-weight: 600;">Global Investors</p>
+                </div>
+                <div>
+                    <div style="font-size: 3rem; font-weight: 900; color: black;">€2.5B+</div>
+                    <p style="color: #6B7280; font-weight: 600;">Property Value</p>
+                </div>
+                <div>
+                    <div style="font-size: 3rem; font-weight: 900; color: black;">95%</div>
+                    <p style="color: #6B7280; font-weight: 600;">Close Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" style="padding: 8rem 2rem;">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <!-- USUNIĘTO KLASĘ REVEAL -->
+            <div>
+                <h2 class="section-text font-display mb-8">Everything You Need to Succeed</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12" style="color: #D1D5DB;">
+                    Powerful tools designed specifically for real estate agents to expand their global reach
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+                <!-- USUNIĘTO KLASĘ REVEAL Z KAŻDEGO ELEMENTU -->
+                <div class="feature-card">
+                    <div style="width: 4rem; height: 4rem; background: black; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">📺</div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Live Property Shows</h3>
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">Stream your listings to hundreds of verified investors simultaneously with our advanced livestreaming platform.</p>
+                    <ul style="font-size: 0.875rem; color: #6B7280;">
+                        <li>• HD video streaming</li>
+                        <li>• Real-time chat translation</li>
+                        <li>• Instant lead capture</li>
+                        <li>• Automated follow-up</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div style="width: 4rem; height: 4rem; background: black; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">🤖</div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">AI Lead Generation</h3>
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">Our AI analyzes investor behavior and preferences to deliver qualified leads directly to your dashboard.</p>
+                    <ul style="font-size: 0.875rem; color: #6B7280;">
+                        <li>• Behavioral analysis</li>
+                        <li>• Preference matching</li>
+                        <li>• Automated scoring</li>
+                        <li>• Priority notifications</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div style="width: 4rem; height: 4rem; background: black; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">🌐</div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Global Reach</h3>
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">Connect with investors from over 50 countries through our multilingual platform and translation services.</p>
+                    <ul style="font-size: 0.875rem; color: #6B7280;">
+                        <li>• 25+ languages supported</li>
+                        <li>• Real-time translation</li>
+                        <li>• Currency conversion</li>
+                        <li>• Cultural insights</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div style="width: 4rem; height: 4rem; background: black; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">📱</div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Mobile Studio</h3>
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">Professional livestreaming capabilities from your smartphone with broadcast-quality results.</p>
+                    <ul style="font-size: 0.875rem; color: #6B7280;">
+                        <li>• One-tap streaming</li>
+                        <li>• Professional filters</li>
+                        <li>• Stabilization technology</li>
+                        <li>• Multi-device support</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div style="width: 4rem; height: 4rem; background: black; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">📊</div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Smart Analytics</h3>
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">Track viewer engagement, lead conversion, and ROI with comprehensive analytics dashboard.</p>
+                    <ul style="font-size: 0.875rem; color: #6B7280;">
+                        <li>• Real-time metrics</li>
+                        <li>• Conversion tracking</li>
+                        <li>• Performance insights</li>
+                        <li>• ROI calculations</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div style="width: 4rem; height: 4rem; background: black; color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 1.5rem;">⚡</div>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Instant Matching</h3>
+                    <p style="color: #6B7280; margin-bottom: 1.5rem;">Get notified immediately when investors show interest in your properties during live streams.</p>
+                    <ul style="font-size: 0.875rem; color: #6B7280;">
+                        <li>• Real-time alerts</li>
+                        <li>• Interest scoring</li>
+                        <li>• Contact automation</li>
+                        <li>• Meeting scheduling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section style="padding: 8rem 2rem;">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+            <!-- USUNIĘTO KLASĘ REVEAL -->
+            <div>
+                <h2 class="section-text font-display mb-8">What Agents Say</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12" style="color: #D1D5DB;">
+                    Hear from real estate professionals who transformed their business with Estalara
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <!-- USUNIĘTO KLASĘ REVEAL -->
+                <div style="background: white; color: black; padding: 2rem; border-radius: 8px;">
+                    <p style="font-size: 1.125rem; margin-bottom: 1.5rem; font-style: italic;">"Estalara completely changed my business. I went from local sales to closing deals with international investors in just 3 months."</p>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 3rem; height: 3rem; background: #D1D5DB; border-radius: 50%; margin-right: 1rem;"></div>
+                        <div>
+                            <p style="font-weight: bold;">Maria Rodriguez</p>
+                            <p style="color: #6B7280; font-size: 0.875rem;">Madrid, Spain</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: white; color: black; padding: 2rem; border-radius: 8px;">
+                    <p style="font-size: 1.125rem; margin-bottom: 1.5rem; font-style: italic;">"The AI lead generation is incredible. I'm getting qualified leads daily without any additional marketing spend."</p>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 3rem; height: 3rem; background: #D1D5DB; border-radius: 50%; margin-right: 1rem;"></div>
+                        <div>
+                            <p style="font-weight: bold;">James Chen</p>
+                            <p style="color: #6B7280; font-size: 0.875rem;">London, UK</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: white; color: black; padding: 2rem; border-radius: 8px;">
+                    <p style="font-size: 1.125rem; margin-bottom: 1.5rem; font-style: italic;">"Livestreaming my listings to global audiences has opened up entirely new markets I never thought possible."</p>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 3rem; height: 3rem; background: #D1D5DB; border-radius: 50%; margin-right: 1rem;"></div>
+                        <div>
+                            <p style="font-weight: bold;">Sophia Laurent</p>
+                            <p style="color: #6B7280; font-size: 0.875rem;">Paris, France</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section style="background: white; color: black; padding: 8rem 2rem; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <!-- USUNIĘTO KLASĘ REVEAL -->
+            <div>
+                <h2 class="section-text font-display mb-8">Ready to Go Global?</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12" style="color: #6B7280;">
+                    Join thousands of agents who are already expanding their reach and closing more deals with Estalara. 
+                    Start your journey today.
+                </p>
+                <div>
+                    <a href="https://app.estalara.com" target="_blank" style="background: black; color: white; padding: 1rem 3rem; border-radius: 8px; font-weight: 600; font-size: 1.25rem; text-decoration: none; display: inline-block; margin: 0.5rem;">Start Livestreaming →</a>
+                    <a href="investors.html" style="background: transparent; color: black; border: 2px solid black; padding: 1rem 3rem; border-radius: 8px; font-weight: 600; font-size: 1.25rem; text-decoration: none; display: inline-block; margin: 0.5rem;">Learn About Investors</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer style="background: #000000; color: #9CA3AF; padding: 4rem 2rem; border-top: 1px solid #374151;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <div style="margin-bottom: 2rem;">
+                <div class="font-display" style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">ESTALARA</div>
+                <p style="font-size: 0.875rem;">
+                    Time2Show, Inc., Dover, DE, USA<br>
+                    estalara@estalara.com
+                </p>
+            </div>
+            
+            <div style="display: flex; gap: 2rem; font-size: 0.875rem;">
+                <a href="#" style="color: #9CA3AF;">LinkedIn</a>
+                <a href="#" style="color: #9CA3AF;">TikTok</a>
+                <a href="#" style="color: #9CA3AF;">Instagram</a>
+                <a href="admin-login.html" style="color: #9CA3AF;">Admin Login</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- USUNIĘTO WSZYSTKIE SKRYPTY JAVA SCRIPT -->
+    <!-- <script src="cms-integration.js"></script> -->
+    <!-- <script src="main.js"></script> -->
+</body>
+</html>

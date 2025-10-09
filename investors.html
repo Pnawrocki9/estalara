@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estalara for Investors - Go LIVE. Go GLOBAL.</title>
+    <meta name="description" content="Discover, evaluate, and purchase properties worldwide with confidence. Attend live property tours with real agents through Estalara.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+    
+    <style>
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-text {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 0.9;
+            font-weight: 900;
+        }
+        
+        .section-text {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            font-weight: 700;
+        }
+        
+        .body-text {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.6;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        .btn-secondary {
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .benefit-card {
+            background: var(--white);
+            color: var(--black);
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        .process-step {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .process-step:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particle-bg" class="particle-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-black bg-opacity-90 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="font-display text-2xl font-bold">
+                    <a href="index.html">ESTALARA</a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-gray-300 transition-colors">Home</a>
+                    <a href="agents.html" class="hover:text-gray-300 transition-colors">For Agents</a>
+                    <a href="agencies.html" class="hover:text-gray-300 transition-colors">For Agencies</a>
+                    <a href="investors.html" class="text-white font-semibold">For Investors</a>
+                    <a href="about.html" class="hover:text-gray-300 transition-colors">About</a>
+                    <a href="index.html#live-properties" class="hover:text-gray-300 transition-colors">LIVE Properties</a>
+                </div>
+                <button class="btn-primary px-6 py-2 font-semibold">
+                    <a href="https://app.estalara.com" target="_blank">Launch App</a>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h1 class="hero-text font-display mb-8">
+                    Invest <span class="text-white">WORLDWIDE</span>
+                </h1>
+                <p class="body-text max-w-3xl mx-auto mb-12 text-gray-300">
+                    Discover, evaluate, and purchase properties worldwide with confidence. Attend live property tours 
+                    with real agents and understand legal, cost, and location details in your own language through EstalaraAI.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="btn-primary px-8 py-4 font-semibold text-lg">
+                        <a href="https://app.estalara.com" target="_blank">Explore Properties →</a>
+                    </button>
+                    <button class="btn-secondary px-8 py-4 font-semibold text-lg">
+                        <a href="#benefits">Learn Benefits</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Investment Stats -->
+    <section class="py-20 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="reveal">
+                    <div class="text-4xl font-display font-bold text-black mb-2">50+</div>
+                    <p class="text-gray-600 font-semibold">Countries Available</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-4xl font-display font-bold text-black mb-2">€2.5B+</div>
+                    <p class="text-gray-600 font-semibold">Properties Listed</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-4xl font-display font-bold text-black mb-2">25+</div>
+                    <p class="text-gray-600 font-semibold">Languages Supported</p>
+                </div>
+                <div class="reveal">
+                    <div class="text-4xl font-display font-bold text-black mb-2">24/7</div>
+                    <p class="text-gray-600 font-semibold">Live Support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">Why Invest with Estalara</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Advanced technology and global reach to make international property investment simple and secure
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="benefit-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">📺</div>
+                    <h3 class="text-2xl font-bold mb-4">Live Property Tours</h3>
+                    <p class="text-gray-600 mb-6">Experience properties in real-time through live video tours with professional agents answering your questions instantly.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Real-time interaction</li>
+                        <li>• HD video quality</li>
+                        <li>• Instant Q&A sessions</li>
+                        <li>• Virtual walkthroughs</li>
+                    </ul>
+                </div>
+                
+                <div class="benefit-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🤖</div>
+                    <h3 class="text-2xl font-bold mb-4">EstalaraAI Assistant</h3>
+                    <p class="text-gray-600 mb-6">Get instant answers about properties, legal requirements, and market insights in your preferred language.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Natural language queries</li>
+                        <li>• Multi-language support</li>
+                        <li>• Accurate information</li>
+                        <li>• 24/7 availability</li>
+                    </ul>
+                </div>
+                
+                <div class="benefit-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">⚖️</div>
+                    <h3 class="text-2xl font-bold mb-4">Legal Support Network</h3>
+                    <p class="text-gray-600 mb-6">Access trusted notaries, title insurance, and transaction support for safe international deals.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Verified legal partners</li>
+                        <li>• Title insurance</li>
+                        <li>• Transaction support</li>
+                        <li>• Regulatory compliance</li>
+                    </ul>
+                </div>
+                
+                <div class="benefit-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">💱</div>
+                    <h3 class="text-2xl font-bold mb-4">Currency & Finance</h3>
+                    <p class="text-gray-600 mb-6">Real-time currency conversion and connections to international mortgage providers.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Live exchange rates</li>
+                        <li>• Mortgage connections</li>
+                        <li>• Payment solutions</li>
+                        <li>• Tax guidance</li>
+                    </ul>
+                </div>
+                
+                <div class="benefit-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🔍</div>
+                    <h3 class="text-2xl font-bold mb-4">Market Intelligence</h3>
+                    <p class="text-gray-600 mb-6">Get comprehensive market analysis, price trends, and investment insights for informed decisions.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Market trends</li>
+                        <li>• Price analytics</li>
+                        <li>• ROI projections</li>
+                        <li>• Risk assessments</li>
+                    </ul>
+                </div>
+                
+                <div class="benefit-card p-8 reveal">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">🛡️</div>
+                    <h3 class="text-2xl font-bold mb-4">Verified Properties</h3>
+                    <p class="text-gray-600 mb-6">All properties are thoroughly verified with documentation checks and physical inspections.</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Document verification</li>
+                        <li>• Physical inspections</li>
+                        <li>• Ownership validation</li>
+                        <li>• Quality assurance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Investment Process -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">Your Investment Journey</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    Simple steps to discover and invest in global real estate opportunities
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">1</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Browse & Discover</h3>
+                    <p class="text-gray-600">Explore properties worldwide with advanced filters and AI-powered recommendations</p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">2</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Join Live Tours</h3>
+                    <p class="text-gray-600">Experience properties in real-time through live video tours with expert agents</p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">3</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Evaluate & Decide</h3>
+                    <p class="text-gray-600">Get comprehensive analysis and legal support to make informed investment decisions</p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">4</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">Secure & Own</h3>
+                    <p class="text-gray-600">Complete your purchase with our trusted transaction support and legal network</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">What Investors Say</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Hear from international investors who found their perfect properties through Estalara
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white text-black p-8 reveal">
+                    <p class="text-lg mb-6 italic">"Estalara made it possible for me to invest in Spanish properties from Singapore. The live tours felt like being there in person."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <p class="font-bold">David Lim</p>
+                            <p class="text-gray-600 text-sm">Singapore</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white text-black p-8 reveal">
+                    <p class="text-lg mb-6 italic">"The AI assistant answered all my questions about French property law in English. Made the whole process so much clearer."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <p class="font-bold">Sarah Johnson</p>
+                            <p class="text-gray-600 text-sm">New York, USA</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white text-black p-8 reveal">
+                    <p class="text-lg mb-6 italic">"Found an amazing villa in Italy through Estalara. The legal support team made the cross-border transaction seamless."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
+                        <div>
+                            <p class="font-bold">Ahmed Hassan</p>
+                            <p class="text-gray-600 text-sm">Dubai, UAE</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Featured Properties Preview -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">Featured Properties</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    Discover exceptional investment opportunities from around the world
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="reveal">
+                    <div class="bg-gray-200 h-64 mb-4"></div>
+                    <h3 class="text-xl font-bold mb-2 text-black">Modern Apartment in Barcelona</h3>
+                    <p class="text-gray-600 mb-2">Spain • €450,000</p>
+                    <p class="text-gray-600 text-sm">Stunning property in the heart of Barcelona with excellent rental potential</p>
+                </div>
+                
+                <div class="reveal">
+                    <div class="bg-gray-200 h-64 mb-4"></div>
+                    <h3 class="text-xl font-bold mb-2 text-black">Luxury Villa in Costa del Sol</h3>
+                    <p class="text-gray-600 mb-2">Spain • €1,200,000</p>
+                    <p class="text-gray-600 text-sm">Exclusive villa with panoramic sea views and private pool</p>
+                </div>
+                
+                <div class="reveal">
+                    <div class="bg-gray-200 h-64 mb-4"></div>
+                    <h3 class="text-xl font-bold mb-2 text-black">Historic Property in Rome</h3>
+                    <p class="text-gray-600 mb-2">Italy • €850,000</p>
+                    <p class="text-gray-600 text-sm">Beautifully restored historic building in Rome's historic center</p>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12 reveal">
+                <button class="bg-black text-white px-8 py-4 font-semibold text-lg hover:bg-gray-800 transition-colors">
+                    <a href="index.html#live-properties">View All Properties →</a>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-32">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h2 class="section-text font-display mb-8">Start Your Global Investment Journey</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12 text-gray-300">
+                    Join thousands of investors who are already building their global real estate portfolio with Estalara. 
+                    Your next investment opportunity is just a click away.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="btn-primary px-12 py-4 font-semibold text-xl">
+                        <a href="https://app.estalara.com" target="_blank">Explore Properties →</a>
+                    </button>
+                    <button class="btn-secondary px-12 py-4 font-semibold text-xl">
+                        <a href="agents.html">Learn About Agents</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <div class="font-display text-2xl font-bold mb-4">ESTALARA</div>
+                    <p class="text-gray-400 text-sm">
+                        Time2Show, Inc., Dover, DE, USA<br>
+                        estalara@estalara.com
+                    </p>
+                </div>
+                
+                <div class="flex space-x-8 text-sm">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">TikTok</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Instagram</a>
+                    <a href="admin-login.html" class="text-gray-400 hover:text-white transition-colors">Admin Login</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Defer our custom scripts to improve performance -->
+    <script src="cms-integration.js" defer></script>
+    <!-- Load main.js synchronously to ensure animations initialise correctly -->
+    <script src="main.js"></script>
+</body>
+</html>
