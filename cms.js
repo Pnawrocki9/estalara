@@ -202,6 +202,12 @@ function saveGeneralSettings() {
     admin.contactEmail = contactEmail;
     admin.logoUrl = logoUrl;
     
+    // IMPORTANT: Preserve version number to prevent data reset by cms-integration.js
+    // If no version exists, set it to 2 (current version in cms-integration.js)
+    if (!admin.version) {
+        admin.version = 2;
+    }
+    
     // Save to localStorage
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     
@@ -218,6 +224,11 @@ function savePlatformSettings() {
     
     admin.settings.currency = document.getElementById('default-currency').value;
     admin.settings.language = document.getElementById('default-language').value;
+    
+    // IMPORTANT: Preserve version number to prevent data reset
+    if (!admin.version) {
+        admin.version = 2;
+    }
     
     // Save to localStorage
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
@@ -394,6 +405,11 @@ function savePageContent(pageId, formData) {
     // Update page content
     admin.pages[pageId] = { ...admin.pages[pageId], ...updates };
     
+    // IMPORTANT: Preserve version number to prevent data reset
+    if (!admin.version) {
+        admin.version = 2;
+    }
+    
     // Save to localStorage
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     
@@ -407,7 +423,16 @@ function loadAdminData() {
     if (stored) {
         return JSON.parse(stored);
     }
-    return { pages: {}, settings: {} };
+    // Return default values that match cms-integration.js structure
+    return { 
+        version: 2,  // IMPORTANT: Must match cms-integration.js version
+        pages: {}, 
+        settings: {},
+        siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
+        siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences.",
+        contactEmail: "estalara@estalara.com",
+        logoUrl: "assets/logo.svg"
+    };
 }
 
 // ===== PAGE STRUCTURE EDITOR FUNCTIONS =====
