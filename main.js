@@ -111,14 +111,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Navbar background on scroll
+    // Navbar background on scroll (target the header, not the nav menu)
     window.addEventListener('scroll', function() {
-        const navbar = document.querySelector('nav');
-        if (window.scrollY > 100) {
-            navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
-        } else {
-            navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
-        }
+        const headerEl = document.querySelector('header');
+        if (!headerEl) return;
+        headerEl.style.backgroundColor = (
+            window.scrollY > 100
+                ? 'rgba(0, 0, 0, 0.95)'
+                : 'rgba(0, 0, 0, 0.9)'
+        );
     });
     
     // Feature cards animation
@@ -328,46 +329,96 @@ window.EstalaraUtils = {
         var menu = document.getElementById('mobile-menu');
         if (!btn || !menu) return;
 
-        // Start with menu hidden on mobile viewports; on desktop the hidden class
-        // will be overridden by the md:flex Tailwind utility.
-        if (getComputedStyle(btn).display !== 'none') {
+        // Prevent double-initialisation when scripts are injected/re-run
+        if (btn.dataset.initialized === 'true') return;
+        btn.dataset.initialized = 'true';
+
+        // Accessibility wiring
+        btn.setAttribute('aria-controls', 'mobile-menu');
+
+        function isMobileViewport() {
+            return getComputedStyle(btn).display !== 'none';
+        }
+
+        let prevDocOverflow = '';
+        let prevBodyOverflow = '';
+
+        function openMenu() {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex', 'flex-col', 'gap-4');
+            btn.setAttribute('aria-expanded', 'true');
+            // Prevent background scroll when menu is open (inline styles, no Tailwind dependency)
+            if (document.documentElement) {
+                prevDocOverflow = document.documentElement.style.overflow;
+                document.documentElement.style.overflow = 'hidden';
+            }
+            if (document.body) {
+                prevBodyOverflow = document.body.style.overflow;
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeMenu() {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex', 'flex-col', 'gap-4');
+            btn.setAttribute('aria-expanded', 'false');
+            if (document.documentElement) {
+                document.documentElement.style.overflow = prevDocOverflow || '';
+            }
+            if (document.body) {
+                document.body.style.overflow = prevBodyOverflow || '';
+            }
+        }
+
+        // Ensure hidden on initial mobile load (desktop handled by md:flex)
+        if (isMobileViewport()) {
             menu.classList.add('hidden');
         }
 
-        // Toggle menu visibility on click
+        // Toggle on button click
         btn.addEventListener('click', function () {
-            var isHidden = menu.classList.contains('hidden');
-            if (isHidden) {
-                menu.classList.remove('hidden');
-                menu.classList.add('flex', 'flex-col', 'gap-4');
-                btn.setAttribute('aria-expanded', 'true');
+            if (menu.classList.contains('hidden')) {
+                openMenu();
             } else {
-                menu.classList.add('hidden');
-                menu.classList.remove('flex', 'flex-col', 'gap-4');
-                btn.setAttribute('aria-expanded', 'false');
+                closeMenu();
             }
         });
 
-        // Hide menu after clicking a link on mobile
-        menu.querySelectorAll('a').forEach(function (a) {
-            a.addEventListener('click', function () {
-                if (getComputedStyle(btn).display !== 'none') {
-                    menu.classList.add('hidden');
-                    menu.classList.remove('flex', 'flex-col', 'gap-4');
-                    btn.setAttribute('aria-expanded', 'false');
-                }
+        // Close after navigating via a menu link on mobile
+        menu.querySelectorAll('a').forEach(function (anchor) {
+            anchor.addEventListener('click', function () {
+                if (isMobileViewport()) closeMenu();
             });
         });
 
-        // Reset menu state on window resize
-        window.addEventListener('resize', function () {
-            // On mobile (button visible), ensure menu is closed
-            if (getComputedStyle(btn).display !== 'none') {
-                menu.classList.add('hidden');
-                menu.classList.remove('flex', 'flex-col', 'gap-4');
-                btn.setAttribute('aria-expanded', 'false');
+        // Close on outside click (mobile only)
+        document.addEventListener('click', function (evt) {
+            if (menu.classList.contains('hidden')) return;
+            if (!isMobileViewport()) return;
+            var clickInsideMenu = menu.contains(evt.target);
+            var clickOnToggle = btn.contains(evt.target);
+            if (!clickInsideMenu && !clickOnToggle) {
+                closeMenu();
             }
-            // On desktop (button hidden), Tailwind's md:flex handles visibility automatically
+        });
+
+        // Close on Escape key
+        window.addEventListener('keydown', function (evt) {
+            if (evt.key === 'Escape' && !menu.classList.contains('hidden')) {
+                closeMenu();
+            }
+        });
+
+        // Reset state on resize
+        window.addEventListener('resize', function () {
+            if (isMobileViewport()) {
+                // Moving into mobile keeps menu closed
+                closeMenu();
+            } else {
+                // On desktop, remove scroll lock just in case
+                if (document.documentElement) document.documentElement.style.overflow = prevDocOverflow || '';
+                if (document.body) document.body.style.overflow = prevBodyOverflow || '';
+            }
         });
     }
 
