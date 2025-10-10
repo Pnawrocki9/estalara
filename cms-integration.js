@@ -95,7 +95,16 @@ class EstalaraAdmin {
             pages: {
                 home: {
                     heroTitle: "Go LIVE. Go GLOBAL.",
-                    heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before."
+                    heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.",
+                    // How It Works section
+                    howItWorksTitle: "How It Works",
+                    howItWorksSubtitle: "Three simple steps to revolutionize your real estate experience",
+                    // Features section
+                    featuresTitle: "Powerful Features",
+                    featuresSubtitle: "Advanced technology designed for modern real estate professionals",
+                    // CTA section
+                    ctaTitle: "Join the Future of Global Real Estate",
+                    ctaSubtitle: "Whether you're an agent looking to expand globally or an investor seeking international opportunities, Estalara provides the platform you need to succeed."
                 },
                 agents: {
                     heroTitle: "Agents Go <span class=\"text-white\">GLOBAL</span>",
@@ -375,6 +384,33 @@ class EstalaraAdmin {
                 // Update only the first body-text, which corresponds to the hero subtitle
                 subtitleEls[0].textContent = heroSubtitle;
             }
+        } else {
+            // For home page, update the additional sections
+            const howItWorksTitleEl = document.querySelector('#how-it-works .section-text');
+            const howItWorksSubtitleEl = document.querySelector('#how-it-works .body-text');
+            const featuresTitleEl = document.querySelector('#features .section-text');
+            const featuresSubtitleEl = document.querySelector('#features .body-text');
+            const ctaTitleEl = document.querySelector('section:has(#live-properties) ~ section .section-text');
+            const ctaSubtitleEl = document.querySelector('section:has(#live-properties) ~ section .body-text');
+            
+            if (howItWorksTitleEl && page.howItWorksTitle) {
+                howItWorksTitleEl.textContent = page.howItWorksTitle;
+            }
+            if (howItWorksSubtitleEl && page.howItWorksSubtitle) {
+                howItWorksSubtitleEl.textContent = page.howItWorksSubtitle;
+            }
+            if (featuresTitleEl && page.featuresTitle) {
+                featuresTitleEl.textContent = page.featuresTitle;
+            }
+            if (featuresSubtitleEl && page.featuresSubtitle) {
+                featuresSubtitleEl.textContent = page.featuresSubtitle;
+            }
+            if (ctaTitleEl && page.ctaTitle) {
+                ctaTitleEl.textContent = page.ctaTitle;
+            }
+            if (ctaSubtitleEl && page.ctaSubtitle) {
+                ctaSubtitleEl.textContent = page.ctaSubtitle;
+            }
         }
 
         // Update custom sections for agencies and investors
@@ -461,26 +497,27 @@ class EstalaraAdmin {
                 
                 const hasSectionContent = hasTitleContent || hasContentText || hasIconContent || hasImageSrc;
                 
-                if (!hasSectionContent) {
-                    let sectionEl = null;
-                    // Find the nearest ancestor section from title element or content element
-                    if (titleElSec && titleElSec.closest) {
-                        sectionEl = titleElSec.closest('section');
-                    } else if (contentElSec && contentElSec.closest) {
-                        sectionEl = contentElSec.closest('section');
+                // Determine the section ID based on the prefix and section number
+                const sectionIds = {
+                    'investor': {
+                        1: 'investing-without-borders',
+                        2: 'investor-challenges', 
+                        3: 'investor-support'
+                    },
+                    'agency': {
+                        1: 'agency-live-selling',
+                        2: 'agency-leads',
+                        3: 'agency-advantage'
                     }
-                    if (sectionEl) {
+                };
+                
+                const sectionId = sectionIds[prefix] && sectionIds[prefix][i];
+                const sectionEl = sectionId ? document.getElementById(sectionId) : null;
+                
+                if (sectionEl) {
+                    if (!hasSectionContent) {
                         sectionEl.style.display = 'none';
-                    }
-                } else {
-                    // Ensure the section is visible if it has content
-                    let sectionEl = null;
-                    if (titleElSec && titleElSec.closest) {
-                        sectionEl = titleElSec.closest('section');
-                    } else if (contentElSec && contentElSec.closest) {
-                        sectionEl = contentElSec.closest('section');
-                    }
-                    if (sectionEl) {
+                    } else {
                         sectionEl.style.display = '';
                     }
                 }
