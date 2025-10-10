@@ -363,33 +363,44 @@ class EstalaraAdmin {
                 const contentKey = `section${i}Content`;
                 const iconKey = `section${i}Icon`;
                 const imageKey = `section${i}Image`;
-                // Update title
+                // Update title (hide if empty or whitespace)
                 if (titleElSec) {
-                    if (page[titleKey]) {
-                        titleElSec.textContent = page[titleKey];
+                    const tVal = page[titleKey];
+                    if (tVal && String(tVal).trim()) {
+                        titleElSec.textContent = tVal;
+                        titleElSec.style.display = '';
+                    } else {
+                        // If no title, hide the element
+                        titleElSec.style.display = 'none';
                     }
                 }
-                // Update content
+                // Update content (hide if empty or whitespace)
                 if (contentElSec) {
-                    if (page[contentKey]) {
-                        contentElSec.textContent = page[contentKey];
+                    const cVal = page[contentKey];
+                    if (cVal && String(cVal).trim()) {
+                        contentElSec.textContent = cVal;
+                        contentElSec.style.display = '';
+                    } else {
+                        contentElSec.style.display = 'none';
                     }
                 }
-                // Update icon and hide if not provided
+                // Update icon and hide if not provided (empty or whitespace)
                 if (iconElSec) {
-                    if (page[iconKey]) {
-                        iconElSec.textContent = page[iconKey];
+                    const iVal = page[iconKey];
+                    if (iVal && String(iVal).trim()) {
+                        iconElSec.textContent = iVal;
                         iconElSec.style.display = '';
                     } else {
                         iconElSec.style.display = 'none';
                     }
                 }
-                // Update image and hide if not provided
+                // Update image and hide if not provided (empty or whitespace)
                 if (imageElSec) {
-                    if (page[imageKey]) {
-                        imageElSec.setAttribute('src', page[imageKey]);
+                    const imgVal = page[imageKey];
+                    if (imgVal && String(imgVal).trim()) {
+                        imageElSec.setAttribute('src', imgVal);
                         // Provide alt text based on title if available
-                        if (page[titleKey]) {
+                        if (page[titleKey] && String(page[titleKey]).trim()) {
                             imageElSec.setAttribute('alt', page[titleKey]);
                         }
                         imageElSec.style.display = '';
@@ -398,14 +409,17 @@ class EstalaraAdmin {
                     }
                 }
 
-                // Hide entire section if no title, content, icon or image provided
-                const hasSectionContent = Boolean(page[titleKey] || page[contentKey] || page[iconKey] || page[imageKey]);
+                // Hide entire section if no meaningful title, content, icon or image provided
+                const hasSectionContent = [titleKey, contentKey, iconKey, imageKey].some(key => {
+                    const val = page[key];
+                    return val && String(val).trim();
+                });
                 if (!hasSectionContent) {
                     let sectionEl = null;
                     // Find the nearest ancestor section from title element or content element
-                    if (titleElSec) {
+                    if (titleElSec && titleElSec.closest) {
                         sectionEl = titleElSec.closest('section');
-                    } else if (contentElSec) {
+                    } else if (contentElSec && contentElSec.closest) {
                         sectionEl = contentElSec.closest('section');
                     }
                     if (sectionEl) {
