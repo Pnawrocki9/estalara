@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Logo Update</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">🐛 Logo Update Debug</h1>
+        
+        <!-- Sample Logo Elements (like in index.html) -->
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+            <h2 class="text-xl font-bold mb-4">Sample Logo Elements</h2>
+            <header class="border p-4 mb-4">
+                <p class="text-sm mb-2">Header with logo:</p>
+                <img src="assets/logo.svg" alt="ESTALARA" class="h-10 border">
+            </header>
+            <footer class="border p-4">
+                <p class="text-sm mb-2">Footer with logo:</p>
+                <img src="assets/logo.svg" alt="ESTALARA" class="h-10 border">
+            </footer>
+        </div>
+
+        <!-- Controls -->
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+            <h2 class="text-xl font-bold mb-4">Test Logo Update</h2>
+            <div class="mb-4">
+                <label class="block mb-2 font-semibold">New Logo URL:</label>
+                <input type="text" id="new-logo-url" 
+                       value="assets/EstalaraLogo.png"
+                       class="border px-4 py-2 rounded w-full">
+            </div>
+            <button onclick="testUpdateLogo()" 
+                    class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 font-bold">
+                Update Logo Now
+            </button>
+            <div id="update-result" class="mt-4"></div>
+        </div>
+
+        <!-- Diagnostic Info -->
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold mb-4">Diagnostic Information</h2>
+            <button onclick="runDiagnostics()" 
+                    class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 mb-4">
+                Run Diagnostics
+            </button>
+            <pre id="diagnostics" class="bg-gray-800 text-green-400 p-4 rounded overflow-x-auto text-xs"></pre>
+        </div>
+    </div>
+
+    <!-- Load cms-integration.js -->
+    <script src="cms-integration.js"></script>
+
+    <script>
+        // Test the updateLogo function
+        function testUpdateLogo() {
+            const result = document.getElementById('update-result');
+            const newUrl = document.getElementById('new-logo-url').value;
+            
+            result.innerHTML = '<div class="text-blue-600">🔄 Updating logo...</div>';
+            
+            try {
+                // Method 1: Direct selector test
+                const logos = document.querySelectorAll('img[alt="ESTALARA"], header img, footer img[alt="ESTALARA"], nav img');
+                result.innerHTML += `<div class="text-gray-600 mt-2">Found ${logos.length} logo elements</div>`;
+                
+                // Update each logo
+                let updated = 0;
+                logos.forEach(img => {
+                    const oldSrc = img.src;
+                    img.src = newUrl;
+                    const newSrc = img.src;
+                    result.innerHTML += `<div class="text-sm text-gray-500">Updated: ${oldSrc} → ${newSrc}</div>`;
+                    updated++;
+                });
+                
+                result.innerHTML += `<div class="text-green-600 font-bold mt-2">✅ Updated ${updated} logos!</div>`;
+                
+                // Method 2: Try using EstalaraAdmin if available
+                if (window.estalaraAdmin && typeof window.estalaraAdmin.updateLogo === 'function') {
+                    result.innerHTML += '<div class="text-blue-600 mt-4">Trying via EstalaraAdmin.updateLogo()...</div>';
+                    window.estalaraAdmin.updateLogo(newUrl);
+                    result.innerHTML += '<div class="text-green-600">✅ Called EstalaraAdmin.updateLogo()</div>';
+                } else {
+                    result.innerHTML += '<div class="text-yellow-600 mt-4">⚠️ window.estalaraAdmin not available</div>';
+                }
+                
+                // Method 3: Save to localStorage
+                const adminData = JSON.parse(localStorage.getItem('estalaraAdminData') || '{}');
+                adminData.logoUrl = newUrl;
+                localStorage.setItem('estalaraAdminData', JSON.stringify(adminData));
+                result.innerHTML += '<div class="text-green-600 mt-2">✅ Saved to localStorage</div>';
+                
+            } catch (e) {
+                result.innerHTML += `<div class="text-red-600 font-bold mt-4">❌ ERROR: ${e.message}</div>`;
+                console.error('Update error:', e);
+            }
+        }
+
+        // Run diagnostics
+        function runDiagnostics() {
+            const display = document.getElementById('diagnostics');
+            let info = {};
+            
+            // Check DOM
+            info.logoElements = document.querySelectorAll('img[alt="ESTALARA"]').length;
+            info.headerImages = document.querySelectorAll('header img').length;
+            info.footerImages = document.querySelectorAll('footer img').length;
+            info.allImages = document.querySelectorAll('img').length;
+            
+            // Check scripts
+            info.estalaraAdminLoaded = typeof EstalaraAdmin !== 'undefined';
+            info.estalaraAdminInstance = typeof window.estalaraAdmin !== 'undefined';
+            
+            // Check localStorage
+            const data = localStorage.getItem('estalaraAdminData');
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    info.logoUrlInStorage = parsed.logoUrl || 'NOT SET';
+                    info.storageSize = data.length + ' bytes';
+                } catch (e) {
+                    info.storageParseError = e.message;
+                }
+            } else {
+                info.estalaraAdminData = 'NOT FOUND';
+            }
+            
+            // Current logo src values
+            const logos = document.querySelectorAll('img[alt="ESTALARA"]');
+            info.currentLogoSources = Array.from(logos).map((img, i) => `Logo ${i+1}: ${img.src}`);
+            
+            display.textContent = JSON.stringify(info, null, 2);
+        }
+
+        // Auto-run diagnostics on load
+        window.addEventListener('DOMContentLoaded', runDiagnostics);
+    </script>
+</body>
+</html>

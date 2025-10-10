@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo System Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-8">🔧 Logo System Diagnostic Test</h1>
+        
+        <!-- Test 1: Check localStorage -->
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+            <h2 class="text-xl font-bold mb-4">Test 1: localStorage Check</h2>
+            <button onclick="testLocalStorage()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Run Test
+            </button>
+            <div id="test1-result" class="mt-4"></div>
+        </div>
+
+        <!-- Test 2: Save Logo URL -->
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+            <h2 class="text-xl font-bold mb-4">Test 2: Save Logo to localStorage</h2>
+            <input type="text" id="test-logo-url" placeholder="assets/EstalaraLogo.png" 
+                   class="border px-4 py-2 rounded w-full mb-2">
+            <button onclick="saveTestLogo()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                Save Logo URL
+            </button>
+            <div id="test2-result" class="mt-4"></div>
+        </div>
+
+        <!-- Test 3: Read Logo from localStorage -->
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+            <h2 class="text-xl font-bold mb-4">Test 3: Read Logo from localStorage</h2>
+            <button onclick="readTestLogo()" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">
+                Read Logo URL
+            </button>
+            <div id="test3-result" class="mt-4"></div>
+        </div>
+
+        <!-- Test 4: Display Logo -->
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+            <h2 class="text-xl font-bold mb-4">Test 4: Display Logo</h2>
+            <button onclick="displayTestLogo()" class="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                Display Logo
+            </button>
+            <div id="test4-result" class="mt-4">
+                <img id="test-logo-display" alt="Test Logo" class="max-h-24 border p-2" style="display:none;">
+            </div>
+        </div>
+
+        <!-- Test 5: Full Integration Test -->
+        <div class="bg-white p-6 rounded-lg shadow mb-4">
+            <h2 class="text-xl font-bold mb-4">Test 5: Full CMS Integration Test</h2>
+            <button onclick="fullIntegrationTest()" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                Run Full Test
+            </button>
+            <div id="test5-result" class="mt-4"></div>
+        </div>
+
+        <!-- Current Data Display -->
+        <div class="bg-yellow-50 p-6 rounded-lg shadow">
+            <h2 class="text-xl font-bold mb-4">📋 Current Data in localStorage</h2>
+            <button onclick="showCurrentData()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-4">
+                Refresh Data
+            </button>
+            <pre id="current-data" class="bg-gray-800 text-green-400 p-4 rounded overflow-x-auto text-xs"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Test 1: Check if localStorage works
+        function testLocalStorage() {
+            const result = document.getElementById('test1-result');
+            try {
+                localStorage.setItem('test', 'works');
+                const value = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                if (value === 'works') {
+                    result.innerHTML = '<div class="text-green-600 font-bold">✅ localStorage is working!</div>';
+                } else {
+                    result.innerHTML = '<div class="text-red-600 font-bold">❌ localStorage read failed!</div>';
+                }
+            } catch (e) {
+                result.innerHTML = '<div class="text-red-600 font-bold">❌ localStorage ERROR: ' + e.message + '</div>';
+            }
+        }
+
+        // Test 2: Save logo to localStorage
+        function saveTestLogo() {
+            const result = document.getElementById('test2-result');
+            const logoUrl = document.getElementById('test-logo-url').value || 'assets/EstalaraLogo.png';
+            
+            try {
+                // Get existing data or create new
+                let adminData = JSON.parse(localStorage.getItem('estalaraAdminData') || '{}');
+                
+                // Update logo URL
+                adminData.logoUrl = logoUrl;
+                adminData.lastUpdated = new Date().toISOString();
+                
+                // Save back
+                localStorage.setItem('estalaraAdminData', JSON.stringify(adminData));
+                
+                result.innerHTML = `<div class="text-green-600 font-bold">✅ Logo saved: ${logoUrl}</div>`;
+                
+                // Auto show current data
+                showCurrentData();
+            } catch (e) {
+                result.innerHTML = '<div class="text-red-600 font-bold">❌ Save ERROR: ' + e.message + '</div>';
+            }
+        }
+
+        // Test 3: Read logo from localStorage
+        function readTestLogo() {
+            const result = document.getElementById('test3-result');
+            
+            try {
+                const data = localStorage.getItem('estalaraAdminData');
+                
+                if (!data) {
+                    result.innerHTML = '<div class="text-yellow-600 font-bold">⚠️ No data found in localStorage</div>';
+                    return;
+                }
+                
+                const adminData = JSON.parse(data);
+                const logoUrl = adminData.logoUrl;
+                
+                if (logoUrl) {
+                    result.innerHTML = `<div class="text-green-600 font-bold">✅ Logo URL found: <code class="bg-gray-200 px-2 py-1 rounded">${logoUrl}</code></div>`;
+                } else {
+                    result.innerHTML = '<div class="text-yellow-600 font-bold">⚠️ No logo URL in data</div>';
+                }
+            } catch (e) {
+                result.innerHTML = '<div class="text-red-600 font-bold">❌ Read ERROR: ' + e.message + '</div>';
+            }
+        }
+
+        // Test 4: Display logo
+        function displayTestLogo() {
+            const result = document.getElementById('test4-result');
+            const img = document.getElementById('test-logo-display');
+            
+            try {
+                const data = localStorage.getItem('estalaraAdminData');
+                if (!data) {
+                    result.innerHTML = '<div class="text-yellow-600 font-bold">⚠️ No data in localStorage</div>';
+                    return;
+                }
+                
+                const adminData = JSON.parse(data);
+                const logoUrl = adminData.logoUrl;
+                
+                if (!logoUrl) {
+                    result.innerHTML = '<div class="text-yellow-600 font-bold">⚠️ No logo URL</div>';
+                    return;
+                }
+                
+                img.src = logoUrl;
+                img.style.display = 'block';
+                img.onerror = function() {
+                    result.innerHTML = `<div class="text-red-600 font-bold">❌ Failed to load image from: ${logoUrl}</div>`;
+                };
+                img.onload = function() {
+                    result.innerHTML = `<div class="text-green-600 font-bold">✅ Logo loaded successfully!</div>`;
+                };
+            } catch (e) {
+                result.innerHTML = '<div class="text-red-600 font-bold">❌ Display ERROR: ' + e.message + '</div>';
+            }
+        }
+
+        // Test 5: Full integration test
+        function fullIntegrationTest() {
+            const result = document.getElementById('test5-result');
+            let report = '<div class="space-y-2">';
+            
+            // Step 1: Check localStorage
+            try {
+                localStorage.setItem('test', 'works');
+                localStorage.removeItem('test');
+                report += '<div class="text-green-600">✅ Step 1: localStorage accessible</div>';
+            } catch (e) {
+                report += '<div class="text-red-600">❌ Step 1: localStorage FAILED - ' + e.message + '</div>';
+                result.innerHTML = report + '</div>';
+                return;
+            }
+            
+            // Step 2: Check if estalaraAdminData exists
+            const data = localStorage.getItem('estalaraAdminData');
+            if (data) {
+                report += '<div class="text-green-600">✅ Step 2: estalaraAdminData exists</div>';
+            } else {
+                report += '<div class="text-yellow-600">⚠️ Step 2: estalaraAdminData not found (will create)</div>';
+            }
+            
+            // Step 3: Parse data
+            try {
+                const adminData = data ? JSON.parse(data) : {};
+                report += '<div class="text-green-600">✅ Step 3: Data parsed successfully</div>';
+                
+                // Step 4: Check for logo URL
+                if (adminData.logoUrl) {
+                    report += `<div class="text-green-600">✅ Step 4: Logo URL found: <code class="bg-gray-200 px-2 py-1 rounded text-sm">${adminData.logoUrl}</code></div>`;
+                } else {
+                    report += '<div class="text-yellow-600">⚠️ Step 4: No logo URL set</div>';
+                }
+                
+                // Step 5: Check cms-integration.js
+                if (typeof EstalaraAdmin !== 'undefined') {
+                    report += '<div class="text-green-600">✅ Step 5: EstalaraAdmin class available</div>';
+                } else {
+                    report += '<div class="text-red-600">❌ Step 5: EstalaraAdmin class NOT FOUND (cms-integration.js not loaded)</div>';
+                }
+                
+                // Step 6: Check if window.estalaraAdmin instance exists
+                if (typeof window.estalaraAdmin !== 'undefined') {
+                    report += '<div class="text-green-600">✅ Step 6: window.estalaraAdmin instance exists</div>';
+                } else {
+                    report += '<div class="text-yellow-600">⚠️ Step 6: window.estalaraAdmin not initialized</div>';
+                }
+                
+            } catch (e) {
+                report += '<div class="text-red-600">❌ Step 3: Parse ERROR - ' + e.message + '</div>';
+            }
+            
+            report += '</div>';
+            result.innerHTML = report;
+        }
+
+        // Show current data
+        function showCurrentData() {
+            const display = document.getElementById('current-data');
+            const data = localStorage.getItem('estalaraAdminData');
+            
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    display.textContent = JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                    display.textContent = 'ERROR parsing data: ' + e.message + '\n\nRaw data:\n' + data;
+                }
+            } else {
+                display.textContent = 'No data in localStorage';
+            }
+        }
+
+        // Auto-load current data on page load
+        window.addEventListener('DOMContentLoaded', showCurrentData);
+    </script>
+</body>
+</html>
