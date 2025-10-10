@@ -27,6 +27,7 @@
         .admin-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
         .admin-badge-live { background: #dcfce7; color: #166534; }
         .admin-badge-draft { background: #fef3c7; color: #92400e; }
+        .logo-preview { max-height: 60px; margin-top: 10px; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px; background: #f9fafb; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -467,10 +468,51 @@
                     <!-- General Settings -->
                     <div class="admin-card p-6">
                         <h3 class="text-lg font-semibold mb-4">General Settings</h3>
+                        <form id="general-settings-form" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Title</label>
+                                <input type="text" id="site-title" name="siteTitle" class="admin-input w-full" value="Estalara - Go LIVE. Go GLOBAL.">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
+                                <textarea id="site-description" name="siteDescription" class="admin-input w-full" rows="3">Estalara connects real estate agents and international investors through AI and live experiences.</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                                <input type="email" id="contact-email" name="contactEmail" class="admin-input w-full" value="estalara@estalara.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload Logo</label>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label for="logo-upload" class="admin-btn admin-btn-primary cursor-pointer inline-block">
+                                            📁 Choose Logo File
+                                        </label>
+                                        <input type="file" id="logo-upload" name="logoUpload" accept="image/*" class="hidden">
+                                        <p class="text-xs text-gray-500 mt-2">Upload your logo (PNG, JPG, SVG, or any image format)</p>
+                                    </div>
+                                    <div class="text-sm text-gray-600">
+                                        <strong>OR</strong> enter a URL:
+                                    </div>
+                                    <input type="url" id="logo-url" name="logoUrl" class="admin-input w-full" placeholder="https://example.com/logo.png or assets/logo.svg" value="assets/logo.svg">
+                                    <p class="text-xs text-gray-500">Enter the URL of your logo image if not uploading</p>
+                                </div>
+                                <div id="logo-preview-container" class="mt-4" style="display: none;">
+                                    <p class="text-sm font-medium text-gray-700 mb-2">Current Logo:</p>
+                                    <img id="logo-preview" class="logo-preview" alt="Logo Preview">
+                                </div>
+                            </div>
+                            <button type="submit" class="admin-btn admin-btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Platform Settings -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">Platform Settings</h3>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Default Currency</label>
-                                <select id="currency" class="admin-input w-full">
+                                <select id="default-currency" class="admin-input w-full">
                                     <option value="EUR">EUR (€)</option>
                                     <option value="USD">USD ($)</option>
                                     <option value="GBP">GBP (£)</option>
@@ -478,30 +520,36 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Default Language</label>
-                                <select id="language" class="admin-input w-full">
+                                <select id="default-language" class="admin-input w-full">
                                     <option value="en">English</option>
                                     <option value="es">Spanish</option>
                                     <option value="fr">French</option>
                                     <option value="de">German</option>
                                 </select>
                             </div>
-                            <button class="admin-btn admin-btn-primary" onclick="updateSettings()">Save Settings</button>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Max Upload Size</label>
+                                <input type="text" id="max-upload-size" class="admin-input w-full" value="10MB">
+                            </div>
                         </div>
+                        <button class="admin-btn admin-btn-primary mt-4" onclick="savePlatformSettings()">Save Changes</button>
                     </div>
+                </div>
 
-                    <!-- Export/Import -->
+                <!-- Data Management -->
+                <div class="grid grid-cols-1 gap-6 mt-6">
                     <div class="admin-card p-6">
                         <h3 class="text-lg font-semibold mb-4">Data Management</h3>
-                        <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Export Data</label>
-                                <button class="admin-btn admin-btn-secondary" onclick="exportData()">Export All Data</button>
+                                <button class="admin-btn admin-btn-secondary w-full" onclick="exportData()">Export All Data</button>
                                 <p class="text-xs text-gray-500 mt-1">Download all your content as JSON</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Import Data</label>
                                 <input type="file" id="importFile" accept=".json" class="admin-input w-full mb-2">
-                                <button class="admin-btn admin-btn-secondary" onclick="importData()">Import Data</button>
+                                <button class="admin-btn admin-btn-secondary w-full" onclick="importData()">Import Data</button>
                                 <p class="text-xs text-gray-500 mt-1">Upload a JSON file with your content</p>
                             </div>
                         </div>
@@ -757,8 +805,71 @@
         }
 
         function loadSettings() {
-            document.getElementById('currency').value = adminData.content.currency;
-            document.getElementById('language').value = adminData.content.language;
+            // Load general settings
+            if (adminData.content.siteTitle) {
+                document.getElementById('site-title').value = adminData.content.siteTitle;
+            }
+            if (adminData.content.siteDescription) {
+                document.getElementById('site-description').value = adminData.content.siteDescription;
+            }
+            if (adminData.content.contactEmail) {
+                document.getElementById('contact-email').value = adminData.content.contactEmail;
+            }
+            if (adminData.content.logoUrl) {
+                document.getElementById('logo-url').value = adminData.content.logoUrl;
+                updateLogoPreview(adminData.content.logoUrl);
+            }
+            
+            // Load platform settings
+            if (adminData.content.currency) {
+                document.getElementById('default-currency').value = adminData.content.currency;
+            }
+            if (adminData.content.language) {
+                document.getElementById('default-language').value = adminData.content.language;
+            }
+            if (adminData.content.maxUploadSize) {
+                document.getElementById('max-upload-size').value = adminData.content.maxUploadSize;
+            }
+        }
+
+        // Update logo preview
+        function updateLogoPreview(url) {
+            if (!url || !url.trim()) {
+                document.getElementById('logo-preview-container').style.display = 'none';
+                return;
+            }
+            
+            const previewImg = document.getElementById('logo-preview');
+            const previewContainer = document.getElementById('logo-preview-container');
+            
+            previewImg.src = url;
+            previewImg.onerror = function() {
+                previewContainer.style.display = 'none';
+            };
+            previewImg.onload = function() {
+                previewContainer.style.display = 'block';
+            };
+        }
+
+        // Save general settings
+        function saveGeneralSettings() {
+            adminData.content.siteTitle = document.getElementById('site-title').value;
+            adminData.content.siteDescription = document.getElementById('site-description').value;
+            adminData.content.contactEmail = document.getElementById('contact-email').value;
+            adminData.content.logoUrl = document.getElementById('logo-url').value;
+            
+            saveData();
+            showNotification('Settings saved successfully! Refresh your website pages to see changes.');
+        }
+
+        // Save platform settings
+        function savePlatformSettings() {
+            adminData.content.currency = document.getElementById('default-currency').value;
+            adminData.content.language = document.getElementById('default-language').value;
+            adminData.content.maxUploadSize = document.getElementById('max-upload-size').value;
+            
+            saveData();
+            showNotification('Platform settings saved successfully!');
         }
 
         function showPropertyModal() {
@@ -816,11 +927,9 @@
             alert('Site information updated successfully!');
         }
 
+        // Legacy function - keeping for backwards compatibility
         function updateSettings() {
-            adminData.content.currency = document.getElementById('currency').value;
-            adminData.content.language = document.getElementById('language').value;
-            saveData();
-            alert('Settings updated successfully!');
+            savePlatformSettings();
         }
 
         // Load page-specific section fields based on selected page
@@ -1425,6 +1534,54 @@
             const footerInput = document.getElementById('footerText');
             if (footerInput) {
                 footerInput.value = (adminData.content && adminData.content.footerText) || '';
+            }
+            
+            // General settings form handler
+            const generalSettingsForm = document.getElementById('general-settings-form');
+            if (generalSettingsForm) {
+                generalSettingsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    saveGeneralSettings();
+                });
+            }
+            
+            // Logo URL input handler for live preview
+            const logoUrlInput = document.getElementById('logo-url');
+            if (logoUrlInput) {
+                logoUrlInput.addEventListener('input', function(e) {
+                    updateLogoPreview(e.target.value);
+                });
+            }
+            
+            // Logo file upload handler
+            const logoUploadInput = document.getElementById('logo-upload');
+            if (logoUploadInput) {
+                logoUploadInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        // Validate file is an image
+                        if (!file.type.startsWith('image/')) {
+                            alert('Please upload an image file (PNG, JPG, SVG, etc.)');
+                            return;
+                        }
+                        
+                        // Convert to data URL
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const dataUrl = event.target.result;
+                            // Update the logo URL input with the data URL
+                            document.getElementById('logo-url').value = dataUrl;
+                            // Update the preview
+                            updateLogoPreview(dataUrl);
+                            // Show success message
+                            showNotification('Logo uploaded successfully! Click "Save Changes" to apply it to your website.');
+                        };
+                        reader.onerror = function() {
+                            alert('Failed to read the file. Please try again.');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
             }
         });
     </script>
