@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUTO - Ustawianie Logo EstalaraLogo.png</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-8">
+        <div class="text-center mb-6">
+            <div class="text-6xl mb-4">🎯</div>
+            <h1 class="text-3xl font-bold mb-2">Automatyczne Ustawienie Logo</h1>
+            <p class="text-gray-600">EstalaraLogo.png</p>
+        </div>
+        
+        <div id="status" class="mb-6 p-6 rounded-lg"></div>
+        
+        <div class="bg-gray-50 p-6 rounded-lg mb-6">
+            <h2 class="font-bold text-lg mb-3">📋 Status konfiguracji:</h2>
+            <div id="info" class="space-y-2 text-sm"></div>
+        </div>
+        
+        <div class="bg-blue-50 border-2 border-blue-200 p-6 rounded-lg">
+            <h3 class="font-bold mb-2">ℹ️ Co zostało zrobione?</h3>
+            <ul class="text-sm space-y-1 list-disc list-inside">
+                <li>Logo ustawione na: <code class="bg-blue-100 px-2 py-1 rounded">assets/EstalaraLogo.png</code></li>
+                <li>Zapisano w localStorage przeglądarki</li>
+                <li>Logo będzie widoczne na wszystkich stronach</li>
+            </ul>
+            
+            <div class="mt-4 pt-4 border-t-2 border-blue-200">
+                <p class="font-semibold mb-2">🔄 Następny krok:</p>
+                <p class="text-sm">Odśwież dowolną stronę aby zobaczyć zmianę logo:</p>
+                <div class="mt-3 space-y-2">
+                    <a href="index.html" class="block bg-blue-500 text-white px-4 py-2 rounded text-center hover:bg-blue-600 transition">
+                        → Przejdź do index.html
+                    </a>
+                    <a href="agents.html" class="block bg-purple-500 text-white px-4 py-2 rounded text-center hover:bg-purple-600 transition">
+                        → Przejdź do agents.html
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="cms-integration.js"></script>
+    <script>
+        // Auto-run on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            autoSetLogo();
+        });
+
+        function showStatus(message, type = 'success') {
+            const statusDiv = document.getElementById('status');
+            const colors = {
+                'success': 'bg-green-100 text-green-800 border-2 border-green-300',
+                'error': 'bg-red-100 text-red-800 border-2 border-red-300',
+                'info': 'bg-blue-100 text-blue-800 border-2 border-blue-300'
+            };
+            statusDiv.className = `mb-6 p-6 rounded-lg ${colors[type] || colors.success}`;
+            statusDiv.innerHTML = message;
+        }
+
+        function updateInfo() {
+            const infoDiv = document.getElementById('info');
+            const data = localStorage.getItem('estalaraAdminData');
+            let currentLogo = 'BRAK';
+            let version = 'BRAK';
+            
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    currentLogo = parsed.logoUrl || 'BRAK';
+                    version = parsed.version || 'BRAK';
+                } catch (e) {
+                    currentLogo = 'BŁĄD: ' + e.message;
+                }
+            }
+            
+            const isCorrect = currentLogo === 'assets/EstalaraLogo.png';
+            
+            infoDiv.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <strong>Logo w localStorage:</strong> 
+                    <code class="bg-gray-200 px-2 py-1 rounded">${currentLogo}</code>
+                    ${isCorrect ? '<span class="text-green-600 font-bold">✅</span>' : '<span class="text-red-600 font-bold">❌</span>'}
+                </div>
+                <div><strong>Docelowe logo:</strong> <code class="bg-gray-200 px-2 py-1 rounded">assets/EstalaraLogo.png</code></div>
+                <div><strong>Wersja danych CMS:</strong> ${version}</div>
+                <div><strong>EstalaraAdmin:</strong> ${typeof window.estalaraAdmin !== 'undefined' ? '✅ Załadowany' : '⚠️ Ładowanie...'}</div>
+                <div><strong>Czas aktualizacji:</strong> ${new Date().toLocaleString('pl-PL')}</div>
+            `;
+        }
+
+        function autoSetLogo() {
+            const newLogoUrl = 'assets/EstalaraLogo.png';
+            
+            try {
+                console.log('🔄 Auto-ustawianie logo na:', newLogoUrl);
+                
+                // 1. Zapisz w localStorage
+                let adminData = JSON.parse(localStorage.getItem('estalaraAdminData') || '{}');
+                const oldLogo = adminData.logoUrl;
+                
+                adminData.logoUrl = newLogoUrl;
+                adminData.lastLogoUpdate = new Date().toISOString();
+                localStorage.setItem('estalaraAdminData', JSON.stringify(adminData));
+                
+                console.log('✅ localStorage zaktualizowany');
+                console.log('   Stare logo:', oldLogo || 'BRAK');
+                console.log('   Nowe logo:', newLogoUrl);
+                
+                // 2. Aktualizuj przez EstalaraAdmin jeśli dostępny
+                if (window.estalaraAdmin) {
+                    console.log('🔄 Aktualizacja przez EstalaraAdmin...');
+                    window.estalaraAdmin.content.logoUrl = newLogoUrl;
+                    window.estalaraAdmin.saveContent();
+                    window.estalaraAdmin.updateLogo(newLogoUrl);
+                    console.log('✅ EstalaraAdmin zaktualizowany');
+                } else {
+                    console.warn('⚠️ EstalaraAdmin nie jest jeszcze załadowany, czekam...');
+                    // Spróbuj ponownie za chwilę
+                    setTimeout(() => {
+                        if (window.estalaraAdmin) {
+                            window.estalaraAdmin.content.logoUrl = newLogoUrl;
+                            window.estalaraAdmin.saveContent();
+                            window.estalaraAdmin.updateLogo(newLogoUrl);
+                            console.log('✅ EstalaraAdmin zaktualizowany (retry)');
+                            updateInfo();
+                        }
+                    }, 1000);
+                }
+                
+                const changedFrom = oldLogo && oldLogo !== newLogoUrl ? `<div class="text-sm mt-2">Zmieniono z: <code class="bg-yellow-100 px-2 py-1 rounded">${oldLogo}</code></div>` : '';
+                
+                showStatus(`
+                    <div class="flex items-start gap-4">
+                        <span class="text-4xl">✅</span>
+                        <div class="flex-1">
+                            <div class="font-bold text-xl mb-2">Logo zostało ustawione!</div>
+                            <div class="text-sm">
+                                Nowe logo: <code class="bg-green-200 px-2 py-1 rounded font-mono">${newLogoUrl}</code>
+                            </div>
+                            ${changedFrom}
+                            <div class="mt-3 text-sm">
+                                <div>💾 Zapisano w localStorage</div>
+                                <div>🔄 Kliknij linki poniżej aby zobaczyć zmianę</div>
+                            </div>
+                        </div>
+                    </div>
+                `, 'success');
+                
+                updateInfo();
+                
+            } catch (e) {
+                console.error('❌ Błąd:', e);
+                showStatus(`
+                    <div class="font-bold text-lg mb-2">❌ Wystąpił błąd</div>
+                    <div class="text-sm">${e.message}</div>
+                    <div class="text-sm mt-2">Sprawdź konsolę przeglądarki (F12) aby zobaczyć więcej szczegółów.</div>
+                `, 'error');
+                updateInfo();
+            }
+        }
+    </script>
+</body>
+</html>
