@@ -1,0 +1,125 @@
+{
+  "name": "Estalara - Global Real Estate Platform",
+  "short_name": "Estalara",
+  "description": "Go LIVE. Go GLOBAL. Connect real estate agents and international investors through AI and livestreaming.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/assets/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "lifestyle", "finance"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "shortcuts": [
+    {
+      "name": "Browse Properties",
+      "short_name": "Properties",
+      "description": "View live properties",
+      "url": "/index.html#live-properties",
+      "icons": [
+        {
+          "src": "/assets/shortcut-properties.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "For Agents",
+      "short_name": "Agents",
+      "description": "Agent features",
+      "url": "/agents.html",
+      "icons": [
+        {
+          "src": "/assets/shortcut-agents.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "For Investors",
+      "short_name": "Investors",
+      "description": "Investor features",
+      "url": "/investors.html",
+      "icons": [
+        {
+          "src": "/assets/shortcut-investors.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/screenshot2.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.estalara.app",
+      "id": "com.estalara.app"
+    },
+    {
+      "platform": "itunes",
+      "url": "https://apps.apple.com/app/estalara/idXXXXXXXXXX"
+    }
+  ]
+}
