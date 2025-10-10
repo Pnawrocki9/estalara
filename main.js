@@ -220,15 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 20);
     }
     
-    // Mobile menu toggle (if needed)
-    const mobileMenuButton = document.querySelector('.mobile-menu-button');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    
-    if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-        });
-    }
+    // Mobile menu toggle is handled by the IIFE at the bottom of this file
     
     // Loading animation
     window.addEventListener('load', function() {
@@ -360,13 +352,12 @@ window.EstalaraUtils = {
 
         // Reset menu state on window resize
         window.addEventListener('resize', function () {
-            if (getComputedStyle(btn).display === 'none') {
-                menu.classList.remove('hidden');
-                btn.setAttribute('aria-expanded', 'true');
-            } else {
+            // On mobile (button visible), ensure menu is closed
+            if (getComputedStyle(btn).display !== 'none') {
                 menu.classList.add('hidden');
                 btn.setAttribute('aria-expanded', 'false');
             }
+            // On desktop (button hidden), Tailwind's md:flex handles visibility automatically
         });
     }
 
