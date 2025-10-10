@@ -179,6 +179,40 @@ class EstalaraAdmin {
             // Translation dictionary. Each language can override page and section content. Initially empty for English.
             translations: {
                 en: {}
+            },
+            // Page structures defining blocks/sections for each page
+            pageStructures: {
+                home: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'how-it-works', type: 'section', title: 'How It Works', visible: true, order: 2, editable: true },
+                    { id: 'live-properties', type: 'section', title: 'LIVE Properties', visible: true, order: 3, editable: false },
+                    { id: 'features', type: 'section', title: 'Features', visible: true, order: 4, editable: true },
+                    { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 5, editable: true }
+                ],
+                agents: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'stats', type: 'section', title: 'Stats Section', visible: true, order: 2, editable: true },
+                    { id: 'features', type: 'section', title: 'Features Section', visible: true, order: 3, editable: true },
+                    { id: 'how-it-works', type: 'section', title: 'How It Works', visible: true, order: 4, editable: true },
+                    { id: 'testimonials', type: 'section', title: 'Testimonials', visible: true, order: 5, editable: true },
+                    { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 6, editable: true }
+                ],
+                investors: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'investing-without-borders', type: 'section', title: 'Investing Without Borders', visible: true, order: 2, editable: true },
+                    { id: 'stats', type: 'section', title: 'Investment Stats', visible: true, order: 3, editable: true }
+                ],
+                agencies: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'agency-live-selling', type: 'section', title: 'Live Selling & Social Media', visible: true, order: 2, editable: true },
+                    { id: 'agency-white-label-offer', type: 'section', title: 'White Label Offer', visible: true, order: 3, editable: true },
+                    { id: 'stats', type: 'section', title: 'Enterprise Stats', visible: true, order: 4, editable: true },
+                    { id: 'enterprise-features', type: 'section', title: 'Enterprise Features', visible: true, order: 5, editable: true }
+                ],
+                about: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'about-content', type: 'section', title: 'About Content', visible: true, order: 2, editable: true }
+                ]
             }
         };
 
@@ -226,6 +260,18 @@ class EstalaraAdmin {
                 : [];
         }
 
+        // Ensure pageStructures exist; if not, seed with defaults
+        if (!loaded.pageStructures || typeof loaded.pageStructures !== 'object') {
+            loaded.pageStructures = defaultContent.pageStructures || {};
+        } else {
+            // Merge with defaults to add any new pages
+            for (const pageKey of Object.keys(defaultContent.pageStructures || {})) {
+                if (!loaded.pageStructures[pageKey]) {
+                    loaded.pageStructures[pageKey] = defaultContent.pageStructures[pageKey];
+                }
+            }
+        }
+
         // Always set the version to the current default version to allow future
         // migrations to detect outdated data. Save back to localStorage in case
         // defaults were used or the version was updated.
@@ -269,6 +315,20 @@ class EstalaraAdmin {
         if (footerEl && this.content.footerText) {
             footerEl.textContent = this.content.footerText;
         }
+
+        // Apply page structure (hide/show sections based on visibility settings)
+        const path = window.location.pathname;
+        let pageKey = 'home';
+        if (path.includes('agents.html')) {
+            pageKey = 'agents';
+        } else if (path.includes('investors.html')) {
+            pageKey = 'investors';
+        } else if (path.includes('agencies.html')) {
+            pageKey = 'agencies';
+        } else if (path.includes('about.html')) {
+            pageKey = 'about';
+        }
+        this.applyPageStructure(pageKey);
     }
 
     // Load properties into the LIVE Properties section
@@ -705,6 +765,95 @@ class EstalaraAdmin {
     // Get settings
     getSettings() {
         return this.content.settings;
+    }
+
+    // Get page structure
+    getPageStructure(pageId) {
+        return this.content.pageStructures && this.content.pageStructures[pageId] 
+            ? [...this.content.pageStructures[pageId]]
+            : [];
+    }
+
+    // Update page structure
+    updatePageStructure(pageId, structure) {
+        if (!this.content.pageStructures) {
+            this.content.pageStructures = {};
+        }
+        this.content.pageStructures[pageId] = structure;
+        this.saveContent();
+        
+        // Reload current page if we're on it
+        const path = window.location.pathname;
+        if ((pageId === 'home' && (path.includes('index.html') || path === '/')) ||
+            path.includes(`${pageId}.html`)) {
+            this.applyPageStructure(pageId);
+        }
+    }
+
+    // Toggle section visibility
+    toggleSectionVisibility(pageId, sectionId) {
+        const structure = this.getPageStructure(pageId);
+        const section = structure.find(s => s.id === sectionId);
+        if (section) {
+            section.visible = !section.visible;
+            this.updatePageStructure(pageId, structure);
+        }
+    }
+
+    // Add new section to page
+    addSection(pageId, sectionData) {
+        const structure = this.getPageStructure(pageId);
+        const newSection = {
+            id: sectionData.id || `section-${Date.now()}`,
+            type: sectionData.type || 'section',
+            title: sectionData.title || 'New Section',
+            visible: true,
+            order: structure.length + 1,
+            editable: true,
+            ...sectionData
+        };
+        structure.push(newSection);
+        this.updatePageStructure(pageId, structure);
+        return newSection;
+    }
+
+    // Remove section from page
+    removeSection(pageId, sectionId) {
+        let structure = this.getPageStructure(pageId);
+        structure = structure.filter(s => s.id !== sectionId);
+        // Reorder remaining sections
+        structure.forEach((s, index) => {
+            s.order = index + 1;
+        });
+        this.updatePageStructure(pageId, structure);
+    }
+
+    // Reorder sections
+    reorderSections(pageId, newOrder) {
+        const structure = this.getPageStructure(pageId);
+        const reordered = newOrder.map((id, index) => {
+            const section = structure.find(s => s.id === id);
+            if (section) {
+                section.order = index + 1;
+            }
+            return section;
+        }).filter(Boolean);
+        this.updatePageStructure(pageId, reordered);
+    }
+
+    // Apply page structure (hide/show sections based on visibility)
+    applyPageStructure(pageId) {
+        const structure = this.getPageStructure(pageId);
+        structure.forEach(section => {
+            const element = document.getElementById(section.id);
+            if (element) {
+                if (section.visible) {
+                    element.style.display = '';
+                } else {
+                    element.style.display = 'none';
+                }
+            }
+        });
     }
 }
 
