@@ -53,7 +53,7 @@
                     🏠 Properties
                 </a>
                 <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('pages')">
-                    📄 Pages
+                    📄 Content Editor
                 </a>
                 <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('media')">
                     🖼️ Media Library
@@ -187,10 +187,19 @@
             <div id="pages" class="section hidden">
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Pages</h2>
-                        <p class="text-gray-600">Manage your website content</p>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Content Editor</h2>
+                        <p class="text-gray-600">Edit text content for all pages</p>
                     </div>
-                    <button class="cms-btn cms-btn-primary" onclick="showPageModal()">+ Add Page</button>
+                </div>
+
+                <!-- Info Card -->
+                <div class="cms-card p-6 mb-6 bg-blue-50 border border-blue-200">
+                    <h3 class="font-semibold text-blue-900 mb-2">✨ Full Content Control</h3>
+                    <p class="text-blue-800 text-sm">
+                        You can now edit all text content from your website directly in the CMS. 
+                        Click "Edit Content" on any page below to modify hero sections, descriptions, and all other text elements.
+                        Changes are saved to localStorage and will appear immediately on page refresh.
+                    </p>
                 </div>
 
                 <!-- Pages Table -->
@@ -200,7 +209,7 @@
                             <tr>
                                 <th>Page</th>
                                 <th>URL</th>
-                                <th>Last Modified</th>
+                                <th>Editable Sections</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -213,10 +222,14 @@
                                     </div>
                                 </td>
                                 <td>/index.html</td>
-                                <td>Oct 8, 2025</td>
                                 <td>
-                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('index')">Edit</button>
-                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('index')">Preview</button>
+                                    <div class="text-sm text-gray-600">
+                                        Hero, How It Works, Features, CTA
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="cms-btn cms-btn-primary text-sm mr-2" onclick="editPage('home')">Edit Content</button>
+                                    <button class="cms-btn cms-btn-success text-sm" onclick="previewPage('index')">Preview</button>
                                 </td>
                             </tr>
                             <tr>
@@ -227,10 +240,14 @@
                                     </div>
                                 </td>
                                 <td>/agents.html</td>
-                                <td>Oct 8, 2025</td>
                                 <td>
-                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('agents')">Edit</button>
-                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('agents')">Preview</button>
+                                    <div class="text-sm text-gray-600">
+                                        Hero Section, All Text Content
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="cms-btn cms-btn-primary text-sm mr-2" onclick="editPage('agents')">Edit Content</button>
+                                    <button class="cms-btn cms-btn-success text-sm" onclick="previewPage('agents')">Preview</button>
                                 </td>
                             </tr>
                             <tr>
@@ -241,10 +258,32 @@
                                     </div>
                                 </td>
                                 <td>/investors.html</td>
-                                <td>Oct 8, 2025</td>
                                 <td>
-                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('investors')">Edit</button>
-                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('investors')">Preview</button>
+                                    <div class="text-sm text-gray-600">
+                                        Hero, 3 Content Sections
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="cms-btn cms-btn-primary text-sm mr-2" onclick="editPage('investors')">Edit Content</button>
+                                    <button class="cms-btn cms-btn-success text-sm" onclick="previewPage('investors')">Preview</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-medium">For Agencies</div>
+                                        <div class="text-sm text-gray-500">Agency-focused content</div>
+                                    </div>
+                                </td>
+                                <td>/agencies.html</td>
+                                <td>
+                                    <div class="text-sm text-gray-600">
+                                        Hero, 3 Sections, White Label
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="cms-btn cms-btn-primary text-sm mr-2" onclick="editPage('agencies')">Edit Content</button>
+                                    <button class="cms-btn cms-btn-success text-sm" onclick="previewPage('agencies')">Preview</button>
                                 </td>
                             </tr>
                             <tr>
@@ -255,10 +294,14 @@
                                     </div>
                                 </td>
                                 <td>/about.html</td>
-                                <td>Oct 8, 2025</td>
                                 <td>
-                                    <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editPage('about')">Edit</button>
-                                    <button class="cms-btn cms-btn-success text-sm mr-2" onclick="previewPage('about')">Preview</button>
+                                    <div class="text-sm text-gray-600">
+                                        Hero Section, All Text Content
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="cms-btn cms-btn-primary text-sm mr-2" onclick="editPage('about')">Edit Content</button>
+                                    <button class="cms-btn cms-btn-success text-sm" onclick="previewPage('about')">Preview</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -415,6 +458,19 @@
         </div>
     </div>
 
+    <!-- Page Editor Modal -->
+    <div id="pageEditorModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold" id="pageEditorTitle">Edit Page</h3>
+                <button onclick="hidePageEditor()" class="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+            <div id="pageEditorContent">
+                <!-- Page editor content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Property Modal -->
     <div id="propertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
@@ -491,9 +547,6 @@
             document.getElementById('propertyModal').classList.remove('flex');
         }
 
-        function showPageModal() {
-            alert('Page editor coming soon! For now, you can edit pages directly in the Pages section.');
-        }
 
         function showUploadModal() {
             alert('Media upload coming soon! You can currently add image URLs directly in property forms.');
@@ -514,7 +567,7 @@
         }
 
         function editPage(pageId) {
-            alert('Page editor coming soon! For now, you can edit HTML files directly.');
+            loadPageEditor(pageId);
         }
 
         function previewPage(pageId) {
@@ -557,6 +610,191 @@
             hidePropertyModal();
             e.target.reset();
         });
+
+        // Load page editor
+        function loadPageEditor(pageId) {
+            const admin = loadAdminData();
+            const page = admin.pages[pageId] || {};
+            
+            document.getElementById('pageEditorTitle').textContent = `Edit ${pageId.charAt(0).toUpperCase() + pageId.slice(1)} Page`;
+            
+            let editorHtml = `<form id="pageEditorForm" class="space-y-4">`;
+            
+            // Hero Section
+            editorHtml += `<div class="border-b pb-4 mb-4">
+                <h4 class="font-semibold text-lg mb-3">Hero Section</h4>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Title</label>
+                    <input type="text" name="heroTitle" class="cms-input w-full" value="${page.heroTitle || ''}" placeholder="Main headline">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Subtitle</label>
+                    <textarea name="heroSubtitle" class="cms-input w-full" rows="3" placeholder="Subtitle text">${page.heroSubtitle || ''}</textarea>
+                </div>
+            </div>`;
+            
+            // For home page - additional sections
+            if (pageId === 'home') {
+                editorHtml += `<div class="border-b pb-4 mb-4">
+                    <h4 class="font-semibold text-lg mb-3">How It Works Section</h4>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input type="text" name="howItWorksTitle" class="cms-input w-full" value="${page.howItWorksTitle || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                        <textarea name="howItWorksSubtitle" class="cms-input w-full" rows="2">${page.howItWorksSubtitle || ''}</textarea>
+                    </div>
+                </div>`;
+                
+                editorHtml += `<div class="border-b pb-4 mb-4">
+                    <h4 class="font-semibold text-lg mb-3">Features Section</h4>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input type="text" name="featuresTitle" class="cms-input w-full" value="${page.featuresTitle || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                        <textarea name="featuresSubtitle" class="cms-input w-full" rows="2">${page.featuresSubtitle || ''}</textarea>
+                    </div>
+                </div>`;
+                
+                editorHtml += `<div class="border-b pb-4 mb-4">
+                    <h4 class="font-semibold text-lg mb-3">CTA Section</h4>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input type="text" name="ctaTitle" class="cms-input w-full" value="${page.ctaTitle || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                        <textarea name="ctaSubtitle" class="cms-input w-full" rows="2">${page.ctaSubtitle || ''}</textarea>
+                    </div>
+                </div>`;
+            }
+            
+            // For investors and agencies pages - content sections
+            if (pageId === 'investors' || pageId === 'agencies') {
+                for (let i = 1; i <= 3; i++) {
+                    editorHtml += `<div class="border-b pb-4 mb-4">
+                        <h4 class="font-semibold text-lg mb-3">Content Section ${i}</h4>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Icon (emoji)</label>
+                            <input type="text" name="section${i}Icon" class="cms-input w-full" value="${page['section' + i + 'Icon'] || ''}" placeholder="🌍">
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                            <input type="text" name="section${i}Title" class="cms-input w-full" value="${page['section' + i + 'Title'] || ''}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                            <textarea name="section${i}Content" class="cms-input w-full" rows="4">${page['section' + i + 'Content'] || ''}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                            <input type="text" name="section${i}Image" class="cms-input w-full" value="${page['section' + i + 'Image'] || ''}" placeholder="https://example.com/image.jpg">
+                        </div>
+                    </div>`;
+                }
+            }
+            
+            // For agencies page - white label section
+            if (pageId === 'agencies') {
+                editorHtml += `<div class="border-b pb-4 mb-4">
+                    <h4 class="font-semibold text-lg mb-3">White Label Section</h4>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input type="text" name="whiteLabelTitle" class="cms-input w-full" value="${page.whiteLabelTitle || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                        <textarea name="whiteLabelSubtitle" class="cms-input w-full" rows="3">${page.whiteLabelSubtitle || ''}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Benefits Title</label>
+                        <input type="text" name="whiteLabelBenefitsTitle" class="cms-input w-full" value="${page.whiteLabelBenefitsTitle || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Benefits List (one per line)</label>
+                        <textarea name="whiteLabelBenefitsList" class="cms-input w-full" rows="4" placeholder="Your own branding\nBranded livestreams\n...">${(page.whiteLabelBenefitsList || []).join('\n')}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Why Title</label>
+                        <input type="text" name="whiteLabelWhyTitle" class="cms-input w-full" value="${page.whiteLabelWhyTitle || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Why List (one per line)</label>
+                        <textarea name="whiteLabelWhyList" class="cms-input w-full" rows="4" placeholder="Greater customer trust\nFaster implementations\n...">${(page.whiteLabelWhyList || []).join('\n')}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Label</label>
+                        <input type="text" name="whiteLabelContactLabel" class="cms-input w-full" value="${page.whiteLabelContactLabel || ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                        <input type="email" name="whiteLabelContactEmail" class="cms-input w-full" value="${page.whiteLabelContactEmail || ''}">
+                    </div>
+                </div>`;
+            }
+            
+            editorHtml += `<div class="flex justify-end space-x-3 pt-4">
+                <button type="button" onclick="hidePageEditor()" class="cms-btn cms-btn-secondary">Cancel</button>
+                <button type="submit" class="cms-btn cms-btn-primary">Save Changes</button>
+            </div></form>`;
+            
+            document.getElementById('pageEditorContent').innerHTML = editorHtml;
+            
+            // Attach form handler
+            document.getElementById('pageEditorForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                savePageContent(pageId, new FormData(e.target));
+            });
+            
+            // Show modal
+            document.getElementById('pageEditorModal').classList.remove('hidden');
+            document.getElementById('pageEditorModal').classList.add('flex');
+        }
+        
+        function hidePageEditor() {
+            document.getElementById('pageEditorModal').classList.add('hidden');
+            document.getElementById('pageEditorModal').classList.remove('flex');
+        }
+        
+        function savePageContent(pageId, formData) {
+            const admin = loadAdminData();
+            
+            if (!admin.pages[pageId]) {
+                admin.pages[pageId] = {};
+            }
+            
+            // Convert form data to object
+            const updates = {};
+            for (let [key, value] of formData.entries()) {
+                // Handle list fields
+                if (key.includes('List')) {
+                    updates[key] = value.split('\n').filter(item => item.trim());
+                } else {
+                    updates[key] = value;
+                }
+            }
+            
+            // Update page content
+            admin.pages[pageId] = { ...admin.pages[pageId], ...updates };
+            
+            // Save to localStorage
+            localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+            
+            // Show success message
+            alert('Page content updated successfully! Refresh the frontend page to see changes.');
+            hidePageEditor();
+        }
+        
+        function loadAdminData() {
+            const stored = localStorage.getItem('estalaraAdminData');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return { pages: {} };
+        }
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {

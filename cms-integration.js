@@ -131,6 +131,10 @@ class EstalaraAdmin {
                 },
                 // Added page definition for agencies. Without this key the agencies page
                 // would fallback to the default hero and subtitle defined on the home page.
+                about: {
+                    heroTitle: "About <span class=\"text-white\">ESTALARA</span>",
+                    heroSubtitle: "We're revolutionizing global real estate by connecting agents and investors through AI and live experiences. Our mission is to make international property transactions simple, transparent, and accessible to everyone."
+                },
                 agencies: {
                     heroTitle: "Agencies Go <span class=\"text-white\">ENTERPRISE</span>",
                     heroSubtitle: "Grow your agency through live selling and social media. Manage multiple agents, broadcast tours and expand internationally with our enterprise solutions.",
@@ -358,6 +362,8 @@ class EstalaraAdmin {
             pageKey = 'investors';
         } else if (path.includes('agencies.html')) {
             pageKey = 'agencies';
+        } else if (path.includes('about.html')) {
+            pageKey = 'about';
         }
 
         const page = this.content.pages[pageKey];
