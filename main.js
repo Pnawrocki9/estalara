@@ -333,14 +333,16 @@ window.EstalaraUtils = {
             menu.classList.add('hidden');
         }
 
-        // Toggle menu visibility on click - ONLY toggle 'hidden', layout is handled by HTML classes
+        // Toggle menu visibility on click - toggle both 'hidden' and 'flex' for proper mobile display
         btn.addEventListener('click', function () {
             var isHidden = menu.classList.contains('hidden');
             if (isHidden) {
                 menu.classList.remove('hidden');
+                menu.classList.add('flex');
                 btn.setAttribute('aria-expanded', 'true');
             } else {
                 menu.classList.add('hidden');
+                menu.classList.remove('flex');
                 btn.setAttribute('aria-expanded', 'false');
             }
         });
@@ -350,6 +352,7 @@ window.EstalaraUtils = {
             a.addEventListener('click', function () {
                 if (getComputedStyle(btn).display !== 'none') {
                     menu.classList.add('hidden');
+                    menu.classList.remove('flex');
                     btn.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -360,6 +363,7 @@ window.EstalaraUtils = {
             // On mobile (button visible), ensure menu is closed
             if (getComputedStyle(btn).display !== 'none') {
                 menu.classList.add('hidden');
+                menu.classList.remove('flex');
                 btn.setAttribute('aria-expanded', 'false');
             }
             // On desktop (button hidden), menu is always visible via md:flex

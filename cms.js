@@ -162,6 +162,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Logo file upload handler
+    const logoUploadInput = document.getElementById('logo-upload');
+    if (logoUploadInput) {
+        logoUploadInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file is an image
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file (PNG, JPG, SVG, etc.)');
+                    return;
+                }
+                
+                // Convert to data URL
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const dataUrl = event.target.result;
+                    // Update the logo URL input with the data URL
+                    document.getElementById('logo-url').value = dataUrl;
+                    // Update the preview
+                    updateLogoPreview(dataUrl);
+                    // Show success message
+                    showNotification('Logo uploaded successfully! Click "Save Changes" to apply it to your website.');
+                };
+                reader.onerror = function() {
+                    alert('Failed to read the file. Please try again.');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
     // Add Section Form Handler
     const addSectionForm = document.getElementById('addSectionForm');
     if (addSectionForm) {
