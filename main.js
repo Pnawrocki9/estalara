@@ -328,22 +328,19 @@ window.EstalaraUtils = {
         var menu = document.getElementById('mobile-menu');
         if (!btn || !menu) return;
 
-        // Start with menu hidden on mobile viewports; on desktop the hidden class
-        // will be overridden by the md:flex Tailwind utility.
+        // Start with menu hidden on mobile viewports
         if (getComputedStyle(btn).display !== 'none') {
             menu.classList.add('hidden');
         }
 
-        // Toggle menu visibility on click
+        // Toggle menu visibility on click - ONLY toggle 'hidden', layout is handled by HTML classes
         btn.addEventListener('click', function () {
             var isHidden = menu.classList.contains('hidden');
             if (isHidden) {
                 menu.classList.remove('hidden');
-                menu.classList.add('flex', 'flex-col', 'gap-4');
                 btn.setAttribute('aria-expanded', 'true');
             } else {
                 menu.classList.add('hidden');
-                menu.classList.remove('flex', 'flex-col', 'gap-4');
                 btn.setAttribute('aria-expanded', 'false');
             }
         });
@@ -353,7 +350,6 @@ window.EstalaraUtils = {
             a.addEventListener('click', function () {
                 if (getComputedStyle(btn).display !== 'none') {
                     menu.classList.add('hidden');
-                    menu.classList.remove('flex', 'flex-col', 'gap-4');
                     btn.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -364,10 +360,9 @@ window.EstalaraUtils = {
             // On mobile (button visible), ensure menu is closed
             if (getComputedStyle(btn).display !== 'none') {
                 menu.classList.add('hidden');
-                menu.classList.remove('flex', 'flex-col', 'gap-4');
                 btn.setAttribute('aria-expanded', 'false');
             }
-            // On desktop (button hidden), Tailwind's md:flex handles visibility automatically
+            // On desktop (button hidden), menu is always visible via md:flex
         });
     }
 
