@@ -97,18 +97,54 @@ class EstalaraAdmin {
                 },
                 investors: {
                     heroTitle: "Invest <span class=\"text-white\">WORLDWIDE</span>",
-                    heroSubtitle: "Discover and fund exceptional real estate opportunities across borders. Access exclusive properties streamed live and make informed decisions with real‑time data."
-            },
-            // Added page definition for agencies. Without this key the agencies page
-            // would fallback to the default hero and subtitle defined on the home page.
-            agencies: {
-                heroTitle: "Agencies Go <span class=\"text-white\">ENTERPRISE</span>",
-                heroSubtitle: "Transform your real estate agency into a global powerhouse. Scale operations, manage multiple agents, and expand internationally with Estalara's enterprise solutions designed for growing agencies."
-            }
+                    heroSubtitle: "Discover and fund exceptional real estate opportunities across borders. Access exclusive properties streamed live and make informed decisions with real‑time data.",
+                    // Section 1 – investing without borders
+                    section1Title: "Investing without borders",
+                    section1Content: "The world is your marketplace. Estalara lets you browse, evaluate and purchase properties around the globe from wherever you are. Live tours and remote closings make you feel like you’re there and build trust through authentic video. Our network of verified agents and local experts ensures safety and transparency in every transaction.",
+                    section1Icon: "🌍",
+                    section1Image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=60",
+                    // Section 2 – challenges of international investing and solutions
+                    section2Title: "Challenges of international investment & how we solve them",
+                    section2Content: "Buying property abroad can be daunting. Each country has its own laws, taxes and financing rules; exchange rates and political risk affect your returns; language barriers and long‑distance management add complexity; and scams are a constant risk. Estalara solves these problems by connecting you with local lawyers, tax advisers and mortgage partners, offering real‑time currency conversion and escrow services, verifying properties and sellers, and providing bilingual support so you always have a trusted guide.",
+                    section2Icon: "⚠️",
+                    section2Image: "https://images.unsplash.com/photo-1518593921361-3e3d8f8e2b38?auto=format&fit=crop&w=800&q=60",
+                    // Section 3 – support and trust
+                    section3Title: "Support you can trust",
+                    section3Content: "Our team is available 24/7 to help you navigate legal, financial and cultural barriers. We provide multilingual assistance, due diligence and verified listings to protect you from scams. With Estalara, you invest with confidence, knowing you have expert support every step of the way.",
+                    section3Icon: "🤝",
+                    section3Image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=60"
+                },
+                // Added page definition for agencies. Without this key the agencies page
+                // would fallback to the default hero and subtitle defined on the home page.
+                agencies: {
+                    heroTitle: "Agencies Go <span class=\"text-white\">ENTERPRISE</span>",
+                    heroSubtitle: "Grow your agency through live selling and social media. Manage multiple agents, broadcast tours and expand internationally with our enterprise solutions.",
+                    // Section 1 – benefits of live commerce and authentic video
+                    section1Title: "Live selling meets social media",
+                    section1Content: "Live tours and real‑time interaction build trust. Modern buyers spend hours researching homes online, and authentic livestreams let them ask questions and feel the space before they visit. Short vertical clips on TikTok, Instagram and YouTube are becoming the new search engine for property discovery. When you broadcast real tours and behind‑the‑scenes insights, you attract clients who are ready to buy.",
+                    section1Icon: "🎥",
+                    section1Image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=60",
+                    // Section 2 – social media as a lead engine
+                    section2Title: "Social media as your lead engine",
+                    section2Content: "More than half of agents say social media is their most important source of high‑quality leads. Platforms like Facebook, Instagram and LinkedIn let you target specific buyers, showcase your expertise and build community. Post useful information and local tips instead of just listings, and use clear keywords so your bio and captions show up when buyers search. Pair live streams with targeted ads and automated follow‑ups to turn viewers into clients.",
+                    section2Icon: "📱",
+                    section2Image: "https://images.unsplash.com/photo-1485211391954-35ef7f3cfc52?auto=format&fit=crop&w=800&q=60",
+                    // Section 3 – Estalara advantage
+                    section3Title: "Why Estalara for agencies?",
+                    section3Content: "Estalara brings live selling and social platforms together in one streamlined system. Our enterprise platform helps you manage multiple agents, schedule live property tours and capture leads from comments. Built‑in analytics and automated workflows free your team to focus on clients. With support for more than 50 countries and multiple languages, you can market properties to buyers worldwide and grow your brand without limits.",
+                    section3Icon: "🚀",
+                    section3Image: "https://images.unsplash.com/photo-1523958203904-cdcb402031fd?auto=format&fit=crop&w=800&q=60"
+                }
             },
             settings: {
                 currency: "EUR",
                 language: "en"
+            },
+            // Text used in the site footer. Can be customised via the admin panel.
+            footerText: "© 2025 Estalara. All rights reserved.",
+            // Translation dictionary. Each language can override page and section content. Initially empty for English.
+            translations: {
+                en: {}
             }
         };
 
@@ -165,6 +201,12 @@ class EstalaraAdmin {
 
         // Load page-specific content
         this.loadPageContent();
+
+        // Update footer text if element exists
+        const footerEl = document.getElementById('footer-text');
+        if (footerEl && this.content.footerText) {
+            footerEl.textContent = this.content.footerText;
+        }
     }
 
     // Load properties into the LIVE Properties section
@@ -261,12 +303,32 @@ class EstalaraAdmin {
 
         // Update hero title and subtitle. Each page can override these via the
         // pages configuration. Fallback to the global heroTitle and heroSubtitle
-        // defined on this.content if no override exists.
+        // defined on this.content if no override exists. Also apply translations if
+        // a non-English language is selected and translations exist.
         const titleEl = document.querySelector('.hero-text');
         const subtitleEls = document.querySelectorAll('.body-text');
-        // Use page specific heroTitle if available; otherwise default
-        const heroTitle = page.heroTitle || this.content.heroTitle;
-        const heroSubtitle = page.heroSubtitle || this.content.heroSubtitle;
+
+        let heroTitle = page.heroTitle || this.content.heroTitle;
+        let heroSubtitle = page.heroSubtitle || this.content.heroSubtitle;
+
+        // Apply translations if language is not English and translations are available for this page
+        const lang = this.content.settings && this.content.settings.language;
+        if (lang && lang !== 'en' && this.content.translations && this.content.translations[lang] && this.content.translations[lang][pageKey]) {
+            const tPage = this.content.translations[lang][pageKey];
+            heroTitle = tPage.heroTitle || heroTitle;
+            heroSubtitle = tPage.heroSubtitle || heroSubtitle;
+            // Also override section titles and contents on the page object (so loops below pick them up)
+            for (let i = 1; i <= 3; i++) {
+                const titleKey = `section${i}Title`;
+                const contentKey = `section${i}Content`;
+                const iconKey = `section${i}Icon`;
+                const imageKey = `section${i}Image`;
+                if (tPage[titleKey]) page[titleKey] = tPage[titleKey];
+                if (tPage[contentKey]) page[contentKey] = tPage[contentKey];
+                if (tPage[iconKey]) page[iconKey] = tPage[iconKey];
+                if (tPage[imageKey]) page[imageKey] = tPage[imageKey];
+            }
+        }
 
         // For the home page we rely on the typed.js animation and the default subtitle
         // defined in the HTML. Only override the hero content for other pages.
@@ -278,6 +340,41 @@ class EstalaraAdmin {
             if (subtitleEls.length > 0 && heroSubtitle) {
                 // Update only the first body-text, which corresponds to the hero subtitle
                 subtitleEls[0].textContent = heroSubtitle;
+            }
+        }
+
+        // Update custom sections for agencies and investors
+        if (pageKey === 'agencies' || pageKey === 'investors') {
+            const prefix = pageKey === 'agencies' ? 'agency' : 'investor';
+            for (let i = 1; i <= 3; i++) {
+                const titleId = `${prefix}-section${i}-title`;
+                const contentId = `${prefix}-section${i}-content`;
+                const iconId = `${prefix}-section${i}-icon`;
+                const imageId = `${prefix}-section${i}-image`;
+                const titleElSec = document.getElementById(titleId);
+                const contentElSec = document.getElementById(contentId);
+                const iconElSec = document.getElementById(iconId);
+                const imageElSec = document.getElementById(imageId);
+                const titleKey = `section${i}Title`;
+                const contentKey = `section${i}Content`;
+                const iconKey = `section${i}Icon`;
+                const imageKey = `section${i}Image`;
+                if (titleElSec && page[titleKey]) {
+                    titleElSec.textContent = page[titleKey];
+                }
+                if (contentElSec && page[contentKey]) {
+                    contentElSec.textContent = page[contentKey];
+                }
+                if (iconElSec && page[iconKey]) {
+                    iconElSec.textContent = page[iconKey];
+                }
+                if (imageElSec && page[imageKey]) {
+                    imageElSec.setAttribute('src', page[imageKey]);
+                    // Provide alt text based on title if available
+                    if (page[titleKey]) {
+                        imageElSec.setAttribute('alt', page[titleKey]);
+                    }
+                }
             }
         }
     }

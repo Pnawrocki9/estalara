@@ -187,6 +187,81 @@
                             </div>
                             <button class="admin-btn admin-btn-primary" onclick="updateSiteInfo()">Update Site Info</button>
                         </div>
+
+                    <!-- Page Specific Content -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">Page Specific Content</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Select Page</label>
+                                <select id="pageSelect" class="admin-input w-full">
+                                    <option value="agencies">Agencies</option>
+                                    <option value="investors">Investors</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 1 Title</label>
+                                <input type="text" id="section1Title" class="admin-input w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 1 Content</label>
+                                <textarea id="section1Content" class="admin-input w-full" rows="3"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 1 Icon (emoji or class)</label>
+                                <input type="text" id="section1Icon" class="admin-input w-full" placeholder="e.g. 🎥 or fa-video">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 1 Image URL</label>
+                                <input type="text" id="section1Image" class="admin-input w-full" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 2 Title</label>
+                                <input type="text" id="section2Title" class="admin-input w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 2 Content</label>
+                                <textarea id="section2Content" class="admin-input w-full" rows="3"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 2 Icon</label>
+                                <input type="text" id="section2Icon" class="admin-input w-full" placeholder="e.g. 📱">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 2 Image URL</label>
+                                <input type="text" id="section2Image" class="admin-input w-full" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 3 Title</label>
+                                <input type="text" id="section3Title" class="admin-input w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 3 Content</label>
+                                <textarea id="section3Content" class="admin-input w-full" rows="3"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 3 Icon</label>
+                                <input type="text" id="section3Icon" class="admin-input w-full" placeholder="e.g. 🚀">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section 3 Image URL</label>
+                                <input type="text" id="section3Image" class="admin-input w-full" placeholder="https://example.com/image.jpg">
+                            </div>
+                            <button class="admin-btn admin-btn-primary" onclick="updatePageSections()">Update Page Content</button>
+                        </div>
+                    </div>
+
+                    <!-- Footer Editing -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">Footer</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Footer Text</label>
+                                <input type="text" id="footerText" class="admin-input w-full" value="">
+                            </div>
+                            <button class="admin-btn admin-btn-primary" onclick="updateFooterText()">Update Footer</button>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -501,6 +576,56 @@
             alert('Settings updated successfully!');
         }
 
+        // Load page-specific section fields based on selected page
+        function loadPageSectionFields() {
+            const select = document.getElementById('pageSelect');
+            if (!select) return;
+            const pageKey = select.value;
+            const page = (adminData.content.pages && adminData.content.pages[pageKey]) || {};
+            document.getElementById('section1Title').value = page.section1Title || '';
+            document.getElementById('section1Content').value = page.section1Content || '';
+            document.getElementById('section1Icon').value = page.section1Icon || '';
+            document.getElementById('section1Image').value = page.section1Image || '';
+            document.getElementById('section2Title').value = page.section2Title || '';
+            document.getElementById('section2Content').value = page.section2Content || '';
+            document.getElementById('section2Icon').value = page.section2Icon || '';
+            document.getElementById('section2Image').value = page.section2Image || '';
+            document.getElementById('section3Title').value = page.section3Title || '';
+            document.getElementById('section3Content').value = page.section3Content || '';
+            document.getElementById('section3Icon').value = page.section3Icon || '';
+            document.getElementById('section3Image').value = page.section3Image || '';
+        }
+        // Update sections for selected page
+        function updatePageSections() {
+            const pageKey = document.getElementById('pageSelect').value;
+            if (!adminData.content.pages) {
+                adminData.content.pages = {};
+            }
+            if (!adminData.content.pages[pageKey]) {
+                adminData.content.pages[pageKey] = {};
+            }
+            adminData.content.pages[pageKey].section1Title = document.getElementById('section1Title').value;
+            adminData.content.pages[pageKey].section1Content = document.getElementById('section1Content').value;
+            adminData.content.pages[pageKey].section1Icon = document.getElementById('section1Icon').value;
+            adminData.content.pages[pageKey].section1Image = document.getElementById('section1Image').value;
+            adminData.content.pages[pageKey].section2Title = document.getElementById('section2Title').value;
+            adminData.content.pages[pageKey].section2Content = document.getElementById('section2Content').value;
+            adminData.content.pages[pageKey].section2Icon = document.getElementById('section2Icon').value;
+            adminData.content.pages[pageKey].section2Image = document.getElementById('section2Image').value;
+            adminData.content.pages[pageKey].section3Title = document.getElementById('section3Title').value;
+            adminData.content.pages[pageKey].section3Content = document.getElementById('section3Content').value;
+            adminData.content.pages[pageKey].section3Icon = document.getElementById('section3Icon').value;
+            adminData.content.pages[pageKey].section3Image = document.getElementById('section3Image').value;
+            saveData();
+            alert('Page content updated successfully!');
+        }
+        // Update footer text
+        function updateFooterText() {
+            adminData.content.footerText = document.getElementById('footerText').value;
+            saveData();
+            alert('Footer updated successfully!');
+        }
+
         function exportData() {
             const dataStr = JSON.stringify(adminData, null, 2);
             const dataBlob = new Blob([dataStr], {type: 'application/json'});
@@ -588,6 +713,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             showSection('dashboard');
+            // Attach page select listener and load initial values
+            const pageSelectEl = document.getElementById('pageSelect');
+            if (pageSelectEl) {
+                pageSelectEl.addEventListener('change', loadPageSectionFields);
+                loadPageSectionFields();
+            }
+            // Populate footer text field
+            const footerInput = document.getElementById('footerText');
+            if (footerInput) {
+                footerInput.value = (adminData.content && adminData.content.footerText) || '';
+            }
         });
     </script>
 </body>
