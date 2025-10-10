@@ -336,8 +336,16 @@ window.EstalaraUtils = {
 
         // Toggle menu visibility on click
         btn.addEventListener('click', function () {
-            var isHidden = menu.classList.toggle('hidden');
-            btn.setAttribute('aria-expanded', String(!isHidden));
+            var isHidden = menu.classList.contains('hidden');
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                menu.classList.add('block');
+                btn.setAttribute('aria-expanded', 'true');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('block');
+                btn.setAttribute('aria-expanded', 'false');
+            }
         });
 
         // Hide menu after clicking a link on mobile
@@ -345,6 +353,7 @@ window.EstalaraUtils = {
             a.addEventListener('click', function () {
                 if (getComputedStyle(btn).display !== 'none') {
                     menu.classList.add('hidden');
+                    menu.classList.remove('block');
                     btn.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -355,6 +364,7 @@ window.EstalaraUtils = {
             // On mobile (button visible), ensure menu is closed
             if (getComputedStyle(btn).display !== 'none') {
                 menu.classList.add('hidden');
+                menu.classList.remove('block');
                 btn.setAttribute('aria-expanded', 'false');
             }
             // On desktop (button hidden), Tailwind's md:flex handles visibility automatically
