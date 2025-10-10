@@ -1,0 +1,8 @@
+<svg width="180" height="40" viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Modern geometric E symbol -->
+  <rect x="0" y="0" width="32" height="32" rx="4" fill="white"/>
+  <path d="M8 8h16v4H12v4h10v4H12v4h12v4H8V8z" fill="black"/>
+  
+  <!-- ESTALARA text -->
+  <text x="40" y="24" font-family="'Inter', sans-serif" font-size="20" font-weight="700" fill="white" letter-spacing="0.05em">ESTALARA</text>
+</svg>
