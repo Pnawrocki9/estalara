@@ -447,7 +447,12 @@
                 heroTitle: "Go LIVE. Go GLOBAL.",
                 heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.",
                 currency: "EUR",
-                language: "en"
+                language: "en",
+                footerText: "© 2024 Estalara. All rights reserved.",
+                pages: {
+                    agencies: {},
+                    investors: {}
+                }
             }
         };
 
@@ -580,8 +585,15 @@
         function loadPageSectionFields() {
             const select = document.getElementById('pageSelect');
             if (!select) return;
+            
+            // Ensure pages object exists
+            if (!adminData.content.pages) {
+                adminData.content.pages = {};
+            }
+            
             const pageKey = select.value;
-            const page = (adminData.content.pages && adminData.content.pages[pageKey]) || {};
+            const page = adminData.content.pages[pageKey] || {};
+            
             document.getElementById('section1Title').value = page.section1Title || '';
             document.getElementById('section1Content').value = page.section1Content || '';
             document.getElementById('section1Icon').value = page.section1Icon || '';
