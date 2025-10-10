@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://estalara.com/</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://estalara.com/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://estalara.com/" />
+  </url>
+  
+  <!-- Agents Page -->
+  <url>
+    <loc>https://estalara.com/agents.html</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://estalara.com/agents.html" />
+  </url>
+  
+  <!-- Agencies Page -->
+  <url>
+    <loc>https://estalara.com/agencies.html</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://estalara.com/agencies.html" />
+  </url>
+  
+  <!-- Investors Page -->
+  <url>
+    <loc>https://estalara.com/investors.html</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://estalara.com/investors.html" />
+  </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://estalara.com/about.html</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://estalara.com/about.html" />
+  </url>
+  
+  <!-- Property Listings (example - add all live properties) -->
+  <url>
+    <loc>https://app.estalara.com/listing/-cadiz-cadiz-na-d19331b5-846d-4139-a78e-2d9695ff73d0</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp</image:loc>
+      <image:title>Modern Apartment in Cádiz</image:title>
+      <image:caption>Stunning property in the heart of Cádiz with ocean views</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Add more property URLs as they are created -->
+  
+  <!-- FAQ Page -->
+  <url>
+    <loc>https://estalara.com/faq.html</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://estalara.com/privacy.html</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Terms of Service -->
+  <url>
+    <loc>https://estalara.com/terms.html</loc>
+    <lastmod>2025-10-10</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+</urlset>

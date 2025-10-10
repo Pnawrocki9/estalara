@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Estalara - Schema Markup Templates</title>
+</head>
+<body>
+    <h1>Schema Markup Templates for Estalara</h1>
+    <p>Copy and paste these schema markup blocks into the appropriate pages.</p>
+    
+    <!-- ORGANIZATION SCHEMA - Add to index.html -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Estalara",
+      "legalName": "Time2Show, Inc.",
+      "url": "https://estalara.com",
+      "logo": "https://estalara.com/assets/logo.svg",
+      "description": "Global real estate platform connecting agents and international investors through AI and livestreaming technology. Simplify cross-border property transactions with confidence.",
+      "foundingDate": "2023",
+      "slogan": "Go LIVE. Go GLOBAL.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Dover",
+        "addressRegion": "DE",
+        "addressCountry": "US"
+      },
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "email": "estalara@estalara.com",
+          "contactType": "customer service",
+          "availableLanguage": ["en", "es", "fr", "de", "zh", "ar"],
+          "areaServed": "Worldwide"
+        },
+        {
+          "@type": "ContactPoint",
+          "email": "agents@estalara.com",
+          "contactType": "sales",
+          "availableLanguage": ["en", "es", "fr", "de"]
+        }
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/company/estalara",
+        "https://www.tiktok.com/@estalara",
+        "https://www.instagram.com/estalara"
+      ],
+      "areaServed": {
+        "@type": "Place",
+        "name": "Worldwide"
+      },
+      "knowsAbout": [
+        "Real Estate",
+        "International Property Investment",
+        "Live Streaming",
+        "Artificial Intelligence",
+        "Cross-border Transactions"
+      ]
+    }
+    </script>
+    
+    <!-- WEBSITE SCHEMA WITH SEARCHACTION - Add to index.html -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Estalara",
+      "url": "https://estalara.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://estalara.com/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <!-- SERVICE SCHEMA - Add to index.html -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "serviceType": "Real Estate Platform",
+      "name": "Estalara Global Real Estate Platform",
+      "description": "Connect real estate agents and international investors through AI-powered livestreaming, automated lead generation, and cross-border transaction support.",
+      "provider": {
+        "@type": "Organization",
+        "name": "Estalara",
+        "url": "https://estalara.com"
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Worldwide"
+      },
+      "audience": [
+        {
+          "@type": "Audience",
+          "audienceType": "Real Estate Agents",
+          "geographicArea": {
+            "@type": "Place",
+            "name": "Worldwide"
+          }
+        },
+        {
+          "@type": "Audience",
+          "audienceType": "Property Investors",
+          "geographicArea": {
+            "@type": "Place",
+            "name": "Worldwide"
+          }
+        },
+        {
+          "@type": "Audience",
+          "audienceType": "Real Estate Agencies"
+        }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Estalara Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Live Property Tours",
+              "description": "Real-time livestreaming of properties to global investors with HD video and instant interaction"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "AI Lead Generation",
+              "description": "AI-powered matching of properties with qualified international investors based on preferences and behavior"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "EstalaraAI Assistant",
+              "description": "Natural language property assistant with hallucination-free responses and multilingual support"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Global Transaction Support",
+              "description": "Trusted network of notaries, title insurance, and legal support for international real estate transactions"
+            }
+          }
+        ]
+      }
+    }
+    </script>
+    
+    <!-- BREADCRUMB SCHEMA - Example for agents.html -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://estalara.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "For Agents",
+          "item": "https://estalara.com/agents.html"
+        }
+      ]
+    }
+    </script>
+    
+    <!-- FAQ SCHEMA - Create FAQ page and add this -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does Estalara work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Estalara connects real estate agents and global investors through live streaming technology. Agents can broadcast property tours in real-time, while investors from around the world can participate, ask questions, and express interest immediately. Our AI-powered platform handles lead matching, translation, and transaction support."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Estalara available in my country?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Estalara operates in over 50 countries worldwide and supports 25+ languages, making international real estate accessible to investors and agents globally. We provide services across Europe, North America, Latin America, Asia, and the Middle East."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the costs for real estate agents?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Estalara offers flexible pricing plans for agents based on their needs. We have options for individual agents, small teams, and large agencies. Contact us at estalara@estalara.com for detailed pricing information tailored to your requirements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How secure are international property transactions on Estalara?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Security is our top priority. Estalara verifies all agents and investors, provides secure payment processing, works with trusted notaries and title insurance companies, and ensures legal compliance in all jurisdictions. We use industry-standard encryption and follow GDPR and international data protection regulations."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What languages does Estalara support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Estalara supports over 25 languages including English, Spanish, French, German, Chinese, Arabic, Portuguese, Italian, Russian, and many more. Our AI-powered translation ensures real-time communication between agents and investors regardless of their native language."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I watch property tours if I can't attend live?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! All live property tours are recorded and available for on-demand viewing. You can watch recordings at your convenience, and our AI assistant can answer questions about properties 24/7."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does the AI lead generation work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our AI analyzes investor behavior, preferences, search patterns, and engagement during live tours to match them with relevant properties. Agents receive qualified leads with detailed insights about investor interests, budget, and purchase timeline, enabling more effective follow-up."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is EstalaraAI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "EstalaraAI is our natural language property assistant that provides accurate, hallucination-free responses to questions about properties, markets, legal requirements, and investment opportunities. It supports multiple languages and helps both agents and investors make informed decisions."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- REAL ESTATE LISTING SCHEMA - Example for property -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateListing",
+      "name": "Modern Apartment in Cádiz",
+      "description": "Stunning property in the heart of Cádiz with ocean views and modern amenities. Perfect for international investors seeking Mediterranean lifestyle.",
+      "url": "https://app.estalara.com/listing/-cadiz-cadiz-na-d19331b5-846d-4139-a78e-2d9695ff73d0",
+      "image": "https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Cádiz",
+        "addressRegion": "Andalusia",
+        "addressCountry": "ES"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "36.5270612",
+        "longitude": "-6.2885962"
+      },
+      "price": {
+        "@type": "PriceSpecification",
+        "price": "450000",
+        "priceCurrency": "EUR"
+      },
+      "datePosted": "2025-10-01",
+      "availableLanguage": ["en", "es"],
+      "additionalProperty": [
+        {
+          "@type": "PropertyValue",
+          "name": "propertyType",
+          "value": "Apartment"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "numberOfRooms",
+          "value": "3"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "floorSize",
+          "value": "120 sqm"
+        }
+      ]
+    }
+    </script>
+    
+    <!-- PERSON SCHEMA - Example for team member on about.html -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Alex Thompson",
+      "jobTitle": "CEO & Co-Founder",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Estalara"
+      },
+      "description": "15+ years in real estate technology, former VP at leading property tech company. Passionate about making global real estate accessible.",
+      "knowsAbout": [
+        "Real Estate Technology",
+        "International Business",
+        "PropTech Innovation"
+      ]
+    }
+    </script>
+    
+    <!-- HOWTO SCHEMA - Example for tutorial content -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Buy International Real Estate with Estalara",
+      "description": "Step-by-step guide to purchasing property globally using Estalara's platform",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Create Your Investor Account",
+          "text": "Sign up on Estalara and verify your identity to access global property listings and live tours."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Browse Properties and Attend Live Tours",
+          "text": "Explore properties in your target countries and join live streaming tours to see properties in real-time with expert agents."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Ask Questions with EstalaraAI",
+          "text": "Use our AI assistant to get detailed information about properties, local markets, legal requirements, and investment potential in your language."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Make an Offer",
+          "text": "When you find the right property, submit your offer through our secure platform with guidance from local agents and legal experts."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 5,
+          "name": "Complete the Transaction",
+          "text": "Work with our network of trusted notaries, lawyers, and financial partners to finalize your international property purchase safely and efficiently."
+        }
+      ],
+      "totalTime": "PT4W"
+    }
+    </script>
+
+</body>
+</html>
