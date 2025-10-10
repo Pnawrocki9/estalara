@@ -352,12 +352,19 @@ class EstalaraAdmin {
             encodedUrl = parts.map(part => encodeURIComponent(part)).join('/');
         }
         
-        // Find all logo images on the page
-        const logoImages = document.querySelectorAll('img[alt="ESTALARA"], header img, footer img[alt="ESTALARA"]');
+        // Find all logo images on the page using multiple selectors
+        const logoImages = document.querySelectorAll('img[alt="ESTALARA"], header img, footer img[alt="ESTALARA"], nav img');
         
         logoImages.forEach(img => {
-            // Only update if it's actually a logo (check src contains 'logo' or alt is ESTALARA)
-            if (img.src.includes('logo') || img.alt === 'ESTALARA') {
+            // Update logo if it matches any of these criteria:
+            // 1. Has alt="ESTALARA"
+            // 2. Is in header or nav
+            // 3. Has 'logo' in src (for default case)
+            if (img.alt === 'ESTALARA' || 
+                img.src.includes('logo') || 
+                img.closest('header') || 
+                img.closest('nav') ||
+                img.closest('footer')) {
                 img.src = encodedUrl;
             }
         });
