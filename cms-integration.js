@@ -22,6 +22,12 @@ class EstalaraAdmin {
             heroTitle: "Go LIVE. Go GLOBAL.",
             heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.",
             // Seed example properties. In a production system this would be fetched from a backend.
+            // Version number for the CMS data structure. Increment this whenever
+            // you make breaking changes to the default content shape or when you
+            // want to force clients to reload default content after a major
+            // upgrade. When the stored data has an older version, the
+            // application will discard it and fall back to these defaults.
+            version: 2,
             properties: [
                 {
                     id: 1,
@@ -148,20 +154,33 @@ class EstalaraAdmin {
             }
         };
 
-        // Load from localStorage or use defaults
-        const stored = localStorage.getItem('estalaraAdminData');
-        // If saved data exists, parse it; otherwise start from defaults
-        const loaded = stored ? JSON.parse(stored) : defaultContent;
-        // Ensure the pages key exists to prevent undefined access. Merge with defaults so
-        // any missing keys are populated on upgrade.
-        loaded.pages = loaded.pages || {};
-        // Ensure properties exist; if not, seed with defaults. Without this
-        // the site will render no LIVE Properties when first loaded or after
-        // localStorage corruption.
-        if (!Array.isArray(loaded.properties) || loaded.properties.length === 0) {
-            loaded.properties = Array.isArray(defaultContent.properties) ? [...defaultContent.properties] : [];
+        // Load from localStorage or fall back to defaults. Include versioning to
+        // ensure that breaking changes or major updates to the default content
+        // automatically override old stored data. If the stored content lacks a
+        // version or has an older version than the default, we discard it.
+        const storedRaw = localStorage.getItem('estalaraAdminData');
+        let loaded;
+        if (storedRaw) {
+            try {
+                const parsed = JSON.parse(storedRaw);
+                // If no version or an older version is stored, reset to defaults
+                if (!parsed.version || parsed.version < defaultContent.version) {
+                    loaded = { ...defaultContent };
+                } else {
+                    loaded = parsed;
+                }
+            } catch (e) {
+                // If parsing fails, fall back to defaults
+                loaded = { ...defaultContent };
+            }
+        } else {
+            loaded = { ...defaultContent };
         }
-        // Only fill in missing page definitions, don't overwrite customised ones
+
+        // Ensure the pages key exists to prevent undefined access. Merge with
+        // defaults so any missing keys are populated on upgrade without
+        // overwriting customised content.
+        loaded.pages = loaded.pages || {};
         if (defaultContent.pages) {
             for (const key of Object.keys(defaultContent.pages)) {
                 if (!loaded.pages[key]) {
@@ -169,6 +188,21 @@ class EstalaraAdmin {
                 }
             }
         }
+
+        // Ensure properties exist; if not, seed with defaults. Without this the
+        // site will render no LIVE Properties when first loaded or after
+        // localStorage corruption.
+        if (!Array.isArray(loaded.properties) || loaded.properties.length === 0) {
+            loaded.properties = Array.isArray(defaultContent.properties)
+                ? [...defaultContent.properties]
+                : [];
+        }
+
+        // Always set the version to the current default version to allow future
+        // migrations to detect outdated data. Save back to localStorage in case
+        // defaults were used or the version was updated.
+        loaded.version = defaultContent.version;
+        localStorage.setItem('estalaraAdminData', JSON.stringify(loaded));
         return loaded;
     }
 
