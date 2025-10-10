@@ -842,10 +842,23 @@
 
         // Update logo preview
         function updateLogoPreview(url) {
+            const previewContainer = document.getElementById('logo-preview-container');
+            const previewImg = document.getElementById('logo-preview');
+            
             if (!url || !url.trim()) {
-                document.getElementById('logo-preview-container').style.display = 'none';
+                previewContainer.style.display = 'none';
                 return;
             }
+            
+            // Show container immediately with loading state
+            previewContainer.style.display = 'block';
+            previewContainer.innerHTML = `
+                <p class="text-sm font-medium text-gray-700 mb-2">Logo Preview:</p>
+                <div class="logo-preview flex items-center justify-center">
+                    <span class="text-gray-500">Loading preview...</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">URL: <code class="bg-gray-100 px-1 rounded">${url.substring(0, 60)}${url.length > 60 ? '...' : ''}</code></p>
+            `;
             
             // Encode the URL to handle spaces and special characters
             // But preserve data URLs (they start with 'data:')
@@ -856,16 +869,35 @@
                 encodedUrl = parts.map(part => encodeURIComponent(part)).join('/');
             }
             
-            const previewImg = document.getElementById('logo-preview');
-            const previewContainer = document.getElementById('logo-preview-container');
+            // Create a new image to test if it loads
+            const testImg = new Image();
             
-            previewImg.src = encodedUrl;
-            previewImg.onerror = function() {
-                previewContainer.style.display = 'none';
+            testImg.onload = function() {
+                // Image loaded successfully - show it
+                previewContainer.innerHTML = `
+                    <p class="text-sm font-medium text-gray-700 mb-2">Current Logo:</p>
+                    <img id="logo-preview" class="logo-preview" src="${encodedUrl}" alt="Logo Preview">
+                    <p class="text-xs text-green-600 mt-2">✓ Logo loaded successfully</p>
+                `;
             };
-            previewImg.onload = function() {
-                previewContainer.style.display = 'block';
+            
+            testImg.onerror = function() {
+                // Image failed to load - show helpful message
+                const isRelativePath = !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('data:');
+                previewContainer.innerHTML = `
+                    <p class="text-sm font-medium text-gray-700 mb-2">Logo Preview:</p>
+                    <div class="logo-preview flex flex-col items-center justify-center bg-yellow-50 border-2 border-yellow-300">
+                        <span class="text-yellow-700 text-3xl mb-2">⚠️</span>
+                        <span class="text-yellow-800 font-medium">Preview not available</span>
+                        <span class="text-yellow-700 text-xs mt-1">${isRelativePath ? 'File will be loaded from your website' : 'Check if URL is valid'}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-2">URL saved: <code class="bg-gray-100 px-1 rounded">${url.substring(0, 50)}${url.length > 50 ? '...' : ''}</code></p>
+                    <p class="text-xs text-blue-600 mt-1">💡 Click "Save Changes" to apply this logo to your website</p>
+                `;
             };
+            
+            // Start loading the image
+            testImg.src = encodedUrl;
         }
 
         // Save general settings
@@ -1582,9 +1614,26 @@
             // Logo URL input handler for live preview
             const logoUrlInput = document.getElementById('logo-url');
             if (logoUrlInput) {
+                console.log('✓ Attaching logo URL input handler');
+                
+                // Debounce the preview update to avoid too many updates while typing
+                let previewTimeout;
                 logoUrlInput.addEventListener('input', function(e) {
+                    clearTimeout(previewTimeout);
+                    previewTimeout = setTimeout(() => {
+                        console.log('📝 Logo URL input changed:', e.target.value);
+                        updateLogoPreview(e.target.value);
+                    }, 500); // Wait 500ms after user stops typing
+                });
+                
+                // Also update on blur (when user leaves the field)
+                logoUrlInput.addEventListener('blur', function(e) {
+                    clearTimeout(previewTimeout);
+                    console.log('👁️ Logo URL field blur, updating preview');
                     updateLogoPreview(e.target.value);
                 });
+                
+                console.log('✓ Logo URL input handler attached with debouncing');
             }
             
             // Logo file upload handler
