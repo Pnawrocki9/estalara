@@ -377,13 +377,11 @@ class EstalaraAdmin {
             }
         }
 
-        // Update custom sections for agencies, investors and agents
-        // For agents pages the prefix is 'agent', for agencies it's 'agency' and for investors it's 'investor'.
-        // This allows the same hide/show logic to apply across all three types of pages.
-        if (pageKey === 'agencies' || pageKey === 'investors' || pageKey === 'agents') {
-            const prefix = pageKey === 'agencies'
-                ? 'agency'
-                : (pageKey === 'agents' ? 'agent' : 'investor');
+        // Update custom sections for agencies and investors
+        // For agencies the prefix is 'agency' and for investors it's 'investor'.
+        // This allows the same hide/show logic to apply across both types of pages.
+        if (pageKey === 'agencies' || pageKey === 'investors') {
+            const prefix = pageKey === 'agencies' ? 'agency' : 'investor';
             for (let i = 1; i <= 3; i++) {
                 const titleId = `${prefix}-section${i}-title`;
                 const contentId = `${prefix}-section${i}-content`;
@@ -404,8 +402,9 @@ class EstalaraAdmin {
                         titleElSec.textContent = tVal;
                         titleElSec.style.display = '';
                     } else {
-                        // If no title, hide the element
+                        // If no title, hide the element and clear content
                         titleElSec.style.display = 'none';
+                        titleElSec.textContent = '';
                     }
                 }
                 // Update content (hide if empty or whitespace)
@@ -416,6 +415,7 @@ class EstalaraAdmin {
                         contentElSec.style.display = '';
                     } else {
                         contentElSec.style.display = 'none';
+                        contentElSec.textContent = '';
                     }
                 }
                 // Update icon and hide if not provided (empty or whitespace)
@@ -426,6 +426,7 @@ class EstalaraAdmin {
                         iconElSec.style.display = '';
                     } else {
                         iconElSec.style.display = 'none';
+                        iconElSec.textContent = '';
                     }
                 }
                 // Update image and hide if not provided (empty or whitespace)
@@ -440,14 +441,20 @@ class EstalaraAdmin {
                         imageElSec.style.display = '';
                     } else {
                         imageElSec.style.display = 'none';
+                        imageElSec.setAttribute('src', '');
                     }
                 }
 
                 // Hide entire section if no meaningful title, content, icon or image provided
-                const hasSectionContent = [titleKey, contentKey, iconKey, imageKey].some(key => {
-                    const val = page[key];
-                    return val && String(val).trim();
-                });
+                // Check both the CMS data AND the actual rendered content to ensure sections
+                // are hidden even if they were populated with empty values
+                const hasTitleContent = titleElSec && titleElSec.textContent && titleElSec.textContent.trim();
+                const hasContentText = contentElSec && contentElSec.textContent && contentElSec.textContent.trim();
+                const hasIconContent = iconElSec && iconElSec.textContent && iconElSec.textContent.trim();
+                const hasImageSrc = imageElSec && imageElSec.getAttribute('src') && imageElSec.getAttribute('src').trim();
+                
+                const hasSectionContent = hasTitleContent || hasContentText || hasIconContent || hasImageSrc;
+                
                 if (!hasSectionContent) {
                     let sectionEl = null;
                     // Find the nearest ancestor section from title element or content element
@@ -458,6 +465,17 @@ class EstalaraAdmin {
                     }
                     if (sectionEl) {
                         sectionEl.style.display = 'none';
+                    }
+                } else {
+                    // Ensure the section is visible if it has content
+                    let sectionEl = null;
+                    if (titleElSec && titleElSec.closest) {
+                        sectionEl = titleElSec.closest('section');
+                    } else if (contentElSec && contentElSec.closest) {
+                        sectionEl = contentElSec.closest('section');
+                    }
+                    if (sectionEl) {
+                        sectionEl.style.display = '';
                     }
                 }
             }
