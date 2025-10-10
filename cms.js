@@ -110,10 +110,19 @@ function updateLogoPreview(url) {
         return;
     }
     
+    // Encode the URL to handle spaces and special characters
+    // But preserve data URLs (they start with 'data:')
+    let encodedUrl = url;
+    if (!url.startsWith('data:') && !url.startsWith('http://') && !url.startsWith('https://')) {
+        // For relative paths, encode each component separately to preserve slashes
+        const parts = url.split('/');
+        encodedUrl = parts.map(part => encodeURIComponent(part)).join('/');
+    }
+    
     const previewImg = document.getElementById('logo-preview');
     const previewContainer = document.getElementById('logo-preview-container');
     
-    previewImg.src = url;
+    previewImg.src = encodedUrl;
     previewImg.onerror = function() {
         previewContainer.style.display = 'none';
     };

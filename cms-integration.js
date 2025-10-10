@@ -343,13 +343,22 @@ class EstalaraAdmin {
 
     // Update logo on all pages
     updateLogo(logoUrl) {
+        // Encode the URL to handle spaces and special characters
+        // But preserve data URLs (they start with 'data:')
+        let encodedUrl = logoUrl;
+        if (!logoUrl.startsWith('data:') && !logoUrl.startsWith('http://') && !logoUrl.startsWith('https://')) {
+            // For relative paths, encode each component separately to preserve slashes
+            const parts = logoUrl.split('/');
+            encodedUrl = parts.map(part => encodeURIComponent(part)).join('/');
+        }
+        
         // Find all logo images on the page
         const logoImages = document.querySelectorAll('img[alt="ESTALARA"], header img, footer img[alt="ESTALARA"]');
         
         logoImages.forEach(img => {
             // Only update if it's actually a logo (check src contains 'logo' or alt is ESTALARA)
             if (img.src.includes('logo') || img.alt === 'ESTALARA') {
-                img.src = logoUrl;
+                img.src = encodedUrl;
             }
         });
     }
