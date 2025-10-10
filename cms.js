@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Logo URL input handler for live preview
     const logoUrlInput = document.getElementById('logo-url');
-    if (logoUrlInput) {
+    if (logoUrlInput && !logoUrlInput.dataset.listenerAttached) {
         console.log('✓ Attaching logo URL input handler');
         
         // Debounce the preview update to avoid too many updates while typing
@@ -242,11 +242,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         logoUrlInput.dataset.listenerAttached = 'true';
         console.log('✓ Logo URL input handler attached with debouncing');
+    } else if (logoUrlInput) {
+        console.log('✓ Logo URL input handler already attached, skipping');
     }
     
     // Logo file upload handler
     const logoUploadInput = document.getElementById('logo-upload');
-    if (logoUploadInput) {
+    if (logoUploadInput && !logoUploadInput.dataset.listenerAttached) {
         console.log('✓ Attaching logo upload handler');
         logoUploadInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -286,6 +288,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         logoUploadInput.dataset.listenerAttached = 'true';
         console.log('✓ Logo upload handler attached');
+    } else if (logoUploadInput) {
+        console.log('✓ Logo upload handler already attached, skipping');
     }
     
     // Add Section Form Handler
