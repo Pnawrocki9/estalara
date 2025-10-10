@@ -343,9 +343,13 @@ class EstalaraAdmin {
             }
         }
 
-        // Update custom sections for agencies and investors
-        if (pageKey === 'agencies' || pageKey === 'investors') {
-            const prefix = pageKey === 'agencies' ? 'agency' : 'investor';
+        // Update custom sections for agencies, investors and agents
+        // For agents pages the prefix is 'agent', for agencies it's 'agency' and for investors it's 'investor'.
+        // This allows the same hide/show logic to apply across all three types of pages.
+        if (pageKey === 'agencies' || pageKey === 'investors' || pageKey === 'agents') {
+            const prefix = pageKey === 'agencies'
+                ? 'agency'
+                : (pageKey === 'agents' ? 'agent' : 'investor');
             for (let i = 1; i <= 3; i++) {
                 const titleId = `${prefix}-section${i}-title`;
                 const contentId = `${prefix}-section${i}-content`;
@@ -359,20 +363,53 @@ class EstalaraAdmin {
                 const contentKey = `section${i}Content`;
                 const iconKey = `section${i}Icon`;
                 const imageKey = `section${i}Image`;
-                if (titleElSec && page[titleKey]) {
-                    titleElSec.textContent = page[titleKey];
-                }
-                if (contentElSec && page[contentKey]) {
-                    contentElSec.textContent = page[contentKey];
-                }
-                if (iconElSec && page[iconKey]) {
-                    iconElSec.textContent = page[iconKey];
-                }
-                if (imageElSec && page[imageKey]) {
-                    imageElSec.setAttribute('src', page[imageKey]);
-                    // Provide alt text based on title if available
+                // Update title
+                if (titleElSec) {
                     if (page[titleKey]) {
-                        imageElSec.setAttribute('alt', page[titleKey]);
+                        titleElSec.textContent = page[titleKey];
+                    }
+                }
+                // Update content
+                if (contentElSec) {
+                    if (page[contentKey]) {
+                        contentElSec.textContent = page[contentKey];
+                    }
+                }
+                // Update icon and hide if not provided
+                if (iconElSec) {
+                    if (page[iconKey]) {
+                        iconElSec.textContent = page[iconKey];
+                        iconElSec.style.display = '';
+                    } else {
+                        iconElSec.style.display = 'none';
+                    }
+                }
+                // Update image and hide if not provided
+                if (imageElSec) {
+                    if (page[imageKey]) {
+                        imageElSec.setAttribute('src', page[imageKey]);
+                        // Provide alt text based on title if available
+                        if (page[titleKey]) {
+                            imageElSec.setAttribute('alt', page[titleKey]);
+                        }
+                        imageElSec.style.display = '';
+                    } else {
+                        imageElSec.style.display = 'none';
+                    }
+                }
+
+                // Hide entire section if no title, content, icon or image provided
+                const hasSectionContent = Boolean(page[titleKey] || page[contentKey] || page[iconKey] || page[imageKey]);
+                if (!hasSectionContent) {
+                    let sectionEl = null;
+                    // Find the nearest ancestor section from title element or content element
+                    if (titleElSec) {
+                        sectionEl = titleElSec.closest('section');
+                    } else if (contentElSec) {
+                        sectionEl = contentElSec.closest('section');
+                    }
+                    if (sectionEl) {
+                        sectionEl.style.display = 'none';
                     }
                 }
             }
