@@ -236,6 +236,20 @@ function saveGeneralSettings() {
     const contactEmail = document.getElementById('contact-email').value;
     const logoUrl = document.getElementById('logo-url').value;
     
+    // Validate logo URL for Netlify deployment
+    if (logoUrl && !logoUrl.startsWith('data:')) {
+        if (logoUrl.includes(' ')) {
+            if (!confirm('Warning: Your logo URL contains spaces. This may cause issues on Netlify.\n\nRecommendation: Use a filename without spaces (e.g., "assets/EstalaraLogo.png").\n\nDo you want to save anyway?')) {
+                return;
+            }
+        }
+        
+        // Show helpful tip for relative URLs
+        if (logoUrl.startsWith('assets/') && !logoUrl.startsWith('data:')) {
+            showNotification('Good choice! Using a relative path ensures your logo persists on Netlify. ✓', 'success');
+        }
+    }
+    
     // Update admin data
     admin.siteTitle = siteTitle;
     admin.siteDescription = siteDescription;
@@ -654,9 +668,10 @@ function resetPageStructure() {
 }
 
 // Show notification
-function showNotification(message) {
+function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
     notification.textContent = message;
     document.body.appendChild(notification);
     

@@ -455,18 +455,26 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Logo</label>
                                 <div class="space-y-3">
+                                    <div class="bg-blue-50 border border-blue-200 p-3 rounded mb-3">
+                                        <p class="text-sm text-blue-900 font-semibold mb-1">🛈 For Netlify deployment:</p>
+                                        <ul class="text-xs text-blue-800 space-y-1">
+                                            <li>• <strong>Recommended:</strong> Use a URL path like <code class="bg-blue-100 px-1 rounded">assets/EstalaraLogo.png</code></li>
+                                            <li>• Make sure the logo file exists in your <code class="bg-blue-100 px-1 rounded">assets/</code> folder</li>
+                                            <li>• File upload creates a data URL (works but increases localStorage size)</li>
+                                        </ul>
+                                    </div>
                                     <div>
                                         <label for="logo-upload" class="cms-btn cms-btn-primary cursor-pointer inline-block">
                                             📁 Choose Logo File
                                         </label>
                                         <input type="file" id="logo-upload" name="logoUpload" accept="image/*" class="hidden">
-                                        <p class="text-xs text-gray-500 mt-2">Upload your logo (PNG, JPG, SVG, or any image format)</p>
+                                        <p class="text-xs text-gray-500 mt-2">Upload your logo (converts to data URL, stored in browser)</p>
                                     </div>
                                     <div class="text-sm text-gray-600">
                                         <strong>OR</strong> enter a URL:
                                     </div>
-                                    <input type="url" id="logo-url" name="logoUrl" class="cms-input" placeholder="https://example.com/logo.png or assets/logo.svg" value="assets/logo.svg">
-                                    <p class="text-xs text-gray-500">Enter the URL of your logo image if not uploading</p>
+                                    <input type="url" id="logo-url" name="logoUrl" class="cms-input" placeholder="assets/EstalaraLogo.png" value="assets/logo.svg">
+                                    <p class="text-xs text-gray-500">Use a path relative to your website root (e.g., assets/logo.png) or full URL</p>
                                 </div>
                                 <div id="logo-preview-container" class="mt-4" style="display: none;">
                                     <p class="text-sm font-medium text-gray-700 mb-2">Current Logo:</p>

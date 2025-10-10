@@ -484,18 +484,26 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Upload Logo</label>
                                 <div class="space-y-3">
+                                    <div class="bg-blue-50 border border-blue-200 p-3 rounded mb-3">
+                                        <p class="text-sm text-blue-900 font-semibold mb-1">🛈 For Netlify deployment:</p>
+                                        <ul class="text-xs text-blue-800 space-y-1">
+                                            <li>• <strong>Recommended:</strong> Use a URL path like <code class="bg-blue-100 px-1 rounded">assets/EstalaraLogo.png</code></li>
+                                            <li>• Make sure the logo file exists in your <code class="bg-blue-100 px-1 rounded">assets/</code> folder</li>
+                                            <li>• File upload creates a data URL (works but increases localStorage size)</li>
+                                        </ul>
+                                    </div>
                                     <div>
                                         <label for="logo-upload" class="admin-btn admin-btn-primary cursor-pointer inline-block">
                                             📁 Choose Logo File
                                         </label>
                                         <input type="file" id="logo-upload" name="logoUpload" accept="image/*" class="hidden">
-                                        <p class="text-xs text-gray-500 mt-2">Upload your logo (PNG, JPG, SVG, or any image format)</p>
+                                        <p class="text-xs text-gray-500 mt-2">Upload your logo (converts to data URL, stored in browser)</p>
                                     </div>
                                     <div class="text-sm text-gray-600">
                                         <strong>OR</strong> enter a URL:
                                     </div>
-                                    <input type="url" id="logo-url" name="logoUrl" class="admin-input w-full" placeholder="https://example.com/logo.png or assets/logo.svg" value="assets/logo.svg">
-                                    <p class="text-xs text-gray-500">Enter the URL of your logo image if not uploading</p>
+                                    <input type="url" id="logo-url" name="logoUrl" class="admin-input w-full" placeholder="assets/EstalaraLogo.png" value="assets/logo.svg">
+                                    <p class="text-xs text-gray-500">Use a path relative to your website root (e.g., assets/logo.png) or full URL</p>
                                 </div>
                                 <div id="logo-preview-container" class="mt-4" style="display: none;">
                                     <p class="text-sm font-medium text-gray-700 mb-2">Current Logo:</p>
@@ -862,10 +870,26 @@
 
         // Save general settings
         function saveGeneralSettings() {
+            const logoUrl = document.getElementById('logo-url').value;
+            
+            // Validate logo URL for Netlify deployment
+            if (logoUrl && !logoUrl.startsWith('data:')) {
+                if (logoUrl.includes(' ')) {
+                    if (!confirm('Warning: Your logo URL contains spaces. This may cause issues on Netlify.\\n\\nRecommendation: Use a filename without spaces (e.g., \"assets/EstalaraLogo.png\").\\n\\nDo you want to save anyway?')) {
+                        return;
+                    }
+                }
+                
+                // Show helpful tip for relative URLs
+                if (logoUrl.startsWith('assets/') && !logoUrl.startsWith('data:')) {
+                    showNotification('Good choice! Using a relative path ensures your logo persists on Netlify. ✓', 'success');
+                }
+            }
+            
             adminData.content.siteTitle = document.getElementById('site-title').value;
             adminData.content.siteDescription = document.getElementById('site-description').value;
             adminData.content.contactEmail = document.getElementById('contact-email').value;
-            adminData.content.logoUrl = document.getElementById('logo-url').value;
+            adminData.content.logoUrl = logoUrl;
             
             saveData();
             showNotification('Settings saved successfully! Refresh your website pages to see changes.');
@@ -1481,9 +1505,10 @@
         }
 
         // Show notification
-        function showNotification(message) {
+        function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
-            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+            notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
             notification.textContent = message;
             document.body.appendChild(notification);
             
