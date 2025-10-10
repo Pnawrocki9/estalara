@@ -339,11 +339,11 @@ window.EstalaraUtils = {
             var isHidden = menu.classList.contains('hidden');
             if (isHidden) {
                 menu.classList.remove('hidden');
-                menu.classList.add('flex', 'flex-col');
+                menu.classList.add('flex', 'flex-col', 'gap-4');
                 btn.setAttribute('aria-expanded', 'true');
             } else {
                 menu.classList.add('hidden');
-                menu.classList.remove('flex', 'flex-col');
+                menu.classList.remove('flex', 'flex-col', 'gap-4');
                 btn.setAttribute('aria-expanded', 'false');
             }
         });
@@ -353,7 +353,7 @@ window.EstalaraUtils = {
             a.addEventListener('click', function () {
                 if (getComputedStyle(btn).display !== 'none') {
                     menu.classList.add('hidden');
-                    menu.classList.remove('flex', 'flex-col');
+                    menu.classList.remove('flex', 'flex-col', 'gap-4');
                     btn.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -364,7 +364,7 @@ window.EstalaraUtils = {
             // On mobile (button visible), ensure menu is closed
             if (getComputedStyle(btn).display !== 'none') {
                 menu.classList.add('hidden');
-                menu.classList.remove('flex', 'flex-col');
+                menu.classList.remove('flex', 'flex-col', 'gap-4');
                 btn.setAttribute('aria-expanded', 'false');
             }
             // On desktop (button hidden), Tailwind's md:flex handles visibility automatically
