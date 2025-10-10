@@ -18,8 +18,7 @@ class EstalaraAdmin {
             siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
             siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.",
             contactEmail: "estalara@estalara.com",
-            logoUrl: "assets/logo.svg",
-            // Default hero content used on the homepage when no page specific overrides exist
+logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on the homepage when no page specific overrides exist
             heroTitle: "Go LIVE. Go GLOBAL.",
             heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.",
             // Seed example properties. In a production system this would be fetched from a backend.
