@@ -148,7 +148,26 @@ class EstalaraAdmin {
                     section3Title: "Why Estalara for agencies?",
                     section3Content: "Estalara brings live selling and social platforms together in one streamlined system. Our enterprise platform helps you manage multiple agents, schedule live property tours and capture leads from comments. Built‑in analytics and automated workflows free your team to focus on clients. With support for more than 50 countries and multiple languages, you can market properties to buyers worldwide and grow your brand without limits.",
                     section3Icon: "🚀",
-                    section3Image: "https://images.unsplash.com/photo-1523958203904-cdcb402031fd?auto=format&fit=crop&w=800&q=60"
+                    section3Image: "https://images.unsplash.com/photo-1523958203904-cdcb402031fd?auto=format&fit=crop&w=800&q=60",
+                    // White-label section
+                    whiteLabelTitle: "Idol Brands — White label for real estate agencies",
+                    whiteLabelSubtitle: "We offer dedicated white label implementations — your brand, our technology. Launch a complete live commerce and social video platform under your agency's branding: on your own domain, with custom visual identity and configuration tailored to your sales processes.",
+                    whiteLabelBenefitsTitle: "What you get",
+                    whiteLabelBenefitsList: [
+                        "Your own branding: logo, colors, domain/subdomain",
+                        "Branded livestreams and short‑videos — without exposure of our brand",
+                        "Agent and manager panels with permissions",
+                        "CRM/MLS integrations and Single Sign‑On (SSO)"
+                    ],
+                    whiteLabelWhyTitle: "Why it works",
+                    whiteLabelWhyList: [
+                        "Greater customer trust through consistent branding",
+                        "Faster implementations and feature roadmap tailored to your needs",
+                        "SLA, training and Enterprise support",
+                        "Security and compliance (GDPR), scalable infrastructure"
+                    ],
+                    whiteLabelContactLabel: "Enterprise Cooperation",
+                    whiteLabelContactEmail: "peter@estalara.com"
                 }
             },
             settings: {
@@ -410,6 +429,47 @@ class EstalaraAdmin {
             }
             if (ctaSubtitleEl && page.ctaSubtitle) {
                 ctaSubtitleEl.textContent = page.ctaSubtitle;
+            }
+        }
+
+        // Update white-label section for agencies page
+        if (pageKey === 'agencies') {
+            const whiteLabelTitleEl = document.getElementById('agency-white-label-title');
+            const whiteLabelSubtitleEl = document.getElementById('agency-white-label-subtitle');
+            const whiteLabelBenefitsTitleEl = document.getElementById('agency-white-label-benefits-title');
+            const whiteLabelBenefitsListEl = document.getElementById('agency-white-label-benefits-list');
+            const whiteLabelWhyTitleEl = document.getElementById('agency-white-label-why-title');
+            const whiteLabelWhyListEl = document.getElementById('agency-white-label-why-list');
+            const whiteLabelContactLabelEl = document.getElementById('agency-white-label-contact-label');
+            const whiteLabelContactEmailEl = document.getElementById('agency-white-label-contact-email');
+
+            if (whiteLabelTitleEl && page.whiteLabelTitle) {
+                whiteLabelTitleEl.textContent = page.whiteLabelTitle;
+            }
+            if (whiteLabelSubtitleEl && page.whiteLabelSubtitle) {
+                whiteLabelSubtitleEl.textContent = page.whiteLabelSubtitle;
+            }
+            if (whiteLabelBenefitsTitleEl && page.whiteLabelBenefitsTitle) {
+                whiteLabelBenefitsTitleEl.textContent = page.whiteLabelBenefitsTitle;
+            }
+            if (whiteLabelBenefitsListEl && page.whiteLabelBenefitsList && Array.isArray(page.whiteLabelBenefitsList)) {
+                whiteLabelBenefitsListEl.innerHTML = page.whiteLabelBenefitsList
+                    .map(item => `<li>${item}</li>`)
+                    .join('');
+            }
+            if (whiteLabelWhyTitleEl && page.whiteLabelWhyTitle) {
+                whiteLabelWhyTitleEl.textContent = page.whiteLabelWhyTitle;
+            }
+            if (whiteLabelWhyListEl && page.whiteLabelWhyList && Array.isArray(page.whiteLabelWhyList)) {
+                whiteLabelWhyListEl.innerHTML = page.whiteLabelWhyList
+                    .map(item => `<li>${item}</li>`)
+                    .join('');
+            }
+            if (whiteLabelContactLabelEl && page.whiteLabelContactLabel) {
+                whiteLabelContactLabelEl.textContent = page.whiteLabelContactLabel;
+            }
+            if (whiteLabelContactEmailEl && page.whiteLabelContactEmail) {
+                whiteLabelContactEmailEl.innerHTML = `<a href="mailto:${page.whiteLabelContactEmail}" class="hover:underline">${page.whiteLabelContactEmail}</a>`;
             }
         }
 
