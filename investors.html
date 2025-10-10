@@ -122,6 +122,11 @@
         .process-step:hover {
             transform: scale(1.05);
         }
+        
+        /* Hide images with empty src to prevent broken image icons */
+        img[src=""], img:not([src]) {
+            display: none !important;
+        }
     </style>
 </head>
 <body>

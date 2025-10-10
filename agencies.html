@@ -129,6 +129,11 @@
             transform: scale(1.02);
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
         }
+        
+        /* Hide images with empty src to prevent broken image icons */
+        img[src=""], img:not([src]) {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
