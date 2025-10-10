@@ -134,6 +134,14 @@
         img[src=""], img:not([src]) {
             display: none !important;
         }
+        
+        /* Hide empty icon containers */
+        [id$="-icon"]:empty,
+        [id$="-icon"]:not(:has(*)):not(:has(text)) {
+            display: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
     </style>
 </head>
 <body>
@@ -199,8 +207,8 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-20 reveal active">
                 <!-- Icon and image placeholders for CMS-driven content -->
-                <div id="agency-section1-icon" class="text-5xl mb-4"></div>
-                <img id="agency-section1-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy">
+                <div id="agency-section1-icon" class="text-5xl mb-4" style="display:none"></div>
+                <img id="agency-section1-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy" style="display:none">
                 <h2 id="agency-section1-title" class="section-text font-display mb-8">
                     Live selling meets social media
                 </h2>
@@ -215,8 +223,8 @@
     <section id="agency-leads" class="py-32">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-20 reveal active">
-                <div id="agency-section2-icon" class="text-5xl mb-4"></div>
-                <img id="agency-section2-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy">
+                <div id="agency-section2-icon" class="text-5xl mb-4" style="display:none"></div>
+                <img id="agency-section2-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy" style="display:none">
                 <h2 id="agency-section2-title" class="section-text font-display mb-8">
                     Social media as your lead engine
                 </h2>
@@ -231,8 +239,8 @@
     <section id="agency-advantage" class="py-32 bg-white text-black">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-20 reveal active">
-                <div id="agency-section3-icon" class="text-5xl mb-4"></div>
-                <img id="agency-section3-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy">
+                <div id="agency-section3-icon" class="text-5xl mb-4" style="display:none"></div>
+                <img id="agency-section3-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy" style="display:none">
                 <h2 id="agency-section3-title" class="section-text font-display mb-8">
                     Why Estalara for agencies?
                 </h2>

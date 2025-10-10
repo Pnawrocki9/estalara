@@ -424,9 +424,13 @@ class EstalaraAdmin {
                     if (iVal && String(iVal).trim()) {
                         iconElSec.textContent = iVal;
                         iconElSec.style.display = '';
+                        iconElSec.style.margin = '';
+                        iconElSec.style.padding = '';
                     } else {
                         iconElSec.style.display = 'none';
                         iconElSec.textContent = '';
+                        iconElSec.style.margin = '0';
+                        iconElSec.style.padding = '0';
                     }
                 }
                 // Update image and hide if not provided (empty or whitespace)
@@ -439,9 +443,11 @@ class EstalaraAdmin {
                             imageElSec.setAttribute('alt', page[titleKey]);
                         }
                         imageElSec.style.display = '';
+                        imageElSec.style.margin = '';
                     } else {
                         imageElSec.style.display = 'none';
                         imageElSec.setAttribute('src', '');
+                        imageElSec.style.margin = '0';
                     }
                 }
 
@@ -604,6 +610,30 @@ class EstalaraAdmin {
         return this.content.settings;
     }
 }
+
+// Helper function to hide empty icon and image elements immediately on page load
+// This prevents empty placeholders from showing before CMS content loads
+function hideEmptyPlaceholders() {
+    // Hide all empty icon elements
+    document.querySelectorAll('[id$="-icon"]').forEach(el => {
+        if (!el.textContent || !el.textContent.trim()) {
+            el.style.display = 'none';
+            el.style.margin = '0';
+            el.style.padding = '0';
+        }
+    });
+    
+    // Hide all images with empty src
+    document.querySelectorAll('[id$="-image"]').forEach(el => {
+        if (!el.getAttribute('src') || !el.getAttribute('src').trim()) {
+            el.style.display = 'none';
+            el.style.margin = '0';
+        }
+    });
+}
+
+// Run immediately to hide placeholders before CMS loads
+hideEmptyPlaceholders();
 
 // Initialize Admin when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {

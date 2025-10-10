@@ -127,6 +127,14 @@
         img[src=""], img:not([src]) {
             display: none !important;
         }
+        
+        /* Hide empty icon containers */
+        [id$="-icon"]:empty,
+        [id$="-icon"]:not(:has(*)):not(:has(text)) {
+            display: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
     </style>
 </head>
 <body>
@@ -191,8 +199,8 @@
     <section id="investing-without-borders" class="py-32 bg-white text-black">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-20 reveal active">
-                <div id="investor-section1-icon" class="text-5xl mb-4"></div>
-                <img id="investor-section1-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy">
+                <div id="investor-section1-icon" class="text-5xl mb-4" style="display:none"></div>
+                <img id="investor-section1-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy" style="display:none">
                 <h2 id="investor-section1-title" class="section-text font-display mb-8">
                     Investing without borders
                 </h2>
@@ -207,8 +215,8 @@
     <section id="investor-challenges" class="py-32">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-20 reveal active">
-                <div id="investor-section2-icon" class="text-5xl mb-4"></div>
-                <img id="investor-section2-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy">
+                <div id="investor-section2-icon" class="text-5xl mb-4" style="display:none"></div>
+                <img id="investor-section2-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy" style="display:none">
                 <h2 id="investor-section2-title" class="section-text font-display mb-8">
                     Challenges of international investment & how we solve them
                 </h2>
@@ -223,8 +231,8 @@
     <section id="investor-support" class="py-32 bg-white text-black">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-20 reveal active">
-                <div id="investor-section3-icon" class="text-5xl mb-4"></div>
-                <img id="investor-section3-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy">
+                <div id="investor-section3-icon" class="text-5xl mb-4" style="display:none"></div>
+                <img id="investor-section3-image" class="mx-auto mb-8 w-full max-w-4xl rounded-lg" src="" alt="" loading="lazy" style="display:none">
                 <h2 id="investor-section3-title" class="section-text font-display mb-8">
                     Support you can trust
                 </h2>
