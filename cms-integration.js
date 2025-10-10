@@ -382,31 +382,51 @@ class EstalaraAdmin {
 
     // Update logo on all pages
     updateLogo(logoUrl) {
-        // Encode the URL to handle spaces and special characters
-        // But preserve data URLs (they start with 'data:')
-        let encodedUrl = logoUrl;
-        if (!logoUrl.startsWith('data:') && !logoUrl.startsWith('http://') && !logoUrl.startsWith('https://')) {
-            // For relative paths, encode each component separately to preserve slashes
-            const parts = logoUrl.split('/');
-            encodedUrl = parts.map(part => encodeURIComponent(part)).join('/');
+        if (!logoUrl) {
+            console.warn('⚠️ updateLogo called with empty logoUrl');
+            return;
         }
         
-        // Find all logo images on the page using multiple selectors
-        const logoImages = document.querySelectorAll('img[alt="ESTALARA"], header img, footer img[alt="ESTALARA"], nav img');
+        // Handle URL encoding - only encode spaces in relative paths, preserve slashes
+        let finalUrl = logoUrl;
+        if (!logoUrl.startsWith('data:') && 
+            !logoUrl.startsWith('http://') && 
+            !logoUrl.startsWith('https://') && 
+            logoUrl.includes(' ')) {
+            // Only replace spaces, don't encode slashes
+            finalUrl = logoUrl.replace(/ /g, '%20');
+        }
         
-        logoImages.forEach(img => {
-            // Update logo if it matches any of these criteria:
-            // 1. Has alt="ESTALARA"
-            // 2. Is in header or nav
-            // 3. Has 'logo' in src (for default case)
-            if (img.alt === 'ESTALARA' || 
-                img.src.includes('logo') || 
-                img.closest('header') || 
-                img.closest('nav') ||
-                img.closest('footer')) {
-                img.src = encodedUrl;
+        console.log('🔄 Updating logo to:', finalUrl);
+        
+        // Find all logo images - use specific selector for ESTALARA logos
+        const logoImages = document.querySelectorAll('img[alt="ESTALARA"]');
+        
+        console.log('📸 Found', logoImages.length, 'logo elements with alt="ESTALARA"');
+        
+        if (logoImages.length > 0) {
+            logoImages.forEach((img, index) => {
+                const oldSrc = img.src;
+                img.src = finalUrl;
+                console.log(`✅ Logo ${index + 1} updated:`, oldSrc, '→', img.src);
+            });
+        } else {
+            // Fallback: search for any image in header/footer that has 'logo' in src
+            console.warn('⚠️ No logos with alt="ESTALARA" found, trying fallback search...');
+            const fallbackImages = document.querySelectorAll('header img, footer img, nav img');
+            let updated = 0;
+            fallbackImages.forEach((img) => {
+                if (img.src.includes('logo')) {
+                    const oldSrc = img.src;
+                    img.src = finalUrl;
+                    console.log(`✅ Logo (fallback) updated:`, oldSrc, '→', img.src);
+                    updated++;
+                }
+            });
+            if (updated === 0) {
+                console.error('❌ No logo elements found on page!');
             }
-        });
+        }
     }
 
     // Load properties into the LIVE Properties section
