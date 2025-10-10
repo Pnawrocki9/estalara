@@ -404,6 +404,107 @@ function loadPageEditor(pageId) {
         </div>`;
     }
     
+    // For FAQ page
+    if (pageId === 'faq') {
+        editorHtml += `<div class="border-b pb-4 mb-4">
+            <h4 class="font-semibold text-lg mb-3">Page Header</h4>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Page Title</label>
+                <input type="text" name="pageTitle" class="cms-input w-full" value="${page.pageTitle || 'Frequently Asked Questions'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Page Subtitle</label>
+                <textarea name="pageSubtitle" class="cms-input w-full" rows="2">${page.pageSubtitle || 'Find answers to common questions about Estalara\'s global real estate platform.'}</textarea>
+            </div>
+        </div>`;
+        
+        editorHtml += `<div class="border-b pb-4 mb-4">
+            <h4 class="font-semibold text-lg mb-3">CTA Section</h4>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">CTA Title</label>
+                <input type="text" name="ctaTitle" class="cms-input w-full" value="${page.ctaTitle || 'Still have questions?'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">CTA Text</label>
+                <textarea name="ctaText" class="cms-input w-full" rows="2">${page.ctaText || 'Our team is here to help you navigate global real estate with confidence.'}</textarea>
+            </div>
+        </div>`;
+    }
+    
+    // For Privacy page
+    if (pageId === 'privacy') {
+        editorHtml += `<div class="border-b pb-4 mb-4">
+            <h4 class="font-semibold text-lg mb-3">Page Header</h4>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Page Title</label>
+                <input type="text" name="pageTitle" class="cms-input w-full" value="${page.pageTitle || 'Privacy Policy'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Effective Date</label>
+                <input type="text" name="effectiveDate" class="cms-input w-full" value="${page.effectiveDate || 'October 10, 2025'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Last Updated</label>
+                <input type="text" name="lastUpdated" class="cms-input w-full" value="${page.lastUpdated || 'October 10, 2025'}">
+            </div>
+        </div>`;
+        
+        editorHtml += `<div class="border-b pb-4 mb-4">
+            <h4 class="font-semibold text-lg mb-3">Company Information</h4>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                <input type="text" name="companyName" class="cms-input w-full" value="${page.companyName || 'Time2Show, Inc.'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Company Address</label>
+                <input type="text" name="companyAddress" class="cms-input w-full" value="${page.companyAddress || 'Dover, DE, USA'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                <input type="email" name="contactEmail" class="cms-input w-full" value="${page.contactEmail || 'privacy@estalara.com'}">
+            </div>
+        </div>`;
+    }
+    
+    // For Terms page
+    if (pageId === 'terms') {
+        editorHtml += `<div class="border-b pb-4 mb-4">
+            <h4 class="font-semibold text-lg mb-3">Page Header</h4>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Page Title</label>
+                <input type="text" name="pageTitle" class="cms-input w-full" value="${page.pageTitle || 'Terms of Service'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Effective Date</label>
+                <input type="text" name="effectiveDate" class="cms-input w-full" value="${page.effectiveDate || 'October 10, 2025'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Last Updated</label>
+                <input type="text" name="lastUpdated" class="cms-input w-full" value="${page.lastUpdated || 'October 10, 2025'}">
+            </div>
+        </div>`;
+        
+        editorHtml += `<div class="border-b pb-4 mb-4">
+            <h4 class="font-semibold text-lg mb-3">Company Information</h4>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+                <input type="text" name="companyName" class="cms-input w-full" value="${page.companyName || 'Time2Show, Inc.'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Company Address</label>
+                <input type="text" name="companyAddress" class="cms-input w-full" value="${page.companyAddress || 'Dover, DE, USA'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email (Legal)</label>
+                <input type="email" name="legalEmail" class="cms-input w-full" value="${page.legalEmail || 'legal@estalara.com'}">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-2">General Contact Email</label>
+                <input type="email" name="contactEmail" class="cms-input w-full" value="${page.contactEmail || 'estalara@estalara.com'}">
+            </div>
+        </div>`;
+    }
+    
     editorHtml += `<div class="flex justify-end space-x-3 pt-4">
         <button type="button" onclick="hidePageEditor()" class="cms-btn cms-btn-secondary">Cancel</button>
         <button type="submit" class="cms-btn cms-btn-primary">Save Changes</button>
@@ -611,7 +712,10 @@ function previewCurrentPage() {
         'agents': 'agents.html',
         'agencies': 'agencies.html',
         'investors': 'investors.html',
-        'about': 'about.html'
+        'about': 'about.html',
+        'faq': 'faq.html',
+        'privacy': 'privacy.html',
+        'terms': 'terms.html'
     };
     
     const file = pageFiles[currentPageId] || 'index.html';
@@ -659,6 +763,22 @@ function resetPageStructure() {
         about: [
             { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
             { id: 'about-content', type: 'section', title: 'About Content', visible: true, order: 2, editable: true }
+        ],
+        faq: [
+            { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+            { id: 'general-questions', type: 'section', title: 'General Questions', visible: true, order: 2, editable: true },
+            { id: 'for-agents', type: 'section', title: 'For Agents', visible: true, order: 3, editable: true },
+            { id: 'for-investors', type: 'section', title: 'For Investors', visible: true, order: 4, editable: true },
+            { id: 'technical-support', type: 'section', title: 'Technical & Support', visible: true, order: 5, editable: true },
+            { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 6, editable: true }
+        ],
+        privacy: [
+            { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+            { id: 'privacy-content', type: 'section', title: 'Privacy Content', visible: true, order: 2, editable: true }
+        ],
+        terms: [
+            { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+            { id: 'terms-content', type: 'section', title: 'Terms Content', visible: true, order: 2, editable: true }
         ]
     };
 
