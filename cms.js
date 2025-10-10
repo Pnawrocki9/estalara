@@ -102,66 +102,11 @@ function loadSettingsForm() {
         }
     }
     
-    // Ensure form submit handler is attached (backup)
-    const generalSettingsForm = document.getElementById('general-settings-form');
-    if (generalSettingsForm && !generalSettingsForm.dataset.listenerAttached) {
-        generalSettingsForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log('Form submit event triggered (from loadSettingsForm)');
-            try {
-                saveGeneralSettings();
-            } catch (error) {
-                console.error('Error saving settings:', error);
-                alert('Error saving settings: ' + error.message);
-            }
-            return false;
-        });
-        generalSettingsForm.dataset.listenerAttached = 'true';
-        console.log('Form submit handler attached in loadSettingsForm');
-    }
+    // Form submit handler is already attached in DOMContentLoaded, no need to re-attach here
+    console.log('✓ Settings form loaded, event handler already active');
     
-    // Re-attach logo URL input handler for live preview
-    const logoUrlInput = document.getElementById('logo-url');
-    if (logoUrlInput && !logoUrlInput.dataset.listenerAttached) {
-        logoUrlInput.addEventListener('input', function(e) {
-            updateLogoPreview(e.target.value);
-        });
-        logoUrlInput.dataset.listenerAttached = 'true';
-        console.log('Logo URL input handler attached');
-    }
-    
-    // Re-attach logo file upload handler
-    const logoUploadInput = document.getElementById('logo-upload');
-    if (logoUploadInput && !logoUploadInput.dataset.listenerAttached) {
-        logoUploadInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Validate file is an image
-                if (!file.type.startsWith('image/')) {
-                    alert('Please upload an image file (PNG, JPG, SVG, etc.)');
-                    return;
-                }
-                
-                // Convert to data URL
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    const dataUrl = event.target.result;
-                    // Update the logo URL input with the data URL
-                    document.getElementById('logo-url').value = dataUrl;
-                    // Update the preview
-                    updateLogoPreview(dataUrl);
-                    // Show success message
-                    showNotification('Logo uploaded successfully! Click "Save Changes" to apply it to your website.');
-                };
-                reader.onerror = function() {
-                    alert('Failed to read the file. Please try again.');
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        logoUploadInput.dataset.listenerAttached = 'true';
-        console.log('Logo upload input handler attached');
-    }
+    // Logo handlers are already attached in DOMContentLoaded
+    console.log('✓ Logo upload and preview handlers already active');
 }
 
 // Update logo preview
@@ -215,29 +160,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // General settings form handler
+    // General settings form handler - FIXED VERSION
     const generalSettingsForm = document.getElementById('general-settings-form');
     if (generalSettingsForm) {
+        console.log('✓ General settings form found, attaching submit handler');
+        
+        // Attach event listener directly (no cloning needed)
         generalSettingsForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Form submit event triggered (from DOMContentLoaded)');
+            e.stopPropagation();
+            console.log('✓ Form submit event triggered');
             try {
                 saveGeneralSettings();
             } catch (error) {
-                console.error('Error saving settings:', error);
-                alert('Error saving settings: ' + error.message);
+                console.error('✗ Error saving settings:', error);
+                showNotification('Error saving settings: ' + error.message, 'error');
             }
             return false;
-        });
-        generalSettingsForm.dataset.listenerAttached = 'true';
-        console.log('Form submit handler attached in DOMContentLoaded');
+        }, { once: false, capture: true });
+        
+        console.log('✓ Form submit handler successfully attached');
     } else {
-        console.warn('General settings form not found on page load');
+        console.error('✗ General settings form not found on page load');
     }
     
     // Logo URL input handler for live preview
     const logoUrlInput = document.getElementById('logo-url');
     if (logoUrlInput) {
+        console.log('✓ Attaching logo URL input handler');
         logoUrlInput.addEventListener('input', function(e) {
             updateLogoPreview(e.target.value);
         });
@@ -247,33 +197,45 @@ document.addEventListener('DOMContentLoaded', function() {
     // Logo file upload handler
     const logoUploadInput = document.getElementById('logo-upload');
     if (logoUploadInput) {
+        console.log('✓ Attaching logo upload handler');
         logoUploadInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
+                console.log('📁 File selected:', file.name, file.type, file.size);
+                
                 // Validate file is an image
                 if (!file.type.startsWith('image/')) {
-                    alert('Please upload an image file (PNG, JPG, SVG, etc.)');
+                    showNotification('Please upload an image file (PNG, JPG, SVG, etc.)', 'error');
                     return;
                 }
+                
+                // Show loading notification
+                showNotification('Converting image to data URL...', 'info');
                 
                 // Convert to data URL
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const dataUrl = event.target.result;
+                    console.log('✅ Image converted to data URL, length:', dataUrl.length);
+                    
                     // Update the logo URL input with the data URL
                     document.getElementById('logo-url').value = dataUrl;
+                    
                     // Update the preview
                     updateLogoPreview(dataUrl);
+                    
                     // Show success message
-                    showNotification('Logo uploaded successfully! Click "Save Changes" to apply it to your website.');
+                    showNotification('✅ Logo uploaded! Click "Save Changes" to apply it.', 'success');
                 };
                 reader.onerror = function() {
-                    alert('Failed to read the file. Please try again.');
+                    console.error('❌ Failed to read file');
+                    showNotification('Failed to read the file. Please try again.', 'error');
                 };
                 reader.readAsDataURL(file);
             }
         });
         logoUploadInput.dataset.listenerAttached = 'true';
+        console.log('✓ Logo upload handler attached');
     }
     
     // Add Section Form Handler
@@ -302,31 +264,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Save general settings
 function saveGeneralSettings() {
-    console.log('saveGeneralSettings called');
+    console.log('=== SAVE GENERAL SETTINGS CALLED ===');
     
     try {
+        // Show immediate feedback
+        showNotification('Saving settings...', 'info');
+        
         const admin = loadAdminData();
         
         // Get form values
-        const siteTitle = document.getElementById('site-title').value;
-        const siteDescription = document.getElementById('site-description').value;
-        const contactEmail = document.getElementById('contact-email').value;
-        const logoUrl = document.getElementById('logo-url').value;
+        const siteTitle = document.getElementById('site-title')?.value || '';
+        const siteDescription = document.getElementById('site-description')?.value || '';
+        const contactEmail = document.getElementById('contact-email')?.value || '';
+        const logoUrl = document.getElementById('logo-url')?.value || '';
         
-        console.log('Form values:', { siteTitle, siteDescription, contactEmail, logoUrl });
+        console.log('📋 Form values:', { siteTitle, siteDescription, contactEmail, logoUrl: logoUrl.substring(0, 50) + '...' });
         
         // Validate logo URL for Netlify deployment
         if (logoUrl && !logoUrl.startsWith('data:')) {
             if (logoUrl.includes(' ')) {
                 if (!confirm('Warning: Your logo URL contains spaces. This may cause issues on Netlify.\n\nRecommendation: Use a filename without spaces (e.g., "assets/EstalaraLogo.png").\n\nDo you want to save anyway?')) {
-                    console.log('User cancelled save due to spaces in URL');
+                    console.log('⚠️ User cancelled save due to spaces in URL');
+                    showNotification('Save cancelled - please fix logo URL with spaces', 'warning');
                     return;
                 }
-            }
-            
-            // Show helpful tip for relative URLs
-            if (logoUrl.startsWith('assets/') && !logoUrl.startsWith('data:')) {
-                showNotification('Good choice! Using a relative path ensures your logo persists on Netlify. ✓', 'success');
             }
         }
         
@@ -336,17 +297,30 @@ function saveGeneralSettings() {
         admin.contactEmail = contactEmail;
         admin.logoUrl = logoUrl;
         
-        console.log('Saving admin data:', admin);
+        console.log('💾 Saving admin data to localStorage...');
         
         // Save to localStorage
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
         
-        console.log('Data saved to localStorage');
+        // Verify save
+        const savedData = localStorage.getItem('estalaraAdminData');
+        if (!savedData) {
+            throw new Error('Failed to save to localStorage');
+        }
         
-        showNotification('Settings saved successfully! Refresh your website pages to see changes.');
+        console.log('✅ Data saved successfully to localStorage');
+        
+        // Show helpful tip for relative URLs
+        if (logoUrl && logoUrl.startsWith('assets/') && !logoUrl.startsWith('data:')) {
+            showNotification('✅ Settings saved! Using relative path - good for Netlify deployment.', 'success');
+        } else {
+            showNotification('✅ Settings saved successfully! Refresh your website to see changes.', 'success');
+        }
+        
+        return true;
     } catch (error) {
-        console.error('Error in saveGeneralSettings:', error);
-        alert('Error saving settings: ' + error.message);
+        console.error('❌ Error in saveGeneralSettings:', error);
+        showNotification('ERROR: Failed to save settings - ' + error.message, 'error');
         throw error;
     }
 }
@@ -878,15 +852,33 @@ function resetPageStructure() {
 
 // Show notification
 function showNotification(message, type = 'success') {
+    console.log(`📢 Notification: [${type}] ${message}`);
     const notification = document.createElement('div');
-    const bgColor = type === 'success' ? 'bg-green-500' : type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
-    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50`;
-    notification.textContent = message;
+    const bgColor = type === 'success' ? 'bg-green-500' : 
+                     type === 'warning' ? 'bg-yellow-500' : 
+                     type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity duration-300`;
+    notification.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <span>${type === 'error' ? '❌' : type === 'warning' ? '⚠️' : '✅'}</span>
+            <span>${message}</span>
+        </div>
+    `;
+    notification.style.opacity = '0';
     document.body.appendChild(notification);
     
+    // Fade in
     setTimeout(() => {
-        notification.remove();
-    }, 3000);
+        notification.style.opacity = '1';
+    }, 10);
+    
+    // Fade out and remove
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, type === 'error' ? 5000 : 3000); // Errors stay longer
 }
 
 // Initialize page structure editor when section is shown
