@@ -173,6 +173,29 @@ class EstalaraAdmin {
                     ],
                     whiteLabelContactLabel: "Enterprise Cooperation",
                     whiteLabelContactEmail: "peter@estalara.com"
+                },
+                faq: {
+                    pageTitle: "Frequently Asked Questions",
+                    pageSubtitle: "Find answers to common questions about Estalara's global real estate platform.",
+                    ctaTitle: "Still have questions?",
+                    ctaText: "Our team is here to help you navigate global real estate with confidence."
+                },
+                privacy: {
+                    pageTitle: "Privacy Policy",
+                    effectiveDate: "October 10, 2025",
+                    lastUpdated: "October 10, 2025",
+                    companyName: "Time2Show, Inc.",
+                    companyAddress: "Dover, DE, USA",
+                    contactEmail: "privacy@estalara.com"
+                },
+                terms: {
+                    pageTitle: "Terms of Service",
+                    effectiveDate: "October 10, 2025",
+                    lastUpdated: "October 10, 2025",
+                    companyName: "Time2Show, Inc.",
+                    companyAddress: "Dover, DE, USA",
+                    legalEmail: "legal@estalara.com",
+                    contactEmail: "estalara@estalara.com"
                 }
             },
             settings: {
@@ -217,6 +240,22 @@ class EstalaraAdmin {
                 about: [
                     { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
                     { id: 'about-content', type: 'section', title: 'About Content', visible: true, order: 2, editable: true }
+                ],
+                faq: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'general-questions', type: 'section', title: 'General Questions', visible: true, order: 2, editable: true },
+                    { id: 'for-agents', type: 'section', title: 'For Agents', visible: true, order: 3, editable: true },
+                    { id: 'for-investors', type: 'section', title: 'For Investors', visible: true, order: 4, editable: true },
+                    { id: 'technical-support', type: 'section', title: 'Technical & Support', visible: true, order: 5, editable: true },
+                    { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 6, editable: true }
+                ],
+                privacy: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'privacy-content', type: 'section', title: 'Privacy Content', visible: true, order: 2, editable: true }
+                ],
+                terms: [
+                    { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                    { id: 'terms-content', type: 'section', title: 'Terms Content', visible: true, order: 2, editable: true }
                 ]
             }
         };
@@ -459,6 +498,12 @@ class EstalaraAdmin {
             pageKey = 'agencies';
         } else if (path.includes('about.html')) {
             pageKey = 'about';
+        } else if (path.includes('faq.html')) {
+            pageKey = 'faq';
+        } else if (path.includes('privacy.html')) {
+            pageKey = 'privacy';
+        } else if (path.includes('terms.html')) {
+            pageKey = 'terms';
         }
 
         const page = this.content.pages[pageKey];
@@ -681,6 +726,103 @@ class EstalaraAdmin {
                     } else {
                         sectionEl.style.display = '';
                     }
+                }
+            }
+        }
+        
+        // Update FAQ page content
+        if (pageKey === 'faq') {
+            const pageTitleEl = document.querySelector('main h1');
+            const pageSubtitleEl = document.querySelector('main h1 + p');
+            const ctaTitleEl = document.querySelector('section .text-2xl.font-bold');
+            const ctaTextEl = document.querySelector('section .mb-6');
+            
+            if (pageTitleEl && page.pageTitle) {
+                pageTitleEl.textContent = page.pageTitle;
+            }
+            if (pageSubtitleEl && page.pageSubtitle) {
+                pageSubtitleEl.textContent = page.pageSubtitle;
+            }
+            if (ctaTitleEl && page.ctaTitle) {
+                ctaTitleEl.textContent = page.ctaTitle;
+            }
+            if (ctaTextEl && page.ctaText) {
+                ctaTextEl.textContent = page.ctaText;
+            }
+        }
+        
+        // Update Privacy page content
+        if (pageKey === 'privacy') {
+            const pageTitleEl = document.querySelector('main h1');
+            const effectiveDateEl = document.querySelector('main h1 + p.text-xl');
+            const lastUpdatedEl = effectiveDateEl ? effectiveDateEl.nextElementSibling : null;
+            const companyNameEls = document.querySelectorAll('footer p');
+            const contactEmailEls = document.querySelectorAll('p strong');
+            
+            if (pageTitleEl && page.pageTitle) {
+                pageTitleEl.textContent = page.pageTitle;
+            }
+            if (effectiveDateEl && page.effectiveDate) {
+                effectiveDateEl.textContent = `Effective Date: ${page.effectiveDate}`;
+            }
+            if (lastUpdatedEl && page.lastUpdated) {
+                lastUpdatedEl.textContent = `Last Updated: ${page.lastUpdated}`;
+            }
+            
+            // Update company information in footer
+            if (companyNameEls.length > 0 && page.companyName && page.companyAddress) {
+                companyNameEls[0].innerHTML = `${page.companyName}, ${page.companyAddress}<br>estalara@estalara.com`;
+            }
+            
+            // Update contact information in Contact Us section
+            const contactSection = document.querySelector('.content-section:has(h2)');
+            if (contactSection) {
+                const contactParagraphs = contactSection.querySelectorAll('p');
+                if (contactParagraphs.length > 1 && page.contactEmail && page.companyName && page.companyAddress) {
+                    contactParagraphs[contactParagraphs.length - 1].innerHTML = `
+                        <strong>Email:</strong> ${page.contactEmail}<br>
+                        <strong>General Inquiries:</strong> estalara@estalara.com<br>
+                        <strong>Address:</strong> ${page.companyName}, ${page.companyAddress}
+                    `;
+                }
+            }
+        }
+        
+        // Update Terms page content
+        if (pageKey === 'terms') {
+            const pageTitleEl = document.querySelector('main h1');
+            const effectiveDateEl = document.querySelector('main h1 + p.text-xl');
+            const lastUpdatedEl = effectiveDateEl ? effectiveDateEl.nextElementSibling : null;
+            const companyNameEls = document.querySelectorAll('footer p');
+            
+            if (pageTitleEl && page.pageTitle) {
+                pageTitleEl.textContent = page.pageTitle;
+            }
+            if (effectiveDateEl && page.effectiveDate) {
+                effectiveDateEl.textContent = `Effective Date: ${page.effectiveDate}`;
+            }
+            if (lastUpdatedEl && page.lastUpdated) {
+                lastUpdatedEl.textContent = `Last Updated: ${page.lastUpdated}`;
+            }
+            
+            // Update company information in footer
+            if (companyNameEls.length > 0 && page.companyName && page.companyAddress) {
+                companyNameEls[0].innerHTML = `${page.companyName}, ${page.companyAddress}<br>estalara@estalara.com`;
+            }
+            
+            // Update contact information in Contact Information section
+            const contactSections = document.querySelectorAll('.content-section');
+            const contactSection = Array.from(contactSections).find(section => 
+                section.querySelector('h2')?.textContent.includes('Contact Information')
+            );
+            if (contactSection && page.legalEmail && page.contactEmail && page.companyName && page.companyAddress) {
+                const contactParagraphs = contactSection.querySelectorAll('p');
+                if (contactParagraphs.length > 1) {
+                    contactParagraphs[contactParagraphs.length - 1].innerHTML = `
+                        <strong>Email:</strong> ${page.legalEmail}<br>
+                        <strong>General Inquiries:</strong> ${page.contactEmail}<br>
+                        <strong>Address:</strong> ${page.companyName}, ${page.companyAddress}
+                    `;
                 }
             }
         }
