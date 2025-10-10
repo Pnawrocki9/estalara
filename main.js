@@ -111,15 +111,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Navbar background on scroll
-    window.addEventListener('scroll', function() {
-        const navbar = document.querySelector('nav');
-        if (window.scrollY > 100) {
-            navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
-        } else {
-            navbar.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+    // Navbar: keep solid black, do not override via JS
+    // Remove previous scroll listener if present and ensure header stays black.
+    (function ensureSolidBlackHeader() {
+        // Remove any inline background that may have been set earlier
+        const header = document.querySelector('header');
+        if (header) {
+            header.style.backgroundColor = '#000000';
         }
-    });
+        // No scroll-based background logic needed; header is controlled via CSS classes.
+    })();
     
     // Feature cards animation
     const cards = document.querySelectorAll('.card-hover');
