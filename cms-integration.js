@@ -18,6 +18,7 @@ class EstalaraAdmin {
             siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
             siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.",
             contactEmail: "estalara@estalara.com",
+            logoUrl: "assets/logo.svg",
             // Default hero content used on the homepage when no page specific overrides exist
             heroTitle: "Go LIVE. Go GLOBAL.",
             heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.",
@@ -306,6 +307,11 @@ class EstalaraAdmin {
             contactEmail.textContent = this.content.contactEmail;
         }
 
+        // Update logo if logoUrl is set
+        if (this.content.logoUrl) {
+            this.updateLogo(this.content.logoUrl);
+        }
+
         // Load properties if on home page
         if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
             this.loadProperties();
@@ -333,6 +339,19 @@ class EstalaraAdmin {
             pageKey = 'about';
         }
         this.applyPageStructure(pageKey);
+    }
+
+    // Update logo on all pages
+    updateLogo(logoUrl) {
+        // Find all logo images on the page
+        const logoImages = document.querySelectorAll('img[alt="ESTALARA"], header img, footer img[alt="ESTALARA"]');
+        
+        logoImages.forEach(img => {
+            // Only update if it's actually a logo (check src contains 'logo' or alt is ESTALARA)
+            if (img.src.includes('logo') || img.alt === 'ESTALARA') {
+                img.src = logoUrl;
+            }
+        });
     }
 
     // Load properties into the LIVE Properties section
