@@ -27,7 +27,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             // want to force clients to reload default content after a major
             // upgrade. When the stored data has an older version, the
             // application will discard it and fall back to these defaults.
-            version: 2,
+            version: 3,
             properties: [
                 {
                     id: 1,
