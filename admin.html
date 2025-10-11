@@ -623,7 +623,7 @@
     <div id="propertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Add New Property</h3>
+                <h3 id="propertyModalTitle" class="text-lg font-semibold">Add New Property</h3>
                 <button onclick="hidePropertyModal()" class="text-gray-500 hover:text-gray-700">✕</button>
             </div>
             <form id="propertyForm" class="space-y-4">
@@ -938,33 +938,52 @@
         }
 
         function showPropertyModal() {
+            // Reset modal title to "Add New Property" when opening for new property
+            document.getElementById('propertyModalTitle').textContent = 'Add New Property';
             document.getElementById('propertyModal').classList.remove('hidden');
             document.getElementById('propertyModal').classList.add('flex');
         }
 
         function hidePropertyModal() {
+            const form = document.getElementById('propertyForm');
+            // Clear editId before resetting to avoid any issues
+            if (form.dataset.editId) {
+                delete form.dataset.editId;
+            }
             document.getElementById('propertyModal').classList.add('hidden');
             document.getElementById('propertyModal').classList.remove('flex');
-            document.getElementById('propertyForm').reset();
+            form.reset();
         }
 
         function editProperty(id) {
             const property = adminData.properties.find(p => p.id === id);
             if (property) {
+                console.log('Editing property:', id, property);
+                
                 // Fill form with property data
                 const form = document.getElementById('propertyForm');
-                form.title.value = property.title;
-                form.location.value = property.location;
-                form.price.value = property.price;
+                form.title.value = property.title || '';
+                form.location.value = property.location || '';
+                form.price.value = property.price || '';
                 form.type.value = property.type || '';
-                form.description.value = property.description;
-                form.image.value = property.image;
-                form.link.value = property.link;
+                form.description.value = property.description || '';
+                form.image.value = property.image || '';
+                form.link.value = property.link || '';
+                
+                console.log('Form populated with link:', property.link);
                 
                 // Change form to edit mode
                 form.dataset.editId = id;
                 
-                showPropertyModal();
+                // Update modal title
+                document.getElementById('propertyModalTitle').textContent = 'Edit Property';
+                
+                // Show modal
+                document.getElementById('propertyModal').classList.remove('hidden');
+                document.getElementById('propertyModal').classList.add('flex');
+            } else {
+                console.error('Property not found:', id);
+                alert('Error: Property not found!');
             }
         }
 
@@ -1115,13 +1134,24 @@
             const propertyData = Object.fromEntries(formData);
             propertyData.price = parseInt(propertyData.price);
             
-            const editId = e.target.dataset.editId;
+            // Convert editId to number for proper comparison
+            const editIdStr = e.target.dataset.editId;
+            const editId = editIdStr ? parseInt(editIdStr) : null;
+            
+            console.log('Saving property:', {editId, propertyData});
             
             if (editId) {
                 // Update existing property
-                const index = adminData.properties.findIndex(p => p.id == editId);
+                const index = adminData.properties.findIndex(p => p.id === editId);
                 if (index !== -1) {
-                    adminData.properties[index] = { ...adminData.properties[index], ...propertyData };
+                    // Preserve existing fields and update with new data
+                    const updatedProperty = { ...adminData.properties[index], ...propertyData };
+                    adminData.properties[index] = updatedProperty;
+                    console.log('Updated property:', updatedProperty);
+                } else {
+                    console.error('Property not found:', editId);
+                    alert('Error: Property not found!');
+                    return;
                 }
                 delete e.target.dataset.editId;
             } else {
@@ -1129,10 +1159,16 @@
                 propertyData.id = Date.now();
                 propertyData.status = 'live';
                 adminData.properties.push(propertyData);
+                console.log('Added new property:', propertyData);
             }
             
+            // Save to localStorage
             saveData();
+            
+            // Reload properties list to reflect changes
             loadProperties();
+            
+            // Hide modal and show success
             hidePropertyModal();
             alert('Property saved successfully!');
         });
