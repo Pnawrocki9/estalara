@@ -588,9 +588,13 @@ window.EstalaraUtils = {
     }
 
     // Run immediately if the document is ready; otherwise attach to DOMContentLoaded
+    // Add 50ms delay to ensure all DOM elements and styles are fully loaded
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initMobileMenu);
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initMobileMenu, 50);
+        });
     } else {
-        initMobileMenu();
+        // Use setTimeout to execute after current call stack, giving Tailwind CSS time to apply
+        setTimeout(initMobileMenu, 50);
     }
 })();
