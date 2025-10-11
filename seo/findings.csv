@@ -1,0 +1,26 @@
+Page,Priority,Type,Issue,Status
+agencies.html,HIGH,Issue,"Missing Open Graph tags",To Fix
+agencies.html,HIGH,Issue,"No Schema.org structured data",To Fix
+privacy.html,HIGH,Issue,"Missing Open Graph tags",To Fix
+privacy.html,HIGH,Issue,"No Schema.org structured data",To Fix
+terms.html,HIGH,Issue,"Missing Open Graph tags",To Fix
+terms.html,HIGH,Issue,"No Schema.org structured data",To Fix
+index.html,WARNING,Warning,"Title too long (67 chars)",To Review
+index.html,WARNING,Warning,"Meta description too long (169 chars)",To Review
+agents.html,WARNING,Warning,"Meta description too short (49 chars)",To Review
+agencies.html,WARNING,Warning,"Meta description too long (277 chars)",To Review
+agencies.html,MEDIUM,Warning,"Missing Twitter Card tags",To Review
+agencies.html,MEDIUM,Warning,"No hreflang tags (international site)",To Review
+investors.html,WARNING,Warning,"Title too long (67 chars)",To Review
+investors.html,WARNING,Warning,"Meta description too long (173 chars)",To Review
+about.html,WARNING,Warning,"Meta description too short (20 chars)",To Review
+faq.html,WARNING,Warning,"Meta description too short (47 chars)",To Review
+faq.html,MEDIUM,Warning,"No hreflang tags (international site)",To Review
+privacy.html,WARNING,Warning,"Title too short (25 chars)",To Review
+privacy.html,WARNING,Warning,"Meta description too short (8 chars)",To Review
+privacy.html,MEDIUM,Warning,"Missing Twitter Card tags",To Review
+privacy.html,MEDIUM,Warning,"No hreflang tags (international site)",To Review
+terms.html,WARNING,Warning,"Title too short (27 chars)",To Review
+terms.html,WARNING,Warning,"Meta description too short (8 chars)",To Review
+terms.html,MEDIUM,Warning,"Missing Twitter Card tags",To Review
+terms.html,MEDIUM,Warning,"No hreflang tags (international site)",To Review

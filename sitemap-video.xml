@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  
+  <!-- Estalara Platform Introduction Video -->
+  <url>
+    <loc>https://estalara.com/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://estalara.com/assets/video-thumbs/platform-intro.jpg</video:thumbnail_loc>
+      <video:title>Estalara Platform Introduction - Global Real Estate Livestreaming</video:title>
+      <video:description>See how Estalara revolutionizes international real estate through AI-powered livestreaming, connecting agents and investors in 50+ countries.</video:description>
+      <video:content_loc>https://estalara.com/videos/platform-intro.mp4</video:content_loc>
+      <video:duration>180</video:duration>
+      <video:publication_date>2025-10-01T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+      <video:tag>real estate</video:tag>
+      <video:tag>livestreaming</video:tag>
+      <video:tag>international investment</video:tag>
+      <video:tag>property tours</video:tag>
+    </video:video>
+  </url>
+  
+  <!-- For Agents Demo Video -->
+  <url>
+    <loc>https://estalara.com/agents.html</loc>
+    <video:video>
+      <video:thumbnail_loc>https://estalara.com/assets/video-thumbs/agents-demo.jpg</video:thumbnail_loc>
+      <video:title>How Real Estate Agents Go Global with Estalara</video:title>
+      <video:description>Learn how real estate agents attract international investors and close deals faster using Estalara's livestreaming and AI lead generation platform.</video:description>
+      <video:content_loc>https://estalara.com/videos/agents-demo.mp4</video:content_loc>
+      <video:duration>240</video:duration>
+      <video:publication_date>2025-10-01T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+      <video:tag>real estate agents</video:tag>
+      <video:tag>lead generation</video:tag>
+      <video:tag>property marketing</video:tag>
+    </video:video>
+  </url>
+  
+  <!-- Property Tour Example - Cádiz Apartment -->
+  <url>
+    <loc>https://app.estalara.com/listing/-cadiz-cadiz-na-d19331b5-846d-4139-a78e-2d9695ff73d0</loc>
+    <video:video>
+      <video:thumbnail_loc>https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp</video:thumbnail_loc>
+      <video:title>Live Property Tour: Modern Apartment in Cádiz, Spain - €450,000</video:title>
+      <video:description>Virtual tour of stunning modern apartment in the heart of Cádiz with ocean views and premium amenities. Experience international real estate like never before.</video:description>
+      <video:player_loc>https://app.estalara.com/player/cadiz-apartment</video:player_loc>
+      <video:duration>600</video:duration>
+      <video:publication_date>2025-10-10T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>yes</video:live>
+      <video:requires_subscription>no</video:requires_subscription>
+      <video:tag>property tour</video:tag>
+      <video:tag>Cádiz real estate</video:tag>
+      <video:tag>Spain property</video:tag>
+      <video:tag>ocean view apartment</video:tag>
+      <video:category>Real Estate</video:category>
+    </video:video>
+  </url>
+  
+  <!-- How It Works Tutorial -->
+  <url>
+    <loc>https://estalara.com/index.html#how-it-works</loc>
+    <video:video>
+      <video:thumbnail_loc>https://estalara.com/assets/video-thumbs/how-it-works.jpg</video:thumbnail_loc>
+      <video:title>How Estalara Works - 3 Simple Steps to Global Real Estate</video:title>
+      <video:description>Discover how Estalara simplifies international property transactions: Go Live with property tours, Connect with verified investors, and Close deals fast with trusted support.</video:description>
+      <video:content_loc>https://estalara.com/videos/how-it-works.mp4</video:content_loc>
+      <video:duration>210</video:duration>
+      <video:publication_date>2025-10-05T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+      <video:tag>tutorial</video:tag>
+      <video:tag>how to use</video:tag>
+      <video:tag>real estate platform</video:tag>
+    </video:video>
+  </url>
+  
+  <!-- EstalaraAI Demo -->
+  <url>
+    <loc>https://estalara.com/index.html#features</loc>
+    <video:video>
+      <video:thumbnail_loc>https://estalara.com/assets/video-thumbs/estalara-ai.jpg</video:thumbnail_loc>
+      <video:title>EstalaraAI - Your Multilingual Property Assistant</video:title>
+      <video:description>See EstalaraAI in action: Natural language property search with hallucination-free responses in 25+ languages. The future of property discovery.</video:description>
+      <video:content_loc>https://estalara.com/videos/estalara-ai-demo.mp4</video:content_loc>
+      <video:duration>150</video:duration>
+      <video:publication_date>2025-10-08T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+      <video:tag>AI assistant</video:tag>
+      <video:tag>property search</video:tag>
+      <video:tag>multilingual</video:tag>
+      <video:tag>artificial intelligence</video:tag>
+    </video:video>
+  </url>
+  
+  <!-- For Investors Video -->
+  <url>
+    <loc>https://estalara.com/investors.html</loc>
+    <video:video>
+      <video:thumbnail_loc>https://estalara.com/assets/video-thumbs/investors-guide.jpg</video:thumbnail_loc>
+      <video:title>International Property Investment Made Easy with Estalara</video:title>
+      <video:description>For global investors: Watch live property tours, connect with local agents, and invest internationally with confidence. Secure transactions in 50+ countries.</video:description>
+      <video:content_loc>https://estalara.com/videos/investors-guide.mp4</video:content_loc>
+      <video:duration>195</video:duration>
+      <video:publication_date>2025-10-03T00:00:00+00:00</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+      <video:tag>property investment</video:tag>
+      <video:tag>international buyers</video:tag>
+      <video:tag>cross-border real estate</video:tag>
+    </video:video>
+  </url>
+  
+</urlset>

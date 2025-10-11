@@ -38,3 +38,6 @@ Allow: /
 # Sitemap location
 Sitemap: https://estalara.com/sitemap.xml
 Sitemap: https://estalara.com/sitemap-video.xml
+
+# Note: Video sitemap is critical for livestreaming platform
+# Updated: 2025-10-11
