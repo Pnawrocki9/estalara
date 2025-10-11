@@ -207,20 +207,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const propertyCards = document.querySelectorAll('.property-card');
     window.initPropertyCards(Array.from(propertyCards));
     
-    // Counter animation for stats
-    function animateCounter(element, target) {
-        let current = 0;
-        const increment = target / 100;
-        const timer = setInterval(() => {
-            current += increment;
-            element.textContent = Math.floor(current);
-            if (current >= target) {
-                element.textContent = target;
-                clearInterval(timer);
-            }
-        }, 20);
-    }
-    
     // Mobile menu toggle is handled by the IIFE at the bottom of this file
     
     // Loading animation
@@ -307,6 +293,20 @@ function throttle(func, limit) {
             setTimeout(() => inThrottle = false, limit);
         }
     }
+}
+
+// Counter animation for stats
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 100;
+    const timer = setInterval(() => {
+        current += increment;
+        element.textContent = Math.floor(current);
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        }
+    }, 20);
 }
 
 // Export functions for use in other files
