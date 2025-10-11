@@ -433,23 +433,25 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         const propertiesContainer = document.querySelector('#live-properties .grid');
         if (!propertiesContainer) return;
 
-        // Guard against empty or undefined property lists. If no live properties are available
-        // we leave any existing markup in place so the page never renders blank.
+        // Get live properties from content (loaded from localStorage or defaults)
         const liveProperties = (this.content && Array.isArray(this.content.properties))
             ? this.content.properties.filter(p => !p.status || p.status === 'live')
             : [];
 
-        // If there are no live properties simply exit and retain fallback markup
+        // Always clear existing properties first to remove any hardcoded HTML
+        propertiesContainer.innerHTML = '';
+
+        // If there are no live properties, show a message
         if (liveProperties.length === 0) {
+            propertiesContainer.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <p class="text-gray-500 text-lg">No properties available at the moment.</p>
+                    <p class="text-gray-400 text-sm mt-2">Check back soon for new listings!</p>
+                </div>
+            `;
             return;
         }
 
-        // Clear existing properties and add each live property. When injecting cards after the
-        // page has already been initialised by main.js the IntersectionObserver and hover
-        // listeners defined there will not automatically apply to our new elements. To ensure
-        // the cards are visible immediately we add the 'active' class and attach hover
-        // animations here as well. See main.js for the original implementations.
-        propertiesContainer.innerHTML = '';
         // Collect references to the newly created cards so we can initialise
         // reveal and animation behaviours using functions exposed by main.js
         const newCards = [];
