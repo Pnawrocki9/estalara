@@ -163,6 +163,8 @@
       "hreflang": [
         "en",
         "es",
+        "fr",
+        "de",
         "x-default"
       ],
       "hasCanonical": true,
@@ -200,6 +202,9 @@
       ],
       "hreflang": [
         "en",
+        "es",
+        "fr",
+        "de",
         "x-default"
       ],
       "hasCanonical": true,
@@ -258,20 +263,26 @@
     {
       "file": "privacy.html",
       "title": "Privacy Policy | Estalara",
-      "metaDescription": "Estalara",
+      "metaDescription": "Read Estalara",
       "canonical": "https://estalara.com/privacy.html",
-      "ogTitle": "",
-      "ogDescription": "",
-      "ogImage": "",
-      "twitterCard": "",
+      "ogTitle": "Privacy Policy | Estalara",
+      "ogDescription": "Learn how Estalara protects your personal data and ensures secure global real estate transactions. GDPR compliant.",
+      "ogImage": "https://estalara.com/assets/og-image-privacy.jpg",
+      "twitterCard": "summary_large_image",
       "h1Tags": [
         "Privacy Policy"
       ],
       "schemaTypes": [],
-      "hreflang": [],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
       "hasCanonical": true,
-      "hasOG": false,
-      "hasTwitter": false,
+      "hasOG": true,
+      "hasTwitter": true,
       "hasSchema": false,
       "images": [
         {
@@ -290,20 +301,26 @@
     {
       "file": "terms.html",
       "title": "Terms of Service | Estalara",
-      "metaDescription": "Estalara",
+      "metaDescription": "Estalara terms of service. Understand your rights and responsibilities when using our global real estate platform for agents and investors.",
       "canonical": "https://estalara.com/terms.html",
-      "ogTitle": "",
-      "ogDescription": "",
-      "ogImage": "",
-      "twitterCard": "",
+      "ogTitle": "Terms of Service | Estalara",
+      "ogDescription": "Read Estalara",
+      "ogImage": "https://estalara.com/assets/og-image-terms.jpg",
+      "twitterCard": "summary_large_image",
       "h1Tags": [
         "Terms of Service"
       ],
       "schemaTypes": [],
-      "hreflang": [],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
       "hasCanonical": true,
-      "hasOG": false,
-      "hasTwitter": false,
+      "hasOG": true,
+      "hasTwitter": true,
       "hasSchema": false,
       "images": [
         {
@@ -334,17 +351,7 @@
     {
       "page": "privacy.html",
       "type": "HIGH",
-      "issue": "Missing Open Graph tags"
-    },
-    {
-      "page": "privacy.html",
-      "type": "HIGH",
       "issue": "No Schema.org structured data"
-    },
-    {
-      "page": "terms.html",
-      "type": "HIGH",
-      "issue": "Missing Open Graph tags"
     },
     {
       "page": "terms.html",
@@ -416,37 +423,12 @@
     {
       "page": "privacy.html",
       "type": "WARNING",
-      "issue": "Meta description too short (8 chars)"
-    },
-    {
-      "page": "privacy.html",
-      "type": "MEDIUM",
-      "issue": "Missing Twitter Card tags"
-    },
-    {
-      "page": "privacy.html",
-      "type": "MEDIUM",
-      "issue": "No hreflang tags (international site)"
+      "issue": "Meta description too short (13 chars)"
     },
     {
       "page": "terms.html",
       "type": "WARNING",
       "issue": "Title too short (27 chars)"
-    },
-    {
-      "page": "terms.html",
-      "type": "WARNING",
-      "issue": "Meta description too short (8 chars)"
-    },
-    {
-      "page": "terms.html",
-      "type": "MEDIUM",
-      "issue": "Missing Twitter Card tags"
-    },
-    {
-      "page": "terms.html",
-      "type": "MEDIUM",
-      "issue": "No hreflang tags (international site)"
     }
   ],
   "success": [
@@ -536,7 +518,7 @@
     },
     {
       "page": "investors.html",
-      "check": "Hreflang tags present: 3"
+      "check": "Hreflang tags present: 5"
     },
     {
       "page": "about.html",
@@ -564,7 +546,7 @@
     },
     {
       "page": "about.html",
-      "check": "Hreflang tags present: 2"
+      "check": "Hreflang tags present: 5"
     },
     {
       "page": "faq.html",
@@ -596,7 +578,23 @@
     },
     {
       "page": "privacy.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "privacy.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "privacy.html",
       "check": "Single H1 tag present"
+    },
+    {
+      "page": "privacy.html",
+      "check": "Hreflang tags present: 5"
+    },
+    {
+      "page": "terms.html",
+      "check": "Meta description optimal"
     },
     {
       "page": "terms.html",
@@ -604,7 +602,19 @@
     },
     {
       "page": "terms.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "terms.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "terms.html",
       "check": "Single H1 tag present"
+    },
+    {
+      "page": "terms.html",
+      "check": "Hreflang tags present: 5"
     }
   ]
 }
