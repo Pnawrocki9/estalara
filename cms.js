@@ -15,14 +15,22 @@ function showSection(sectionId) {
     }
 }
 
+// Global variable to track current property being edited
+let currentPropertyId = null;
+
 function showPropertyModal() {
+    currentPropertyId = null; // Reset for new property
+    document.getElementById('propertyModalTitle').textContent = 'Add New Property';
+    document.getElementById('propertyForm').reset();
     document.getElementById('propertyModal').classList.remove('hidden');
     document.getElementById('propertyModal').classList.add('flex');
 }
 
 function hidePropertyModal() {
+    currentPropertyId = null;
     document.getElementById('propertyModal').classList.add('hidden');
     document.getElementById('propertyModal').classList.remove('flex');
+    document.getElementById('propertyForm').reset();
 }
 
 function showUploadModal() {
@@ -34,12 +42,52 @@ function showUserModal() {
 }
 
 function editProperty(id) {
-    alert('Property editor coming soon!');
+    const admin = loadAdminData();
+    const property = admin.properties?.find(p => p.id === id);
+    
+    if (!property) {
+        showNotification('Property not found!', 'error');
+        return;
+    }
+    
+    // Set current property ID for editing
+    currentPropertyId = id;
+    
+    // Update modal title
+    document.getElementById('propertyModalTitle').textContent = 'Edit Property';
+    
+    // Fill form with property data
+    document.getElementById('property-title').value = property.title || '';
+    document.getElementById('property-location').value = property.location || '';
+    document.getElementById('property-price').value = property.price || '';
+    document.getElementById('property-type').value = property.type || '';
+    document.getElementById('property-description').value = property.description || '';
+    document.getElementById('property-image').value = property.image || '';
+    document.getElementById('property-link').value = property.link || '';
+    
+    // Show modal
+    document.getElementById('propertyModal').classList.remove('hidden');
+    document.getElementById('propertyModal').classList.add('flex');
 }
 
 function deleteProperty(id) {
     if (confirm('Are you sure you want to delete this property?')) {
-        alert('Property deleted successfully!');
+        const admin = loadAdminData();
+        
+        if (!admin.properties) {
+            admin.properties = [];
+        }
+        
+        // Remove property from array
+        admin.properties = admin.properties.filter(p => p.id !== id);
+        
+        // Save to localStorage
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        
+        showNotification('Property deleted successfully!', 'success');
+        
+        // Reload properties table
+        loadPropertiesTable();
     }
 }
 
@@ -176,21 +224,75 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize dashboard
     showSection('dashboard');
     
+    // Pre-load properties data (so it's ready when user clicks Properties tab)
+    loadPropertiesTable();
+    
     // Property form handler
     const propertyForm = document.getElementById('propertyForm');
     if (propertyForm) {
         propertyForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const formData = new FormData(e.target);
-            const propertyData = Object.fromEntries(formData);
-            
-            // Here you would normally send this data to your backend
-            console.log('New Property Data:', propertyData);
-            
-            alert('Property saved successfully!');
-            hidePropertyModal();
-            e.target.reset();
+            try {
+                const admin = loadAdminData();
+                
+                // Ensure properties array exists
+                if (!admin.properties) {
+                    admin.properties = [];
+                }
+                
+                // Get form data
+                const propertyData = {
+                    title: document.getElementById('property-title').value,
+                    location: document.getElementById('property-location').value,
+                    price: parseInt(document.getElementById('property-price').value),
+                    type: document.getElementById('property-type').value,
+                    description: document.getElementById('property-description').value,
+                    image: document.getElementById('property-image').value,
+                    link: document.getElementById('property-link').value,
+                    status: 'live'
+                };
+                
+                if (currentPropertyId) {
+                    // Update existing property
+                    const index = admin.properties.findIndex(p => p.id === currentPropertyId);
+                    if (index !== -1) {
+                        admin.properties[index] = {
+                            ...admin.properties[index],
+                            ...propertyData
+                        };
+                        console.log('✓ Property updated:', propertyData);
+                    }
+                } else {
+                    // Create new property with new ID
+                    const maxId = admin.properties.length > 0 
+                        ? Math.max(...admin.properties.map(p => p.id || 0)) 
+                        : 0;
+                    propertyData.id = maxId + 1;
+                    admin.properties.push(propertyData);
+                    console.log('✓ New property created:', propertyData);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+                
+                // Verify save
+                const savedData = localStorage.getItem('estalaraAdminData');
+                if (!savedData) {
+                    throw new Error('Failed to save to localStorage');
+                }
+                
+                console.log('✓ Property data saved to localStorage');
+                
+                showNotification('Property saved successfully!', 'success');
+                hidePropertyModal();
+                
+                // Reload properties table if on properties section
+                loadPropertiesTable();
+            } catch (error) {
+                console.error('✗ Error saving property:', error);
+                showNotification('Error saving property: ' + error.message, 'error');
+            }
         });
     }
     
@@ -935,11 +1037,57 @@ function showNotification(message, type = 'success') {
     }, type === 'error' ? 5000 : 3000); // Errors stay longer
 }
 
+// Load properties into the properties table
+function loadPropertiesTable() {
+    const admin = loadAdminData();
+    const tbody = document.getElementById('propertiesTable');
+    
+    if (!tbody) return;
+    
+    if (!admin.properties || admin.properties.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center text-gray-500 py-8">
+                    No properties found. Click "Add Property" to create your first listing.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = admin.properties.map(property => `
+        <tr>
+            <td>
+                <div class="flex items-center space-x-3">
+                    <img src="${property.image}" alt="${property.title}" class="w-16 h-16 object-cover rounded">
+                    <div>
+                        <div class="font-medium">${property.title}</div>
+                        <div class="text-sm text-gray-500">${property.type || 'N/A'}</div>
+                    </div>
+                </div>
+            </td>
+            <td>${property.location}</td>
+            <td>€${(property.price || 0).toLocaleString()}</td>
+            <td>
+                <span class="cms-badge cms-badge-${property.status === 'live' ? 'live' : 'draft'}">
+                    ${property.status || 'live'}
+                </span>
+            </td>
+            <td>
+                <button class="cms-btn cms-btn-secondary text-sm mr-2" onclick="editProperty(${property.id})">Edit</button>
+                <button class="cms-btn cms-btn-danger text-sm" onclick="deleteProperty(${property.id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
 // Initialize page structure editor when section is shown
 const originalShowSection = showSection;
 showSection = function(sectionId) {
     originalShowSection(sectionId);
     if (sectionId === 'page-structure') {
         loadPageStructureEditor();
+    } else if (sectionId === 'properties') {
+        loadPropertiesTable();
     }
 };
