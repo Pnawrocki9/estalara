@@ -631,28 +631,28 @@
     <div id="propertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Add New Property</h3>
+                <h3 id="propertyModalTitle" class="text-lg font-semibold">Add New Property</h3>
                 <button onclick="hidePropertyModal()" class="text-gray-500 hover:text-gray-700">✕</button>
             </div>
             <form id="propertyForm" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Property Title</label>
-                        <input type="text" name="title" class="cms-input" placeholder="e.g., Modern Apartment in Barcelona" required>
+                        <input type="text" id="property-title" name="title" class="cms-input" placeholder="e.g., Modern Apartment in Barcelona" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                        <input type="text" name="location" class="cms-input" placeholder="e.g., Barcelona, Spain" required>
+                        <input type="text" id="property-location" name="location" class="cms-input" placeholder="e.g., Barcelona, Spain" required>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Price (€)</label>
-                        <input type="number" name="price" class="cms-input" placeholder="450000" required>
+                        <input type="number" id="property-price" name="price" class="cms-input" placeholder="450000" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
-                        <select name="type" class="cms-input" required>
+                        <select id="property-type" name="type" class="cms-input" required>
                             <option value="">Select Type</option>
                             <option value="apartment">Apartment</option>
                             <option value="house">House</option>
@@ -663,15 +663,15 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                    <textarea name="description" class="cms-input" rows="4" placeholder="Property description..." required></textarea>
+                    <textarea id="property-description" name="description" class="cms-input" rows="4" placeholder="Property description..." required></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Property Image URL</label>
-                    <input type="url" name="image" class="cms-input" placeholder="https://example.com/image.jpg" required>
+                    <input type="url" id="property-image" name="image" class="cms-input" placeholder="https://example.com/image.jpg" required>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Property Link</label>
-                    <input type="url" name="link" class="cms-input" placeholder="https://app.estalara.com/listing/..." required>
+                    <input type="url" id="property-link" name="link" class="cms-input" placeholder="https://app.estalara.com/listing/..." required>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" onclick="hidePropertyModal()" class="cms-btn cms-btn-secondary">Cancel</button>
