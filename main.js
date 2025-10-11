@@ -324,14 +324,22 @@ window.EstalaraUtils = {
      * the document), the handler is executed immediately. Otherwise it waits
      * for the DOMContentLoaded event.
      */
+    
+    // Helper function to check if we're on mobile viewport (< 768px)
+    // This is more reliable than checking getComputedStyle, which depends on CSS being loaded
+    function isMobileViewport() {
+        return window.innerWidth < 768;
+    }
+    
     function initMobileMenu() {
         var btn  = document.getElementById('menu-toggle');
         var menu = document.getElementById('mobile-menu');
         if (!btn || !menu) return;
 
         // Start with menu hidden on mobile viewports
-        if (getComputedStyle(btn).display !== 'none') {
+        if (isMobileViewport()) {
             menu.classList.add('hidden');
+            menu.classList.remove('flex');
         }
 
         // Toggle menu visibility on click - toggle both 'hidden' and 'flex' for proper mobile display
@@ -351,7 +359,7 @@ window.EstalaraUtils = {
         // Hide menu after clicking a link on mobile
         menu.querySelectorAll('a').forEach(function (a) {
             a.addEventListener('click', function () {
-                if (getComputedStyle(btn).display !== 'none') {
+                if (isMobileViewport()) {
                     menu.classList.add('hidden');
                     menu.classList.remove('flex');
                     btn.setAttribute('aria-expanded', 'false');
@@ -360,14 +368,23 @@ window.EstalaraUtils = {
         });
 
         // Reset menu state on window resize
+        var resizeTimer;
         window.addEventListener('resize', function () {
-            // On mobile (button visible), ensure menu is closed
-            if (getComputedStyle(btn).display !== 'none') {
-                menu.classList.add('hidden');
-                menu.classList.remove('flex');
-                btn.setAttribute('aria-expanded', 'false');
-            }
-            // On desktop (button hidden), menu is always visible via md:flex
+            // Debounce resize events to improve performance
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                // On mobile (< 768px), ensure menu is closed
+                if (isMobileViewport()) {
+                    menu.classList.add('hidden');
+                    menu.classList.remove('flex');
+                    btn.setAttribute('aria-expanded', 'false');
+                } else {
+                    // On desktop (>= 768px), remove manual classes and let Tailwind handle it
+                    menu.classList.remove('hidden');
+                    menu.classList.remove('flex');
+                    btn.setAttribute('aria-expanded', 'false');
+                }
+            }, 100);
         });
     }
 
