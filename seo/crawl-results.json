@@ -1,0 +1,620 @@
+{
+  "pages": [
+    {
+      "file": "index.html",
+      "title": "Estalara - Go LIVE. Go GLOBAL. | International Real Estate Platform",
+      "metaDescription": "Connect real estate agents and international investors through AI and livestreaming. Simplify global property transactions with confidence. 50+ countries, 25+ languages.",
+      "canonical": "https://estalara.com/",
+      "ogTitle": "Estalara - Go LIVE. Go GLOBAL. | International Real Estate Platform",
+      "ogDescription": "Connect real estate agents and international investors through AI and livestreaming. 50+ countries, 25+ languages, €2.5B+ in transactions.",
+      "ogImage": "https://estalara.com/assets/og-image-home.jpg",
+      "twitterCard": "summary_large_image",
+      "h1Tags": [
+        ""
+      ],
+      "schemaTypes": [
+        "Organization",
+        "WebSite",
+        "Service"
+      ],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
+      "hasCanonical": true,
+      "hasOG": true,
+      "hasTwitter": true,
+      "hasSchema": true,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp",
+          "hasAlt": true,
+          "alt": "Modern Apartment in Cádiz"
+        },
+        {
+          "src": "https://kimi-web-img.moonshot.cn/img/www.valcucine.com/23a9f04943354e7f0279fbe99bcc358000b108f4.jpg",
+          "hasAlt": true,
+          "alt": "Luxury Penthouse in Madrid"
+        },
+        {
+          "src": "https://kimi-web-img.moonshot.cn/img/antonovich-design.com/c4dc761e62d99ae8976671614b35f23c72bda4df.jpg",
+          "hasAlt": true,
+          "alt": "Beachfront Villa in Barcelona"
+        },
+        {
+          "src": "https://kimi-web-img.moonshot.cn/img/www.elegantinterior.info/c0b1fd32f4cdc3abdaccf6a5f411e8f3fb8e6e92.png",
+          "hasAlt": true,
+          "alt": "Historic Building in Valencia"
+        },
+        {
+          "src": "https://kimi-web-img.moonshot.cn/img/idea.3dbrute.com/eaa4c4cbb5ccbf57f4732305104dd9187d2276a4.jpg",
+          "hasAlt": true,
+          "alt": "Traditional House in Seville"
+        },
+        {
+          "src": "https://kimi-web-img.moonshot.cn/img/archello.s3.eu-central-1.amazonaws.com/e68f5c11f478a0669779d5422a04c826a028dca0.jpg",
+          "hasAlt": true,
+          "alt": "Modern Villa in Malaga"
+        },
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    },
+    {
+      "file": "agents.html",
+      "title": "Estalara for Agents - Go LIVE. Go GLOBAL.",
+      "metaDescription": "Attract high-value global investors with Estalara",
+      "canonical": "https://estalara.com/agents.html",
+      "ogTitle": "Estalara for Agents - Go LIVE. Go GLOBAL.",
+      "ogDescription": "Attract high-value global investors with Estalara",
+      "ogImage": "https://estalara.com/assets/og-image-agents.jpg",
+      "twitterCard": "summary_large_image",
+      "h1Tags": [
+        "Agents Go GLOBAL"
+      ],
+      "schemaTypes": [
+        "BreadcrumbList",
+        "Service"
+      ],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
+      "hasCanonical": true,
+      "hasOG": true,
+      "hasTwitter": true,
+      "hasSchema": true,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "assets/logo.svg",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    },
+    {
+      "file": "agencies.html",
+      "title": "For Real Estate Agencies - Estalara | Enterprise Solutions",
+      "metaDescription": "Grow your real estate agency with live selling and social media. Attract quality leads through authentic video tours, leverage social platforms for targeted marketing and manage multiple agents with Estalara’s enterprise solutions. Reach global buyers and scale without limits.",
+      "canonical": "https://estalara.com/agencies.html",
+      "ogTitle": "",
+      "ogDescription": "",
+      "ogImage": "",
+      "twitterCard": "",
+      "h1Tags": [
+        "Agencies Go ENTERPRISE"
+      ],
+      "schemaTypes": [],
+      "hreflang": [],
+      "hasCanonical": true,
+      "hasOG": false,
+      "hasTwitter": false,
+      "hasSchema": false,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "assets/logo.svg",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    },
+    {
+      "file": "investors.html",
+      "title": "For Property Investors - Estalara | Invest in Real Estate Worldwide",
+      "metaDescription": "Invest in real estate worldwide with confidence. Live property tours, expert legal support, secure transactions. 50+ countries, 25+ languages. Discover global opportunities.",
+      "canonical": "https://estalara.com/investors.html",
+      "ogTitle": "For Property Investors - Invest Worldwide with Confidence",
+      "ogDescription": "Discover properties in 50+ countries. Live tours, legal support, secure transactions. Invest globally with Estalara.",
+      "ogImage": "https://estalara.com/assets/og-image-investors.jpg",
+      "twitterCard": "summary_large_image",
+      "h1Tags": [
+        "Invest WORLDWIDE"
+      ],
+      "schemaTypes": [
+        "BreadcrumbList"
+      ],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
+      "hasCanonical": true,
+      "hasOG": true,
+      "hasTwitter": true,
+      "hasSchema": true,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "assets/logo.svg",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    },
+    {
+      "file": "about.html",
+      "title": "About Estalara - Revolutionizing Global Real Estate",
+      "metaDescription": "Learn about Estalara",
+      "canonical": "https://estalara.com/about.html",
+      "ogTitle": "About Estalara - Our Mission & Vision",
+      "ogDescription": "Democratizing global real estate since 2023. 50+ countries, €2.5B+ transactions. Meet our team.",
+      "ogImage": "https://estalara.com/assets/og-image-about.jpg",
+      "twitterCard": "summary_large_image",
+      "h1Tags": [
+        "Revolutionizing GLOBAL REAL ESTATE"
+      ],
+      "schemaTypes": [
+        "BreadcrumbList"
+      ],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
+      "hasCanonical": true,
+      "hasOG": true,
+      "hasTwitter": true,
+      "hasSchema": true,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "assets/logo.svg",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    },
+    {
+      "file": "faq.html",
+      "title": "FAQ - Frequently Asked Questions | Estalara",
+      "metaDescription": "Find answers to common questions about Estalara",
+      "canonical": "https://estalara.com/faq.html",
+      "ogTitle": "FAQ - Frequently Asked Questions | Estalara",
+      "ogDescription": "Find answers to common questions about Estalara",
+      "ogImage": "https://estalara.com/assets/og-image-home.jpg",
+      "twitterCard": "summary_large_image",
+      "h1Tags": [
+        "Frequently Asked Questions"
+      ],
+      "schemaTypes": [
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "hreflang": [],
+      "hasCanonical": true,
+      "hasOG": true,
+      "hasTwitter": true,
+      "hasSchema": true,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "assets/logo.svg",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    },
+    {
+      "file": "privacy.html",
+      "title": "Privacy Policy | Estalara",
+      "metaDescription": "Read Estalara",
+      "canonical": "https://estalara.com/privacy.html",
+      "ogTitle": "Privacy Policy | Estalara",
+      "ogDescription": "Learn how Estalara protects your personal data and ensures secure global real estate transactions. GDPR compliant.",
+      "ogImage": "https://estalara.com/assets/og-image-privacy.jpg",
+      "twitterCard": "summary_large_image",
+      "h1Tags": [
+        "Privacy Policy"
+      ],
+      "schemaTypes": [],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
+      "hasCanonical": true,
+      "hasOG": true,
+      "hasTwitter": true,
+      "hasSchema": false,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "assets/logo.svg",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    },
+    {
+      "file": "terms.html",
+      "title": "Terms of Service | Estalara",
+      "metaDescription": "Estalara terms of service. Understand your rights and responsibilities when using our global real estate platform for agents and investors.",
+      "canonical": "https://estalara.com/terms.html",
+      "ogTitle": "Terms of Service | Estalara",
+      "ogDescription": "Read Estalara",
+      "ogImage": "https://estalara.com/assets/og-image-terms.jpg",
+      "twitterCard": "summary_large_image",
+      "h1Tags": [
+        "Terms of Service"
+      ],
+      "schemaTypes": [],
+      "hreflang": [
+        "en",
+        "es",
+        "fr",
+        "de",
+        "x-default"
+      ],
+      "hasCanonical": true,
+      "hasOG": true,
+      "hasTwitter": true,
+      "hasSchema": false,
+      "images": [
+        {
+          "src": "assets/EstalaraLogo.png",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        },
+        {
+          "src": "assets/logo.svg",
+          "hasAlt": true,
+          "alt": "ESTALARA"
+        }
+      ],
+      "links": []
+    }
+  ],
+  "issues": [
+    {
+      "page": "agencies.html",
+      "type": "HIGH",
+      "issue": "Missing Open Graph tags"
+    },
+    {
+      "page": "agencies.html",
+      "type": "HIGH",
+      "issue": "No Schema.org structured data"
+    },
+    {
+      "page": "privacy.html",
+      "type": "HIGH",
+      "issue": "No Schema.org structured data"
+    },
+    {
+      "page": "terms.html",
+      "type": "HIGH",
+      "issue": "No Schema.org structured data"
+    }
+  ],
+  "warnings": [
+    {
+      "page": "index.html",
+      "type": "WARNING",
+      "issue": "Title too long (67 chars)"
+    },
+    {
+      "page": "index.html",
+      "type": "WARNING",
+      "issue": "Meta description too long (169 chars)"
+    },
+    {
+      "page": "agents.html",
+      "type": "WARNING",
+      "issue": "Meta description too short (49 chars)"
+    },
+    {
+      "page": "agencies.html",
+      "type": "WARNING",
+      "issue": "Meta description too long (277 chars)"
+    },
+    {
+      "page": "agencies.html",
+      "type": "MEDIUM",
+      "issue": "Missing Twitter Card tags"
+    },
+    {
+      "page": "agencies.html",
+      "type": "MEDIUM",
+      "issue": "No hreflang tags (international site)"
+    },
+    {
+      "page": "investors.html",
+      "type": "WARNING",
+      "issue": "Title too long (67 chars)"
+    },
+    {
+      "page": "investors.html",
+      "type": "WARNING",
+      "issue": "Meta description too long (173 chars)"
+    },
+    {
+      "page": "about.html",
+      "type": "WARNING",
+      "issue": "Meta description too short (20 chars)"
+    },
+    {
+      "page": "faq.html",
+      "type": "WARNING",
+      "issue": "Meta description too short (47 chars)"
+    },
+    {
+      "page": "faq.html",
+      "type": "MEDIUM",
+      "issue": "No hreflang tags (international site)"
+    },
+    {
+      "page": "privacy.html",
+      "type": "WARNING",
+      "issue": "Title too short (25 chars)"
+    },
+    {
+      "page": "privacy.html",
+      "type": "WARNING",
+      "issue": "Meta description too short (13 chars)"
+    },
+    {
+      "page": "terms.html",
+      "type": "WARNING",
+      "issue": "Title too short (27 chars)"
+    }
+  ],
+  "success": [
+    {
+      "page": "index.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "index.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "index.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "index.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "index.html",
+      "check": "Schema.org present: Organization, WebSite, Service"
+    },
+    {
+      "page": "index.html",
+      "check": "Hreflang tags present: 5"
+    },
+    {
+      "page": "agents.html",
+      "check": "Title length optimal"
+    },
+    {
+      "page": "agents.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "agents.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "agents.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "agents.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "agents.html",
+      "check": "Schema.org present: BreadcrumbList, Service"
+    },
+    {
+      "page": "agents.html",
+      "check": "Hreflang tags present: 5"
+    },
+    {
+      "page": "agencies.html",
+      "check": "Title length optimal"
+    },
+    {
+      "page": "agencies.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "agencies.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "investors.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "investors.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "investors.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "investors.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "investors.html",
+      "check": "Schema.org present: BreadcrumbList"
+    },
+    {
+      "page": "investors.html",
+      "check": "Hreflang tags present: 5"
+    },
+    {
+      "page": "about.html",
+      "check": "Title length optimal"
+    },
+    {
+      "page": "about.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "about.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "about.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "about.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "about.html",
+      "check": "Schema.org present: BreadcrumbList"
+    },
+    {
+      "page": "about.html",
+      "check": "Hreflang tags present: 5"
+    },
+    {
+      "page": "faq.html",
+      "check": "Title length optimal"
+    },
+    {
+      "page": "faq.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "faq.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "faq.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "faq.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "faq.html",
+      "check": "Schema.org present: FAQPage, BreadcrumbList"
+    },
+    {
+      "page": "privacy.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "privacy.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "privacy.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "privacy.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "privacy.html",
+      "check": "Hreflang tags present: 5"
+    },
+    {
+      "page": "terms.html",
+      "check": "Meta description optimal"
+    },
+    {
+      "page": "terms.html",
+      "check": "Canonical URL present"
+    },
+    {
+      "page": "terms.html",
+      "check": "Open Graph tags present"
+    },
+    {
+      "page": "terms.html",
+      "check": "Twitter Card tags present"
+    },
+    {
+      "page": "terms.html",
+      "check": "Single H1 tag present"
+    },
+    {
+      "page": "terms.html",
+      "check": "Hreflang tags present: 5"
+    }
+  ]
+}
