@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Test - Estalara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">🧪 Mobile Menu Test Suite</h1>
+        
+        <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">📋 Quick Tests</h2>
+            <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test1" class="w-5 h-5">
+                    <label for="test1">1. Hamburger otwiera menu w <150ms</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test2" class="w-5 h-5">
+                    <label for="test2">2. Overlay zakrywa tło (bg-black/80)</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test3" class="w-5 h-5">
+                    <label for="test3">3. Tło nie przewija się gdy menu otwarte</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test4" class="w-5 h-5">
+                    <label for="test4">4. Wszystkie linki są klikalne</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test5" class="w-5 h-5">
+                    <label for="test5">5. Click overlay zamyka menu</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test6" class="w-5 h-5">
+                    <label for="test6">6. ESC zamyka menu</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test7" class="w-5 h-5">
+                    <label for="test7">7. Fokus trafia do pierwszego linku</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test8" class="w-5 h-5">
+                    <label for="test8">8. Po zamknięciu fokus wraca do przycisku</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test9" class="w-5 h-5">
+                    <label for="test9">9. Tab/Shift+Tab działa (focus trap)</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="test10" class="w-5 h-5">
+                    <label for="test10">10. Brak błędów w konsoli</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-bold mb-4">🔍 Automatyczne Sprawdzenie</h2>
+            <button onclick="runAutoCheck()" class="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+                Uruchom Auto-Check
+            </button>
+            <div id="results" class="mt-4"></div>
+        </div>
+
+        <div class="bg-gray-900 rounded-lg p-6">
+            <h2 class="text-xl font-bold mb-4">📊 Diagnostyka</h2>
+            <div id="diagnostics" class="space-y-2 font-mono text-sm"></div>
+        </div>
+
+        <div class="mt-6 text-center">
+            <a href="index.html" class="inline-block bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition">
+                ← Wróć do Strony Głównej
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function runAutoCheck() {
+            const results = document.getElementById('results');
+            const diagnostics = document.getElementById('diagnostics');
+            let html = '<div class="space-y-2">';
+            let diagHtml = '';
+
+            // Check 1: Elements exist
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            
+            html += `<div class="${menuToggle ? 'text-green-400' : 'text-red-400'}">
+                ${menuToggle ? '✅' : '❌'} menu-toggle button exists
+            </div>`;
+            
+            html += `<div class="${mobileMenu ? 'text-green-400' : 'text-red-400'}">
+                ${mobileMenu ? '✅' : '❌'} mobile-menu nav exists
+            </div>`;
+            
+            html += `<div class="${menuOverlay ? 'text-green-400' : 'text-red-400'}">
+                ${menuOverlay ? '✅' : '❌'} menu-overlay div exists
+            </div>`;
+
+            // Check 2: ARIA attributes
+            if (menuToggle) {
+                const hasAriaLabel = menuToggle.hasAttribute('aria-label');
+                const hasAriaExpanded = menuToggle.hasAttribute('aria-expanded');
+                
+                html += `<div class="${hasAriaLabel ? 'text-green-400' : 'text-yellow-400'}">
+                    ${hasAriaLabel ? '✅' : '⚠️'} aria-label on button
+                </div>`;
+                
+                html += `<div class="${hasAriaExpanded ? 'text-green-400' : 'text-yellow-400'}">
+                    ${hasAriaExpanded ? '✅' : '⚠️'} aria-expanded on button
+                </div>`;
+            }
+
+            // Check 3: Z-index hierarchy
+            if (menuToggle && mobileMenu && menuOverlay) {
+                const btnStyle = window.getComputedStyle(menuToggle);
+                const menuStyle = window.getComputedStyle(mobileMenu);
+                const overlayStyle = window.getComputedStyle(menuOverlay);
+                
+                diagHtml += `<div>hamburger z-index: ${btnStyle.zIndex}</div>`;
+                diagHtml += `<div>menu z-index: ${menuStyle.zIndex}</div>`;
+                diagHtml += `<div>overlay z-index: ${overlayStyle.zIndex}</div>`;
+            }
+
+            // Check 4: Focusable elements in menu
+            if (mobileMenu) {
+                const focusable = mobileMenu.querySelectorAll('a[href], button:not([disabled])');
+                html += `<div class="${focusable.length > 0 ? 'text-green-400' : 'text-red-400'}">
+                    ${focusable.length > 0 ? '✅' : '❌'} ${focusable.length} focusable elements in menu
+                </div>`;
+                
+                diagHtml += `<div>Focusable elements: ${focusable.length}</div>`;
+            }
+
+            // Check 5: Viewport width
+            const isMobile = window.innerWidth < 768;
+            diagHtml += `<div>Window width: ${window.innerWidth}px</div>`;
+            diagHtml += `<div>Mobile viewport: ${isMobile ? 'YES' : 'NO'}</div>`;
+
+            // Check 6: Main.js loaded
+            const hasMainJs = typeof window.EstalaraUtils !== 'undefined';
+            html += `<div class="${hasMainJs ? 'text-green-400' : 'text-yellow-400'}">
+                ${hasMainJs ? '✅' : '⚠️'} main.js utilities loaded
+            </div>`;
+
+            // Check 7: Classes present
+            if (mobileMenu) {
+                const hasHidden = mobileMenu.classList.contains('hidden');
+                const hasFixed = window.getComputedStyle(mobileMenu).position === 'fixed' || 
+                               mobileMenu.classList.toString().includes('fixed');
+                
+                diagHtml += `<div>Menu hidden: ${hasHidden}</div>`;
+                diagHtml += `<div>Menu classes: ${mobileMenu.className}</div>`;
+            }
+
+            html += '</div>';
+            
+            results.innerHTML = html;
+            diagnostics.innerHTML = diagHtml;
+        }
+
+        // Run on load
+        window.addEventListener('load', () => {
+            setTimeout(runAutoCheck, 500);
+        });
+    </script>
+</body>
+</html>

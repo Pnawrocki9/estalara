@@ -316,13 +316,16 @@ window.EstalaraUtils = {
     animateCounter
 };
 
-    // Mobile hamburger toggle (safe, idempotent)
+    // Mobile hamburger toggle (comprehensive, with focus trap and scroll lock)
 (function () {
     /**
-     * Initialise the hamburger menu toggle. If the DOM has already been loaded
-     * when this script runs (e.g. because the script is placed at the end of
-     * the document), the handler is executed immediately. Otherwise it waits
-     * for the DOMContentLoaded event.
+     * Comprehensive mobile menu implementation with:
+     * - Focus trap to keep keyboard navigation within menu
+     * - Scroll lock to prevent background scrolling
+     * - Escape key to close menu
+     * - Proper touch event handling
+     * - Hamburger icon animation
+     * - ARIA attributes for accessibility
      */
     
     // Helper function to check if we're on mobile viewport (< 768px)
@@ -331,38 +334,222 @@ window.EstalaraUtils = {
         return window.innerWidth < 768;
     }
     
+    // State management
+    var state = {
+        isOpen: false,
+        focusableElements: [],
+        lastFocusedElement: null
+    };
+    
     function initMobileMenu() {
         var btn  = document.getElementById('menu-toggle');
         var menu = document.getElementById('mobile-menu');
+        var overlay = document.getElementById('menu-overlay');
         if (!btn || !menu) return;
+
+        // Get all hamburger lines for animation
+        var hamburgerLines = btn.querySelectorAll('span');
 
         // Start with menu hidden on mobile viewports
         if (isMobileViewport()) {
-            menu.classList.add('hidden');
-            menu.classList.remove('flex');
+            closeMenu();
         }
 
-        // Toggle menu visibility on click - toggle both 'hidden' and 'flex' for proper mobile display
-        btn.addEventListener('click', function () {
-            var isHidden = menu.classList.contains('hidden');
-            if (isHidden) {
-                menu.classList.remove('hidden');
-                menu.classList.add('flex');
-                btn.setAttribute('aria-expanded', 'true');
+        // Get all focusable elements within menu for focus trap
+        function updateFocusableElements() {
+            state.focusableElements = Array.from(
+                menu.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')
+            );
+        }
+
+        // Lock body scroll when menu is open
+        function lockScroll() {
+            // Store current scroll position
+            var scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = '-' + scrollY + 'px';
+            document.body.style.width = '100%';
+            document.body.style.overflowY = 'scroll'; // Prevent layout shift
+        }
+
+        // Unlock body scroll when menu is closed
+        function unlockScroll() {
+            var scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflowY = '';
+            // Restore scroll position
+            if (scrollY) {
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            }
+        }
+
+        // Animate hamburger icon
+        function animateHamburgerOpen() {
+            if (hamburgerLines.length >= 3) {
+                // First line rotates and moves down
+                hamburgerLines[0].style.transform = 'rotate(45deg) translateY(8px)';
+                hamburgerLines[0].style.transition = 'transform 0.3s ease';
+                // Middle line fades out
+                hamburgerLines[1].style.opacity = '0';
+                hamburgerLines[1].style.transition = 'opacity 0.2s ease';
+                // Last line rotates and moves up
+                hamburgerLines[2].style.transform = 'rotate(-45deg) translateY(-8px)';
+                hamburgerLines[2].style.transition = 'transform 0.3s ease';
+            }
+        }
+
+        function animateHamburgerClose() {
+            if (hamburgerLines.length >= 3) {
+                hamburgerLines[0].style.transform = '';
+                hamburgerLines[1].style.opacity = '';
+                hamburgerLines[2].style.transform = '';
+            }
+        }
+
+        // Open menu
+        function openMenu() {
+            if (state.isOpen) return;
+            
+            state.isOpen = true;
+            state.lastFocusedElement = document.activeElement;
+            
+            // Show overlay first (if it exists)
+            if (overlay) {
+                overlay.classList.remove('hidden');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+            
+            // Show menu
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            btn.setAttribute('aria-expanded', 'true');
+            btn.setAttribute('aria-label', 'Close menu');
+            
+            // Only lock scroll on mobile
+            if (isMobileViewport()) {
+                lockScroll();
+            }
+            
+            animateHamburgerOpen();
+            updateFocusableElements();
+            
+            // Focus first element in menu after a brief delay
+            setTimeout(function() {
+                if (state.focusableElements.length > 0) {
+                    state.focusableElements[0].focus();
+                }
+            }, 100);
+        }
+
+        // Close menu
+        function closeMenu() {
+            if (!state.isOpen && menu.classList.contains('hidden')) return;
+            
+            state.isOpen = false;
+            
+            // Hide overlay
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+            
+            // Hide menu
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            btn.setAttribute('aria-expanded', 'false');
+            btn.setAttribute('aria-label', 'Open menu');
+            
+            unlockScroll();
+            animateHamburgerClose();
+            
+            // Return focus to hamburger button
+            if (state.lastFocusedElement && isMobileViewport()) {
+                state.lastFocusedElement.focus();
+            }
+        }
+
+        // Toggle menu
+        function toggleMenu(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            if (menu.classList.contains('hidden')) {
+                openMenu();
             } else {
-                menu.classList.add('hidden');
-                menu.classList.remove('flex');
-                btn.setAttribute('aria-expanded', 'false');
+                closeMenu();
+            }
+        }
+
+        // Handle focus trap
+        function handleFocusTrap(event) {
+            if (!state.isOpen || !isMobileViewport()) return;
+            if (state.focusableElements.length === 0) return;
+
+            var isTabPressed = event.key === 'Tab';
+            if (!isTabPressed) return;
+
+            var firstElement = state.focusableElements[0];
+            var lastElement = state.focusableElements[state.focusableElements.length - 1];
+
+            if (event.shiftKey) {
+                // Shift + Tab: if focused on first element, move to last
+                if (document.activeElement === firstElement) {
+                    event.preventDefault();
+                    lastElement.focus();
+                }
+            } else {
+                // Tab: if focused on last element, move to first
+                if (document.activeElement === lastElement) {
+                    event.preventDefault();
+                    firstElement.focus();
+                }
+            }
+        }
+
+        // Handle escape key
+        function handleEscapeKey(event) {
+            if (event.key === 'Escape' && state.isOpen) {
+                closeMenu();
+            }
+        }
+
+        // Attach event listeners - using addEventListener once to avoid duplicates
+        btn.addEventListener('click', toggleMenu);
+        
+        // Close menu when clicking overlay
+        if (overlay) {
+            overlay.addEventListener('click', function(event) {
+                event.preventDefault();
+                closeMenu();
+            });
+        }
+        
+        // Close menu when clicking outside (only on mobile) - backup if overlay doesn't exist
+        document.addEventListener('click', function(event) {
+            if (!state.isOpen || !isMobileViewport()) return;
+            
+            var isClickInsideMenu = menu.contains(event.target);
+            var isClickOnButton = btn.contains(event.target);
+            var isClickOnOverlay = overlay && overlay.contains(event.target);
+            
+            if (!isClickInsideMenu && !isClickOnButton && !isClickOnOverlay) {
+                closeMenu();
             }
         });
+
+        // Focus trap
+        document.addEventListener('keydown', handleFocusTrap);
+        
+        // Escape key handler
+        document.addEventListener('keydown', handleEscapeKey);
 
         // Hide menu after clicking a link on mobile
         menu.querySelectorAll('a').forEach(function (a) {
             a.addEventListener('click', function () {
                 if (isMobileViewport()) {
-                    menu.classList.add('hidden');
-                    menu.classList.remove('flex');
-                    btn.setAttribute('aria-expanded', 'false');
+                    closeMenu();
                 }
             });
         });
@@ -375,16 +562,28 @@ window.EstalaraUtils = {
             resizeTimer = setTimeout(function() {
                 // On mobile (< 768px), ensure menu is closed
                 if (isMobileViewport()) {
-                    menu.classList.add('hidden');
-                    menu.classList.remove('flex');
-                    btn.setAttribute('aria-expanded', 'false');
+                    closeMenu();
                 } else {
                     // On desktop (>= 768px), remove manual classes and let Tailwind handle it
+                    // Also unlock scroll if it was locked
+                    unlockScroll();
+                    state.isOpen = false;
                     menu.classList.remove('hidden');
                     menu.classList.remove('flex');
                     btn.setAttribute('aria-expanded', 'false');
+                    btn.setAttribute('aria-label', 'Open menu');
+                    animateHamburgerClose();
                 }
             }, 100);
+        });
+
+        // Handle orientation change on mobile devices
+        window.addEventListener('orientationchange', function() {
+            setTimeout(function() {
+                if (state.isOpen && isMobileViewport()) {
+                    closeMenu();
+                }
+            }, 200);
         });
     }
 
