@@ -87,6 +87,11 @@ function deleteLiveProperty(id) {
         }
         
         admin.liveProperties = admin.liveProperties.filter(p => p.id !== id);
+        // Ensure version is set to prevent frontend from resetting data
+        if (!admin.version) {
+            admin.version = 4;
+        }
+        
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
         
         showNotification('Kafelek został usunięty!', 'success');
@@ -194,6 +199,11 @@ function deleteProperty(id) {
         
         // Remove property from array
         admin.properties = admin.properties.filter(p => p.id !== id);
+        
+        // Ensure version is set
+        if (!admin.version) {
+            admin.version = 4;
+        }
         
         // Save to localStorage
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
@@ -466,6 +476,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('✓ New property created:', propertyData);
                 }
                 
+                // Ensure version is set
+                if (!admin.version) {
+                    admin.version = 4;
+                }
+                
                 // Save to localStorage
                 localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
                 
@@ -646,7 +661,12 @@ function saveGeneralSettings() {
         admin.contactEmail = contactEmail;
         admin.logoUrl = logoUrl;
         
-        console.log('💾 Saving admin data to localStorage...');
+        // Ensure version is set
+        if (!admin.version) {
+            admin.version = 4;
+        }
+        
+        console.log('💾 Saving admin data to localStorage (version:', admin.version, ')...');
         
         // Save to localStorage
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
@@ -684,6 +704,11 @@ function savePlatformSettings() {
     
     admin.settings.currency = document.getElementById('default-currency').value;
     admin.settings.language = document.getElementById('default-language').value;
+    
+    // Ensure version is set
+    if (!admin.version) {
+        admin.version = 4;
+    }
     
     // Save to localStorage
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
@@ -961,6 +986,11 @@ function savePageContent(pageId, formData) {
     // Update page content
     admin.pages[pageId] = { ...admin.pages[pageId], ...updates };
     
+    // Ensure version is set
+    if (!admin.version) {
+        admin.version = 4;
+    }
+    
     // Save to localStorage
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     
@@ -972,9 +1002,14 @@ function savePageContent(pageId, formData) {
 function loadAdminData() {
     const stored = localStorage.getItem('estalaraAdminData');
     if (stored) {
-        return JSON.parse(stored);
+        const data = JSON.parse(stored);
+        // Ensure version is set to prevent frontend from resetting data
+        if (!data.version) {
+            data.version = 4; // Must match version in cms-integration.js
+        }
+        return data;
     }
-    return { pages: {}, settings: {} };
+    return { version: 4, pages: {}, settings: {}, liveProperties: [], properties: [] };
 }
 
 // ===== PAGE STRUCTURE EDITOR FUNCTIONS =====
