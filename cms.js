@@ -17,6 +17,120 @@ function showSection(sectionId) {
 
 // Global variable to track current property being edited
 let currentPropertyId = null;
+let currentLivePropertyId = null;
+
+// ===== NEW LIVE PROPERTIES MODAL FUNCTIONS =====
+
+function showLivePropertyModal() {
+    currentLivePropertyId = null; // Reset for new property
+    document.getElementById('livePropertyModalTitle').textContent = '🔴 Dodaj Kafelek LIVE Property';
+    document.getElementById('livePropertyForm').reset();
+    document.getElementById('livePropertyModal').classList.remove('hidden');
+    document.getElementById('livePropertyModal').classList.add('flex');
+    
+    // Reset preview
+    updateLivePreview();
+}
+
+function hideLivePropertyModal() {
+    currentLivePropertyId = null;
+    document.getElementById('livePropertyModal').classList.add('hidden');
+    document.getElementById('livePropertyModal').classList.remove('flex');
+    document.getElementById('livePropertyForm').reset();
+}
+
+function updateLivePreview() {
+    const title = document.getElementById('live-property-title')?.value || 'Tytuł Nieruchomości';
+    const location = document.getElementById('live-property-location')?.value || 'Lokalizacja';
+    const price = document.getElementById('live-property-price')?.value || '0';
+    const description = document.getElementById('live-property-description')?.value || 'Opis nieruchomości pojawi się tutaj...';
+    const image = document.getElementById('live-property-image')?.value || 'https://via.placeholder.com/400x300?text=Dodaj+Zdjęcie';
+    
+    document.getElementById('preview-title').textContent = title;
+    document.getElementById('preview-location').textContent = location;
+    document.getElementById('preview-price').textContent = `€${parseInt(price).toLocaleString()}`;
+    document.getElementById('preview-description').textContent = description;
+    document.getElementById('preview-image').src = image;
+}
+
+function editLiveProperty(id) {
+    const admin = loadAdminData();
+    const property = admin.liveProperties?.find(p => p.id === id);
+    
+    if (!property) {
+        showNotification('Kafelek nie został znaleziony!', 'error');
+        return;
+    }
+    
+    currentLivePropertyId = id;
+    document.getElementById('livePropertyModalTitle').textContent = '🔴 Edytuj Kafelek LIVE Property';
+    
+    document.getElementById('live-property-title').value = property.title || '';
+    document.getElementById('live-property-location').value = property.location || '';
+    document.getElementById('live-property-price').value = property.price || '';
+    document.getElementById('live-property-description').value = property.description || '';
+    document.getElementById('live-property-image').value = property.image || '';
+    document.getElementById('live-property-link').value = property.link || '';
+    
+    updateLivePreview();
+    
+    document.getElementById('livePropertyModal').classList.remove('hidden');
+    document.getElementById('livePropertyModal').classList.add('flex');
+}
+
+function deleteLiveProperty(id) {
+    if (confirm('Czy na pewno chcesz usunąć ten kafelek?')) {
+        const admin = loadAdminData();
+        
+        if (!admin.liveProperties) {
+            admin.liveProperties = [];
+        }
+        
+        admin.liveProperties = admin.liveProperties.filter(p => p.id !== id);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        
+        showNotification('Kafelek został usunięty!', 'success');
+        loadLivePropertiesGrid();
+    }
+}
+
+function loadLivePropertiesGrid() {
+    const admin = loadAdminData();
+    const grid = document.getElementById('livePropertiesGrid');
+    
+    if (!grid) return;
+    
+    if (!admin.liveProperties || admin.liveProperties.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full text-center py-12 cms-card">
+                <p class="text-gray-500 text-lg mb-2">Brak kafelków LIVE Properties</p>
+                <p class="text-gray-400 text-sm">Kliknij "Dodaj Kafelek" aby stworzyć pierwszy kafelek</p>
+            </div>
+        `;
+        return;
+    }
+    
+    grid.innerHTML = admin.liveProperties.map(property => `
+        <div class="cms-card p-4 hover:shadow-lg transition-shadow">
+            <div class="relative mb-3">
+                <img src="${property.image}" alt="${property.title}" class="w-full h-40 object-cover rounded">
+                <span class="absolute top-2 left-2 px-2 py-1 bg-red-600 text-white text-xs font-semibold rounded-full">LIVE</span>
+            </div>
+            <h3 class="font-bold text-lg mb-1 truncate">${property.title}</h3>
+            <p class="text-sm text-gray-500 mb-2">${property.location}</p>
+            <p class="text-sm text-gray-600 mb-3 line-clamp-2">${property.description}</p>
+            <div class="flex justify-between items-center mb-3">
+                <span class="font-bold text-lg text-blue-600">€${property.price.toLocaleString()}</span>
+            </div>
+            <div class="flex gap-2">
+                <button class="cms-btn cms-btn-primary text-sm flex-1" onclick="editLiveProperty(${property.id})">Edytuj</button>
+                <button class="cms-btn cms-btn-danger text-sm flex-1" onclick="deleteLiveProperty(${property.id})">Usuń</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ===== OLD PROPERTY MODAL FUNCTIONS (DEPRECATED) =====
 
 function showPropertyModal() {
     currentPropertyId = null; // Reset for new property
@@ -227,7 +341,86 @@ document.addEventListener('DOMContentLoaded', function() {
     // Pre-load properties data (so it's ready when user clicks Properties tab)
     loadPropertiesTable();
     
-    // Property form handler
+    // Pre-load live properties grid
+    loadLivePropertiesGrid();
+    
+    // LIVE Property form handler (NEW)
+    const livePropertyForm = document.getElementById('livePropertyForm');
+    if (livePropertyForm) {
+        // Add live preview updates on input
+        ['live-property-title', 'live-property-location', 'live-property-price', 
+         'live-property-description', 'live-property-image'].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('input', updateLivePreview);
+            }
+        });
+        
+        livePropertyForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            try {
+                const admin = loadAdminData();
+                
+                // Ensure liveProperties array exists
+                if (!admin.liveProperties) {
+                    admin.liveProperties = [];
+                }
+                
+                // Get form data
+                const propertyData = {
+                    title: document.getElementById('live-property-title').value,
+                    location: document.getElementById('live-property-location').value,
+                    price: parseInt(document.getElementById('live-property-price').value),
+                    description: document.getElementById('live-property-description').value,
+                    image: document.getElementById('live-property-image').value,
+                    link: document.getElementById('live-property-link').value || 'https://app.estalara.com'
+                };
+                
+                if (currentLivePropertyId) {
+                    // Update existing property
+                    const index = admin.liveProperties.findIndex(p => p.id === currentLivePropertyId);
+                    if (index !== -1) {
+                        admin.liveProperties[index] = {
+                            ...admin.liveProperties[index],
+                            ...propertyData
+                        };
+                        console.log('✓ LIVE Property updated:', propertyData);
+                    }
+                } else {
+                    // Create new property with new ID
+                    const maxId = admin.liveProperties.length > 0 
+                        ? Math.max(...admin.liveProperties.map(p => p.id || 0)) 
+                        : 0;
+                    propertyData.id = maxId + 1;
+                    admin.liveProperties.push(propertyData);
+                    console.log('✓ New LIVE Property created:', propertyData);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+                
+                // Verify save
+                const savedData = localStorage.getItem('estalaraAdminData');
+                if (!savedData) {
+                    throw new Error('Failed to save to localStorage');
+                }
+                
+                console.log('✓ LIVE Property data saved to localStorage');
+                
+                showNotification('Kafelek zapisany pomyślnie!', 'success');
+                hideLivePropertyModal();
+                
+                // Reload live properties grid
+                loadLivePropertiesGrid();
+            } catch (error) {
+                console.error('✗ Error saving LIVE property:', error);
+                showNotification('Błąd podczas zapisywania: ' + error.message, 'error');
+            }
+        });
+    }
+    
+    // Property form handler (OLD - DEPRECATED)
     const propertyForm = document.getElementById('propertyForm');
     if (propertyForm) {
         propertyForm.addEventListener('submit', function(e) {
@@ -1089,5 +1282,7 @@ showSection = function(sectionId) {
         loadPageStructureEditor();
     } else if (sectionId === 'properties') {
         loadPropertiesTable();
+    } else if (sectionId === 'live-properties') {
+        loadLivePropertiesGrid();
     }
 };
