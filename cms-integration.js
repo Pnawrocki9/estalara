@@ -27,7 +27,65 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             // want to force clients to reload default content after a major
             // upgrade. When the stored data has an older version, the
             // application will discard it and fall back to these defaults.
-            version: 3,
+            version: 4,
+            // NEW: liveProperties - simplified property management for LIVE Properties section
+            liveProperties: [
+                {
+                    id: 1,
+                    title: "Modern Apartment in Cádiz",
+                    location: "Cádiz, Spain",
+                    price: 450000,
+                    image: "https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp",
+                    description: "Stunning property in the heart of Cádiz with ocean views and modern amenities.",
+                    link: "https://app.estalara.com/listing/-cadiz-cadiz-na-d19331b5-846d-4139-a78e-2d9695ff73d0"
+                },
+                {
+                    id: 2,
+                    title: "Luxury Penthouse in Madrid",
+                    location: "Madrid, Spain",
+                    price: 1200000,
+                    image: "https://kimi-web-img.moonshot.cn/img/www.valcucine.com/23a9f04943354e7f0279fbe99bcc358000b108f4.jpg",
+                    description: "Exclusive penthouse in Madrid's premium district with panoramic city views.",
+                    link: "https://app.estalara.com/listing/-madrid-madrid-na-8a9b2c1d-4e5f-6a7b-8c9d-0e1f2a3b4c5d"
+                },
+                {
+                    id: 3,
+                    title: "Beachfront Villa in Barcelona",
+                    location: "Barcelona, Spain",
+                    price: 2800000,
+                    image: "https://kimi-web-img.moonshot.cn/img/antonovich-design.com/c4dc761e62d99ae8976671614b35f23c72bda4df.jpg",
+                    description: "Spectacular beachfront villa with private pool and direct beach access.",
+                    link: "https://app.estalara.com/listing/-barcelona-barcelona-na-5f6e7d8c-9a0b-1c2d-3e4f-5a6b7c8d9e0f"
+                },
+                {
+                    id: 4,
+                    title: "Historic Building in Valencia",
+                    location: "Valencia, Spain",
+                    price: 750000,
+                    image: "https://kimi-web-img.moonshot.cn/img/www.elegantinterior.info/c0b1fd32f4cdc3abdaccf6a5f411e8f3fb8e6e92.png",
+                    description: "Beautifully restored historic building in Valencia's old town with modern interiors.",
+                    link: "https://app.estalara.com/listing/-valencia-valencia-na-2a3b4c5d-6e7f-8a9b-0c1d-2e3f4a5b6c7d"
+                },
+                {
+                    id: 5,
+                    title: "Traditional House in Seville",
+                    location: "Seville, Spain",
+                    price: 320000,
+                    image: "https://kimi-web-img.moonshot.cn/img/idea.3dbrute.com/eaa4c4cbb5ccbf57f4732305104dd9187d2276a4.jpg",
+                    description: "Authentic Andalusian house with patio, perfect for cultural immersion.",
+                    link: "https://app.estalara.com/listing/-seville-seville-na-9c8d7e6f-5a4b-3c2d-1e0f-9a8b7c6d5e4f"
+                },
+                {
+                    id: 6,
+                    title: "Modern Villa in Malaga",
+                    location: "Malaga, Spain",
+                    price: 1850000,
+                    image: "https://kimi-web-img.moonshot.cn/img/archello.s3.eu-central-1.amazonaws.com/e68f5c11f478a0669779d5422a04c826a028dca0.jpg",
+                    description: "Contemporary villa with stunning sea views and infinity pool in Costa del Sol.",
+                    link: "https://app.estalara.com/listing/-malaga-malaga-na-7d6e5f4a-3b2c-1d0e-9f8a-7b6c5d4e3f2a"
+                }
+            ],
+            // OLD: properties array (DEPRECATED - kept for backward compatibility)
             properties: [
                 {
                     id: 1,
@@ -303,6 +361,29 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 : [];
         }
 
+        // NEW: Migrate old properties to liveProperties if liveProperties doesn't exist
+        // This ensures backward compatibility with existing data
+        if (!Array.isArray(loaded.liveProperties) || loaded.liveProperties.length === 0) {
+            if (Array.isArray(loaded.properties) && loaded.properties.length > 0) {
+                // Copy properties to liveProperties, removing 'type' and 'status' fields
+                loaded.liveProperties = loaded.properties.map(prop => ({
+                    id: prop.id,
+                    title: prop.title,
+                    location: prop.location,
+                    price: prop.price,
+                    description: prop.description,
+                    image: prop.image,
+                    link: prop.link || 'https://app.estalara.com'
+                }));
+                console.log('✅ Migrated', loaded.liveProperties.length, 'properties to liveProperties');
+            } else {
+                // Use defaults if no properties exist
+                loaded.liveProperties = Array.isArray(defaultContent.liveProperties)
+                    ? [...defaultContent.liveProperties]
+                    : [];
+            }
+        }
+
         // Ensure pageStructures exist; if not, seed with defaults
         if (!loaded.pageStructures || typeof loaded.pageStructures !== 'object') {
             loaded.pageStructures = defaultContent.pageStructures || {};
@@ -433,10 +514,13 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         const propertiesContainer = document.querySelector('#live-properties .grid');
         if (!propertiesContainer) return;
 
-        // Get live properties from content (loaded from localStorage or defaults)
-        const liveProperties = (this.content && Array.isArray(this.content.properties))
-            ? this.content.properties.filter(p => !p.status || p.status === 'live')
-            : [];
+        // NEW: Use liveProperties array (managed in CMS) instead of old properties array
+        // Fall back to old properties array if liveProperties doesn't exist yet (for backward compatibility)
+        const liveProperties = (this.content && Array.isArray(this.content.liveProperties) && this.content.liveProperties.length > 0)
+            ? this.content.liveProperties
+            : (this.content && Array.isArray(this.content.properties))
+                ? this.content.properties.filter(p => !p.status || p.status === 'live')
+                : [];
 
         // Always clear existing properties first to remove any hardcoded HTML
         propertiesContainer.innerHTML = '';
@@ -486,9 +570,9 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 <img src="${property.image}"
                      alt="${property.title}"
                      loading="lazy"
-                     class="w-full h-48 object-cover mb-4">
+                     class="w-full h-48 object-cover mb-4 rounded">
                 <div class="flex justify-between items-start">
-                    <span class="live-badge">LIVE</span>
+                    <span class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded-full">LIVE</span>
                     <span class="text-sm text-gray-500">${property.location}</span>
                 </div>
             </div>
@@ -498,7 +582,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 <span class="font-bold text-lg">€${property.price.toLocaleString()}</span>
                 <a href="${property.link}"
                    target="_blank"
-                   class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors">
+                   class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors">
                     View Property →
                 </a>
             </div>

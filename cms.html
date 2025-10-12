@@ -53,8 +53,8 @@
                 <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('dashboard')">
                     📊 Dashboard
                 </a>
-                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('properties')">
-                    🏠 Properties
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('live-properties')">
+                    🔴 LIVE Properties
                 </a>
                 <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('pages')">
                     📄 Content Editor
@@ -126,32 +126,33 @@
                 </div>
             </div>
 
-            <!-- Properties Section -->
-            <div id="properties" class="section hidden">
+            <!-- LIVE Properties Section -->
+            <div id="live-properties" class="section hidden">
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Properties</h2>
-                        <p class="text-gray-600">Manage your property listings</p>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">🔴 LIVE Properties</h2>
+                        <p class="text-gray-600">Zarządzaj kafelkami nieruchomości wyświetlanymi na stronie głównej</p>
                     </div>
-                    <button class="cms-btn cms-btn-primary" onclick="showPropertyModal()">+ Add Property</button>
+                    <button class="cms-btn cms-btn-primary" onclick="showLivePropertyModal()">+ Dodaj Kafelek</button>
                 </div>
 
-                <!-- Properties Table -->
-                <div class="cms-card overflow-hidden">
-                    <table class="cms-table">
-                        <thead>
-                            <tr>
-                                <th>Property</th>
-                                <th>Location</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="propertiesTable">
-                            <!-- Properties will be loaded here -->
-                        </tbody>
-                    </table>
+                <!-- Info Card -->
+                <div class="cms-card p-6 mb-6 bg-blue-50 border border-blue-200">
+                    <h3 class="font-semibold text-blue-900 mb-2">✨ Nowy System Zarządzania</h3>
+                    <p class="text-blue-800 text-sm mb-2">
+                        To jest uproszczony system do zarządzania kafelkami LIVE Properties na stronie głównej. 
+                        Każdy kafelek automatycznie otrzymuje czerwony znak "LIVE".
+                    </p>
+                    <ul class="text-blue-800 text-sm space-y-1">
+                        <li>• <strong>Prostsza edycja</strong> - tylko najważniejsze pola (tytuł, cena, opis, zdjęcie)</li>
+                        <li>• <strong>Podgląd na żywo</strong> - zobacz jak wygląda kafelek przed zapisaniem</li>
+                        <li>• <strong>Łatwe zarządzanie</strong> - dodawaj, edytuj i usuwaj kafelki w kilka sekund</li>
+                    </ul>
+                </div>
+
+                <!-- Properties Grid with Visual Preview -->
+                <div id="livePropertiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Properties will be loaded here as cards -->
                 </div>
             </div>
 
@@ -627,57 +628,81 @@
         </div>
     </div>
 
-    <!-- Property Modal -->
-    <div id="propertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
+    <!-- LIVE Property Modal (New Simplified Version) -->
+    <div id="livePropertyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
-                <h3 id="propertyModalTitle" class="text-lg font-semibold">Add New Property</h3>
-                <button onclick="hidePropertyModal()" class="text-gray-500 hover:text-gray-700">✕</button>
+                <h3 id="livePropertyModalTitle" class="text-lg font-semibold">🔴 Dodaj Kafelek LIVE Property</h3>
+                <button onclick="hideLivePropertyModal()" class="text-gray-500 hover:text-gray-700 text-2xl">✕</button>
             </div>
-            <form id="propertyForm" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Title</label>
-                        <input type="text" id="property-title" name="title" class="cms-input" placeholder="e.g., Modern Apartment in Barcelona" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                        <input type="text" id="property-location" name="location" class="cms-input" placeholder="e.g., Barcelona, Spain" required>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Price (€)</label>
-                        <input type="number" id="property-price" name="price" class="cms-input" placeholder="450000" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
-                        <select id="property-type" name="type" class="cms-input" required>
-                            <option value="">Select Type</option>
-                            <option value="apartment">Apartment</option>
-                            <option value="house">House</option>
-                            <option value="villa">Villa</option>
-                            <option value="penthouse">Penthouse</option>
-                        </select>
-                    </div>
-                </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Form Section -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                    <textarea id="property-description" name="description" class="cms-input" rows="4" placeholder="Property description..." required></textarea>
+                    <form id="livePropertyForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tytuł Nieruchomości *</label>
+                            <input type="text" id="live-property-title" name="title" class="cms-input" placeholder="np. Luksusowy Apartament w Barcelonie" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Lokalizacja *</label>
+                            <input type="text" id="live-property-location" name="location" class="cms-input" placeholder="np. Barcelona, Hiszpania" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Cena (€) *</label>
+                            <input type="number" id="live-property-price" name="price" class="cms-input" placeholder="450000" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Opis *</label>
+                            <textarea id="live-property-description" name="description" class="cms-input" rows="4" placeholder="Krótki opis nieruchomości..." required></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">URL Zdjęcia *</label>
+                            <input type="url" id="live-property-image" name="image" class="cms-input" placeholder="https://example.com/image.jpg" required>
+                            <p class="text-xs text-gray-500 mt-1">Wklej link do zdjęcia nieruchomości</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Link do Oferty</label>
+                            <input type="url" id="live-property-link" name="link" class="cms-input" placeholder="https://app.estalara.com/listing/..." value="https://app.estalara.com">
+                            <p class="text-xs text-gray-500 mt-1">Link do szczegółów oferty (opcjonalne)</p>
+                        </div>
+                        <div class="flex justify-end space-x-3 pt-4">
+                            <button type="button" onclick="hideLivePropertyModal()" class="cms-btn cms-btn-secondary">Anuluj</button>
+                            <button type="submit" class="cms-btn cms-btn-primary">Zapisz Kafelek</button>
+                        </div>
+                    </form>
                 </div>
+                
+                <!-- Live Preview Section -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Image URL</label>
-                    <input type="url" id="property-image" name="image" class="cms-input" placeholder="https://example.com/image.jpg" required>
+                    <h4 class="text-sm font-medium text-gray-700 mb-3">👁️ Podgląd Kafelka</h4>
+                    <div class="bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                        <div id="livePropertyPreview" class="bg-white p-6 rounded shadow-lg">
+                            <div class="mb-4">
+                                <img id="preview-image" 
+                                     src="https://via.placeholder.com/400x300?text=Dodaj+Zdjęcie" 
+                                     alt="Preview" 
+                                     class="w-full h-48 object-cover mb-4 rounded">
+                                <div class="flex justify-between items-start">
+                                    <span class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded-full">LIVE</span>
+                                    <span id="preview-location" class="text-sm text-gray-500">Lokalizacja</span>
+                                </div>
+                            </div>
+                            <h3 id="preview-title" class="text-xl font-bold mb-2 text-black">Tytuł Nieruchomości</h3>
+                            <p id="preview-description" class="text-gray-600 mb-4 text-sm">Opis nieruchomości pojawi się tutaj...</p>
+                            <div class="flex justify-between items-center">
+                                <span id="preview-price" class="font-bold text-lg text-black">€0</span>
+                                <span class="bg-black text-white px-4 py-2 text-sm rounded hover:bg-gray-800 transition-colors">
+                                    View Property →
+                                </span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3 text-center">
+                            Tak będzie wyglądać kafelek na stronie głównej
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Property Link</label>
-                    <input type="url" id="property-link" name="link" class="cms-input" placeholder="https://app.estalara.com/listing/..." required>
-                </div>
-                <div class="flex justify-end space-x-3 pt-4">
-                    <button type="button" onclick="hidePropertyModal()" class="cms-btn cms-btn-secondary">Cancel</button>
-                    <button type="submit" class="cms-btn cms-btn-primary">Save Property</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
