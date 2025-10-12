@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estalara Admin - Content Management</title>
+    <link rel="icon" type="image/png" href="assets/EstalaraLogo.png">
+    <!-- TODO: For production, replace Tailwind CDN with built CSS using Tailwind CLI -->
+    <!-- Install: npm install -D tailwindcss postcss autoprefixer -->
+    <!-- See: https://tailwindcss.com/docs/installation -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Load CMS integration to access admin data -->
     <script src="cms-integration.js"></script>
@@ -1117,6 +1121,16 @@
             const stored = localStorage.getItem('estalaraAdminData');
             if (stored) {
                 adminData = JSON.parse(stored);
+                // Ensure critical structure exists to prevent errors
+                if (!adminData.content) {
+                    adminData.content = {};
+                }
+                if (!adminData.content.pages) {
+                    adminData.content.pages = {};
+                }
+                if (!adminData.properties) {
+                    adminData.properties = [];
+                }
             }
         }
 
@@ -1186,15 +1200,23 @@
         function loadAdminData() {
             const stored = localStorage.getItem('estalaraAdminData');
             if (stored) {
-                return JSON.parse(stored);
+                const data = JSON.parse(stored);
+                // Ensure structure is consistent
+                if (!data.content) {
+                    data.content = {};
+                }
+                if (!data.content.pages) {
+                    data.content.pages = {};
+                }
+                return data;
             }
-            return { pages: {} };
+            return { content: { pages: {} }, properties: [] };
         }
 
         // Load page editor
         function loadPageEditor(pageId) {
             const admin = loadAdminData();
-            const page = admin.pages[pageId] || {};
+            const page = (admin.content && admin.content.pages && admin.content.pages[pageId]) || {};
             
             document.getElementById('pageEditorTitle').textContent = `Edit ${pageId.charAt(0).toUpperCase() + pageId.slice(1)} Page`;
             
@@ -1342,8 +1364,8 @@
         function savePageContent(pageId, formData) {
             const admin = loadAdminData();
             
-            if (!admin.pages[pageId]) {
-                admin.pages[pageId] = {};
+            if (!admin.content.pages[pageId]) {
+                admin.content.pages[pageId] = {};
             }
             
             // Convert form data to object
@@ -1358,7 +1380,7 @@
             }
             
             // Update page content
-            admin.pages[pageId] = { ...admin.pages[pageId], ...updates };
+            admin.content.pages[pageId] = { ...admin.content.pages[pageId], ...updates };
             
             // Save to localStorage
             localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
