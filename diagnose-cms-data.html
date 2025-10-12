@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Data Diagnostics - Estalara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">🔍 Diagnostyka Danych CMS</h1>
+            <p class="text-gray-600 mb-6">Ten skrypt sprawdza stan danych w localStorage i pomaga w migracji do nowego systemu LIVE Properties.</p>
+            
+            <div class="space-y-4">
+                <button onclick="checkData()" class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold">
+                    ✅ Sprawdź Stan Danych
+                </button>
+                
+                <button onclick="forceMigration()" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold">
+                    🔄 Wymuś Migrację
+                </button>
+                
+                <button onclick="clearAndReload()" class="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-semibold">
+                    🗑️ Wyczyść i Przeładuj (Reset do domyślnych)
+                </button>
+            </div>
+        </div>
+        
+        <div id="output" class="bg-gray-900 text-green-400 font-mono text-sm p-6 rounded-lg min-h-[400px] overflow-auto">
+            <p>Kliknij przycisk powyżej aby rozpocząć diagnostykę...</p>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const color = {
+                'info': 'text-blue-400',
+                'success': 'text-green-400',
+                'warning': 'text-yellow-400',
+                'error': 'text-red-400'
+            }[type] || 'text-green-400';
+            
+            output.innerHTML += `<div class="${color}">${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('output').innerHTML = '';
+        }
+
+        function checkData() {
+            clearLog();
+            log('=== ROZPOCZYNAM DIAGNOSTYKĘ ===', 'info');
+            log('');
+            
+            const data = localStorage.getItem('estalaraAdminData');
+            
+            if (!data) {
+                log('❌ Brak danych w localStorage!', 'error');
+                log('To może oznaczać, że CMS nie został jeszcze użyty.', 'warning');
+                log('Spróbuj otworzyć cms.html i wrócić tutaj.', 'warning');
+                return;
+            }
+            
+            let parsed;
+            try {
+                parsed = JSON.parse(data);
+                log('✅ Dane znalezione w localStorage', 'success');
+            } catch (e) {
+                log('❌ Błąd parsowania danych JSON: ' + e.message, 'error');
+                return;
+            }
+            
+            log('');
+            log('--- WERSJA DANYCH ---', 'info');
+            log(`Aktualna wersja: ${parsed.version || 'BRAK'}`);
+            log(`Wymagana wersja: 4`);
+            if (parsed.version < 4) {
+                log('⚠️ Dane mają starszą wersję! Potrzebna migracja.', 'warning');
+            } else {
+                log('✅ Dane mają aktualną wersję', 'success');
+            }
+            
+            log('');
+            log('--- STARE PROPERTIES (deprecated) ---', 'info');
+            if (parsed.properties) {
+                log(`Znaleziono ${parsed.properties.length} starych properties`);
+                parsed.properties.forEach((prop, i) => {
+                    log(`  ${i+1}. ${prop.title} (ID: ${prop.id})`);
+                });
+            } else {
+                log('Brak starych properties');
+            }
+            
+            log('');
+            log('--- NOWE LIVE PROPERTIES ---', 'info');
+            if (parsed.liveProperties) {
+                log(`✅ Znaleziono ${parsed.liveProperties.length} liveProperties`, 'success');
+                parsed.liveProperties.forEach((prop, i) => {
+                    log(`  ${i+1}. ${prop.title} (ID: ${prop.id})`);
+                });
+            } else {
+                log('❌ Brak liveProperties! Potrzebna migracja.', 'error');
+            }
+            
+            log('');
+            log('--- REKOMENDACJE ---', 'info');
+            if (!parsed.liveProperties || parsed.liveProperties.length === 0) {
+                log('🔧 Kliknij "Wymuś Migrację" aby przenieść dane', 'warning');
+            } else if (parsed.version < 4) {
+                log('🔧 Zaktualizuj wersję danych do 4', 'warning');
+            } else {
+                log('✅ Wszystko wygląda dobrze! Spróbuj przeładować CMS (Ctrl+Shift+R)', 'success');
+            }
+            
+            log('');
+            log('=== DIAGNOSTYKA ZAKOŃCZONA ===', 'info');
+        }
+
+        function forceMigration() {
+            clearLog();
+            log('=== WYMUSZANIE MIGRACJI ===', 'info');
+            log('');
+            
+            const data = localStorage.getItem('estalaraAdminData');
+            
+            if (!data) {
+                log('❌ Brak danych w localStorage!', 'error');
+                log('Nie ma czego migrować. Otwórz cms.html najpierw.', 'warning');
+                return;
+            }
+            
+            let parsed;
+            try {
+                parsed = JSON.parse(data);
+            } catch (e) {
+                log('❌ Błąd parsowania danych: ' + e.message, 'error');
+                return;
+            }
+            
+            log('Sprawdzam dane...');
+            
+            // Perform migration
+            if (!parsed.liveProperties || parsed.liveProperties.length === 0) {
+                if (parsed.properties && parsed.properties.length > 0) {
+                    log(`Kopiuję ${parsed.properties.length} properties do liveProperties...`);
+                    
+                    parsed.liveProperties = parsed.properties.map(prop => ({
+                        id: prop.id,
+                        title: prop.title,
+                        location: prop.location,
+                        price: prop.price,
+                        description: prop.description,
+                        image: prop.image,
+                        link: prop.link || 'https://app.estalara.com'
+                    }));
+                    
+                    log(`✅ Skopiowano ${parsed.liveProperties.length} kafelków`, 'success');
+                } else {
+                    log('❌ Brak starych properties do skopiowania', 'error');
+                    log('Tworzę domyślne liveProperties...', 'warning');
+                    
+                    // Create default liveProperties
+                    parsed.liveProperties = [
+                        {
+                            id: 1,
+                            title: "Modern Apartment in Cádiz",
+                            location: "Cádiz, Spain",
+                            price: 450000,
+                            image: "https://kimi-web-img.moonshot.cn/img/talatiandpartners.com/952038c4e2cdd1b53bd4fa58a12aa8472e239da8.webp",
+                            description: "Stunning property in the heart of Cádiz with ocean views and modern amenities.",
+                            link: "https://app.estalara.com/listing/-cadiz-cadiz-na-d19331b5-846d-4139-a78e-2d9695ff73d0"
+                        }
+                    ];
+                    
+                    log('✅ Utworzono domyślne liveProperties', 'success');
+                }
+            } else {
+                log('ℹ️ liveProperties już istnieją, pomijam migrację', 'info');
+            }
+            
+            // Update version
+            log('Aktualizuję wersję do 4...');
+            parsed.version = 4;
+            
+            // Save to localStorage
+            try {
+                localStorage.setItem('estalaraAdminData', JSON.stringify(parsed));
+                log('✅ Dane zapisane pomyślnie!', 'success');
+                log('');
+                log('🎉 MIGRACJA ZAKOŃCZONA!', 'success');
+                log('');
+                log('Teraz:', 'info');
+                log('1. Zamknij tę kartę', 'info');
+                log('2. Otwórz cms.html', 'info');
+                log('3. Kliknij zakładkę "🔴 LIVE Properties"', 'info');
+                log('4. Jeśli nadal nie widzisz zmian, naciśnij Ctrl+Shift+R', 'info');
+            } catch (e) {
+                log('❌ Błąd podczas zapisywania: ' + e.message, 'error');
+            }
+            
+            log('');
+            log('=== KONIEC MIGRACJI ===', 'info');
+        }
+
+        function clearAndReload() {
+            if (!confirm('⚠️ To usunie wszystkie dane CMS i przywróci domyślne. Czy na pewno?')) {
+                return;
+            }
+            
+            clearLog();
+            log('=== CZYSZCZENIE DANYCH ===', 'warning');
+            log('');
+            
+            try {
+                localStorage.removeItem('estalaraAdminData');
+                log('✅ Dane usunięte z localStorage', 'success');
+                log('');
+                log('🔄 Przeładowuję stronę za 2 sekundy...', 'info');
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            } catch (e) {
+                log('❌ Błąd podczas czyszczenia: ' + e.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
