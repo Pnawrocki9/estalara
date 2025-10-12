@@ -1195,6 +1195,10 @@
         }
 
         function saveData() {
+            // Ensure version is set to prevent frontend from resetting data
+            if (!adminData.version) {
+                adminData.version = 4;
+            }
             localStorage.setItem('estalaraAdminData', JSON.stringify(adminData));
         }
 
@@ -1202,6 +1206,10 @@
             const stored = localStorage.getItem('estalaraAdminData');
             if (stored) {
                 adminData = JSON.parse(stored);
+                // Ensure version is set
+                if (!adminData.version) {
+                    adminData.version = 4;
+                }
                 // Ensure critical structure exists to prevent errors
                 if (!adminData.content) {
                     adminData.content = {};
@@ -1462,6 +1470,11 @@
             
             // Update page content
             admin.content.pages[pageId] = { ...admin.content.pages[pageId], ...updates };
+            
+            // Ensure version is set
+            if (!admin.version) {
+                admin.version = 4;
+            }
             
             // Save to localStorage
             localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
