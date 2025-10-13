@@ -321,7 +321,20 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         // ensure that breaking changes or major updates to the default content
         // automatically override old stored data. If the stored content lacks a
         // version or has an older version than the default, we discard it.
-        const storedRaw = localStorage.getItem('estalaraAdminData');
+        
+        // FIX 4: Safe localStorage access with fallback for mobile devices
+        const storedRaw = (() => {
+            try {
+                if (typeof localStorage === 'undefined') {
+                    console.warn('⚠️ [Mobile Fix] localStorage not available');
+                    return null;
+                }
+                return localStorage.getItem('estalaraAdminData');
+            } catch (e) {
+                console.error('❌ [Mobile Fix] localStorage error:', e);
+                return null;
+            }
+        })();
         let loaded;
         if (storedRaw) {
             try {
@@ -511,54 +524,94 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
     // Load properties into the LIVE Properties section
     loadProperties() {
-        const propertiesContainer = document.querySelector('#live-properties .grid');
-        if (!propertiesContainer) return;
+        // FIX 3: Retry mechanism for container (mobile devices may need extra time)
+        const loadWithRetry = (retries = 3, delay = 100) => {
+            console.log(`🔍 [Mobile Debug] loadProperties attempt (${4 - retries}/3)`);
+            
+            const propertiesContainer = document.querySelector('#live-properties .grid');
+            
+            if (!propertiesContainer) {
+                if (retries > 0) {
+                    console.warn(`⚠️ [Mobile Fix] Container not found, retrying in ${delay}ms... (${retries} attempts left)`);
+                    setTimeout(() => loadWithRetry(retries - 1, delay), delay);
+                    return;
+                } else {
+                    console.error('❌ [Mobile Fix] Container not found after 3 retries!');
+                    return;
+                }
+            }
+            
+            console.log('✅ [Mobile Debug] Container found:', propertiesContainer);
 
-        // NEW: Use liveProperties array (managed in CMS) instead of old properties array
-        // Fall back to old properties array if liveProperties doesn't exist yet (for backward compatibility)
-        const liveProperties = (this.content && Array.isArray(this.content.liveProperties) && this.content.liveProperties.length > 0)
-            ? this.content.liveProperties
-            : (this.content && Array.isArray(this.content.properties))
-                ? this.content.properties.filter(p => !p.status || p.status === 'live')
-                : [];
+            // NEW: Use liveProperties array (managed in CMS) instead of old properties array
+            // Fall back to old properties array if liveProperties doesn't exist yet (for backward compatibility)
+            const liveProperties = (this.content && Array.isArray(this.content.liveProperties) && this.content.liveProperties.length > 0)
+                ? this.content.liveProperties
+                : (this.content && Array.isArray(this.content.properties))
+                    ? this.content.properties.filter(p => !p.status || p.status === 'live')
+                    : [];
+            
+            console.log('🔍 [Mobile Debug] liveProperties count:', liveProperties.length);
+            console.log('🔍 [Mobile Debug] this.content:', this.content);
 
-        // Always clear existing properties first to remove any hardcoded HTML
-        propertiesContainer.innerHTML = '';
+            // Always clear existing properties first to remove any hardcoded HTML
+            propertiesContainer.innerHTML = '';
 
-        // If there are no live properties, show a message
-        if (liveProperties.length === 0) {
-            propertiesContainer.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <p class="text-gray-500 text-lg">No properties available at the moment.</p>
-                    <p class="text-gray-400 text-sm mt-2">Check back soon for new listings!</p>
-                </div>
-            `;
-            return;
-        }
+            // If there are no live properties, show a message
+            if (liveProperties.length === 0) {
+                console.warn('⚠️ [Mobile Debug] No liveProperties available');
+                propertiesContainer.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-gray-500 text-lg">No properties available at the moment.</p>
+                        <p class="text-gray-400 text-sm mt-2">Check back soon for new listings!</p>
+                    </div>
+                `;
+                return;
+            }
 
-        // Collect references to the newly created cards so we can initialise
-        // reveal and animation behaviours using functions exposed by main.js
-        const newCards = [];
-        liveProperties.forEach((property, index) => {
-            const propertyCard = this.createPropertyCard(property);
-            // Stagger delay similar to main.js for consistent animations
-            propertyCard.style.animationDelay = `${index * 0.1}s`;
-            propertiesContainer.appendChild(propertyCard);
-            newCards.push(propertyCard);
-        });
+            // Collect references to the newly created cards so we can initialise
+            // reveal and animation behaviours using functions exposed by main.js
+            const newCards = [];
+            liveProperties.forEach((property, index) => {
+                const propertyCard = this.createPropertyCard(property);
+                // Stagger delay similar to main.js for consistent animations
+                propertyCard.style.animationDelay = `${index * 0.1}s`;
+                propertiesContainer.appendChild(propertyCard);
+                newCards.push(propertyCard);
+            });
+            
+            console.log('✅ [Mobile Debug] Created', newCards.length, 'property cards');
 
-        // Register new reveal elements with the global IntersectionObserver (if available)
-        if (typeof window.observeReveals === 'function') {
-            window.observeReveals(newCards);
-        } else {
-            // If reveal observer isn't available, immediately activate cards
-            newCards.forEach(card => card.classList.add('active'));
-        }
+            // FIX 2: Enhanced fallback for reveal animation (mobile-friendly)
+            if (typeof window.observeReveals === 'function') {
+                console.log('✅ [Mobile Debug] Using IntersectionObserver for reveals');
+                window.observeReveals(newCards);
+            } else {
+                console.warn('⚠️ [Mobile Fix] IntersectionObserver not available, using fallback');
+                // If reveal observer isn't available, immediately activate cards
+                newCards.forEach(card => card.classList.add('active'));
+            }
+            
+            // Mobile fallback: Force visibility after delay if cards are still hidden
+            setTimeout(() => {
+                newCards.forEach(card => {
+                    if (!card.classList.contains('active')) {
+                        console.warn('⚠️ [Mobile Fix] Card not activated, forcing visibility');
+                        card.classList.add('active');
+                        card.style.opacity = '1';
+                        card.style.transform = 'none';
+                    }
+                });
+            }, 200);
 
-        // Initialise hover animations using the global helper
-        if (typeof window.initPropertyCards === 'function') {
-            window.initPropertyCards(newCards);
-        }
+            // Initialise hover animations using the global helper
+            if (typeof window.initPropertyCards === 'function') {
+                window.initPropertyCards(newCards);
+            }
+        };
+        
+        // Start the retry mechanism
+        loadWithRetry();
     }
 
     // Create a property card element
