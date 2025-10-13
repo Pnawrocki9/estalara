@@ -55,8 +55,22 @@ function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-// Typewriter Effect
-document.addEventListener('DOMContentLoaded', function() {
+// Typewriter Effect  
+// Since scripts are loaded at the end of <body>, DOM may already be ready
+(function initMain() {
+    if (document.readyState === 'loading') {
+        // DOM is still loading, wait for DOMContentLoaded
+        console.log('📋 [Main] DOM is loading, waiting for DOMContentLoaded...');
+        document.addEventListener('DOMContentLoaded', initializeMain);
+    } else {
+        // DOM is already loaded (interactive or complete), initialize immediately
+        console.log('📋 [Main] DOM already loaded (state: ' + document.readyState + '), initializing immediately');
+        initializeMain();
+    }
+})();
+
+function initializeMain() {
+    console.log('📋 [Main] Initializing main.js features...');
     const typed = new Typed('#typed-text', {
         strings: ['Go LIVE.', 'Go GLOBAL.'],
         typeSpeed: 100,
@@ -267,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 0);
         });
     }
-});
+}
 
 // Utility functions
 function debounce(func, wait) {

@@ -1,0 +1,42 @@
+=================================================================
+NAPRAWA: Brakujące kafelki w sekcji LIVE Properties
+=================================================================
+
+PROBLEM:
+--------
+Po ostatnim fix zniknęły kafelki z sekcji LIVE Properties.
+Nie były widoczne ani na www ani na mobile w trybie online/incognito.
+
+PRZYCZYNA:
+----------
+Skrypty main.js i cms-integration.js są ładowane na końcu <body>.
+Gdy skrypty się wykonują, DOMContentLoaded już się wywołał.
+Listenery addEventListener('DOMContentLoaded', ...) nigdy się nie wykonały.
+EstalaraAdmin nie został zainicjalizowany → brak kafelków.
+
+ROZWIĄZANIE:
+------------
+Dodano sprawdzenie document.readyState przed dodaniem listenera:
+- Jeśli DOM się ładuje → czekaj na DOMContentLoaded
+- Jeśli DOM już gotowy → wykonaj natychmiast
+
+ZMIENIONE PLIKI:
+----------------
+1. cms-integration.js (linie 1314-1329)
+2. main.js (linie 58-284)
+
+REZULTAT:
+---------
+✅ Kafelki LIVE Properties będą widoczne
+✅ Działa w incognito mode
+✅ Działa na mobile i desktop
+✅ Działa online i lokalnie
+
+TESTOWANIE:
+-----------
+1. Otwórz index.html w incognito mode
+2. Sprawdź console - powinny być logi inicjalizacji
+3. Sprawdź sekcję LIVE Properties - 6 kafelków
+4. Test na mobile device emulator
+
+=================================================================

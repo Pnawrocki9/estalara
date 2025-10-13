@@ -1312,9 +1312,21 @@ function hideEmptyPlaceholders() {
 hideEmptyPlaceholders();
 
 // Initialize Admin when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    window.estalaraAdmin = new EstalaraAdmin();
-});
+// Since scripts are loaded at the end of <body>, DOM may already be ready
+(function initAdmin() {
+    if (document.readyState === 'loading') {
+        // DOM is still loading, wait for DOMContentLoaded
+        console.log('📋 [CMS] DOM is loading, waiting for DOMContentLoaded...');
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📋 [CMS] DOMContentLoaded fired, initializing EstalaraAdmin');
+            window.estalaraAdmin = new EstalaraAdmin();
+        });
+    } else {
+        // DOM is already loaded (interactive or complete), initialize immediately
+        console.log('📋 [CMS] DOM already loaded (state: ' + document.readyState + '), initializing EstalaraAdmin immediately');
+        window.estalaraAdmin = new EstalaraAdmin();
+    }
+})();
 
 // Export for use in other scripts
 if (typeof module !== 'undefined' && module.exports) {
