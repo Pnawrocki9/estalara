@@ -71,7 +71,7 @@
                 localStorage.setItem('adminLoggedIn', 'true');
                 
                 // Redirect to admin panel
-                window.location.href = 'admin.html';
+                window.location.href = 'admin/';
             } else {
                 alert('Invalid password. Please try again.');
             }
@@ -79,7 +79,7 @@
 
         // Check if already logged in
         if (localStorage.getItem('adminLoggedIn') === 'true') {
-            window.location.href = 'admin.html';
+            window.location.href = 'admin/';
         }
     </script>
 </body>

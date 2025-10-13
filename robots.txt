@@ -6,7 +6,7 @@ User-agent: *
 Allow: /
 
 # Block admin and CMS areas
-Disallow: /admin.html
+Disallow: /admin/
 Disallow: /admin-login.html
 Disallow: /cms.html
 Disallow: /cms-login.html
