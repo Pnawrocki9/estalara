@@ -438,10 +438,19 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         // First try Firebase if available
         if (window.cmsFirebaseAdapter && window.cmsFirebaseAdapter.cache) {
             const firebaseData = window.cmsFirebaseAdapter.cache;
-            if (firebaseData && Object.keys(firebaseData).length > 0) {
+            // Check if Firebase data is complete (has navigation and liveProperties)
+            if (firebaseData && Object.keys(firebaseData).length > 0 && 
+                firebaseData.navigation && Array.isArray(firebaseData.navigation) && firebaseData.navigation.length > 0 &&
+                (firebaseData.liveProperties || firebaseData.properties)) {
                 console.log('📥 Using cached Firebase data');
+                console.log('🔍 [Debug] Firebase data has navigation:', firebaseData.navigation.length, 'items');
                 console.log('🔍 [Debug] Firebase data has liveProperties:', Array.isArray(firebaseData.liveProperties), 'count:', firebaseData.liveProperties?.length);
                 return firebaseData;
+            } else if (firebaseData && Object.keys(firebaseData).length > 0) {
+                console.warn('⚠️ [Debug] Firebase data incomplete (missing navigation or properties), falling back to localStorage/defaults');
+                console.warn('   - Has navigation:', !!firebaseData.navigation, 'count:', firebaseData.navigation?.length);
+                console.warn('   - Has liveProperties:', !!firebaseData.liveProperties, 'count:', firebaseData.liveProperties?.length);
+                console.warn('   - Has properties:', !!firebaseData.properties, 'count:', firebaseData.properties?.length);
             } else {
                 console.warn('⚠️ [Debug] Firebase cache exists but is empty');
             }

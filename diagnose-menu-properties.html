@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostyka: Menu i LIVE Properties</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .log-line {
+            font-family: 'Courier New', monospace;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .log-info { background-color: #eff6ff; }
+        .log-success { background-color: #f0fdf4; color: #166534; }
+        .log-warn { background-color: #fffbeb; color: #92400e; }
+        .log-error { background-color: #fef2f2; color: #991b1b; }
+    </style>
+</head>
+<body class="bg-gray-50 p-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-gray-900">🔍 Diagnostyka: Menu i LIVE Properties</h1>
+        
+        <div class="bg-white rounded-lg shadow p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Wyniki diagnostyki</h2>
+            <div id="results" class="space-y-2"></div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold mb-4">Dane w localStorage</h2>
+            <pre id="data-display" class="bg-gray-100 p-4 rounded overflow-auto max-h-96 text-xs"></pre>
+        </div>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+        const dataDisplay = document.getElementById('data-display');
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `log-line log-${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+
+        function diagnose() {
+            log('🚀 Rozpoczęcie diagnostyki...', 'info');
+            
+            // 1. Sprawdź localStorage
+            log('\n=== KROK 1: Sprawdzanie localStorage ===', 'info');
+            let data = null;
+            try {
+                const stored = localStorage.getItem('estalaraAdminData');
+                if (!stored) {
+                    log('❌ Brak danych w localStorage (klucz: estalaraAdminData)', 'error');
+                } else {
+                    log('✅ Dane znalezione w localStorage', 'success');
+                    data = JSON.parse(stored);
+                    dataDisplay.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (e) {
+                log('❌ Błąd podczas odczytu localStorage: ' + e.message, 'error');
+            }
+
+            // 2. Sprawdź navigation
+            log('\n=== KROK 2: Sprawdzanie navigation ===', 'info');
+            if (!data) {
+                log('⚠️ Brak danych do analizy', 'warn');
+            } else if (!data.navigation) {
+                log('❌ Brak klucza "navigation" w danych', 'error');
+            } else if (!Array.isArray(data.navigation)) {
+                log('❌ "navigation" nie jest tablicą: ' + typeof data.navigation, 'error');
+            } else if (data.navigation.length === 0) {
+                log('❌ Tablica "navigation" jest pusta', 'error');
+            } else {
+                log('✅ navigation znaleziono: ' + data.navigation.length + ' elementów', 'success');
+                data.navigation.forEach((item, i) => {
+                    log(`   ${i+1}. ${item.label} → ${item.url}`, 'info');
+                });
+            }
+
+            // 3. Sprawdź liveProperties
+            log('\n=== KROK 3: Sprawdzanie liveProperties ===', 'info');
+            if (!data) {
+                log('⚠️ Brak danych do analizy', 'warn');
+            } else if (!data.liveProperties && !data.properties) {
+                log('❌ Brak kluczy "liveProperties" ani "properties" w danych', 'error');
+            } else {
+                // Sprawdź liveProperties
+                if (data.liveProperties) {
+                    if (!Array.isArray(data.liveProperties)) {
+                        log('❌ "liveProperties" nie jest tablicą: ' + typeof data.liveProperties, 'error');
+                    } else if (data.liveProperties.length === 0) {
+                        log('⚠️ Tablica "liveProperties" jest pusta', 'warn');
+                    } else {
+                        log('✅ liveProperties znaleziono: ' + data.liveProperties.length + ' nieruchomości', 'success');
+                        data.liveProperties.forEach((prop, i) => {
+                            log(`   ${i+1}. ${prop.title} - ${prop.location}`, 'info');
+                        });
+                    }
+                } else {
+                    log('⚠️ Brak klucza "liveProperties" - sprawdzam stare "properties"', 'warn');
+                }
+
+                // Sprawdź properties (backward compatibility)
+                if (data.properties) {
+                    if (!Array.isArray(data.properties)) {
+                        log('❌ "properties" nie jest tablicą: ' + typeof data.properties, 'error');
+                    } else if (data.properties.length === 0) {
+                        log('⚠️ Tablica "properties" jest pusta', 'warn');
+                    } else {
+                        const liveProps = data.properties.filter(p => !p.status || p.status === 'live');
+                        log('✅ properties znaleziono: ' + liveProps.length + ' nieruchomości ze statusem "live"', 'success');
+                        liveProps.forEach((prop, i) => {
+                            log(`   ${i+1}. ${prop.title} - ${prop.location}`, 'info');
+                        });
+                    }
+                }
+            }
+
+            // 4. Sprawdź Firebase adapter
+            log('\n=== KROK 4: Sprawdzanie Firebase ===', 'info');
+            if (typeof window.cmsFirebaseAdapter === 'undefined') {
+                log('⚠️ Firebase adapter nie jest załadowany', 'warn');
+            } else if (!window.cmsFirebaseAdapter.cache) {
+                log('⚠️ Firebase cache jest pusty', 'warn');
+            } else {
+                log('✅ Firebase adapter załadowany z cache', 'success');
+                const fbData = window.cmsFirebaseAdapter.cache;
+                log('   - navigation: ' + (fbData.navigation?.length || 0) + ' elementów', 'info');
+                log('   - liveProperties: ' + (fbData.liveProperties?.length || 0) + ' elementów', 'info');
+            }
+
+            // 5. Sprawdź DOM
+            log('\n=== KROK 5: Sprawdzanie DOM ===', 'info');
+            const desktopNav = window.opener?.document.querySelector('header nav:not(#mobile-menu) ul');
+            const mobileNav = window.opener?.document.querySelector('#mobile-menu ul.mobile-nav');
+            const propertiesGrid = window.opener?.document.querySelector('#live-properties .grid');
+            
+            if (!window.opener) {
+                log('⚠️ Nie można sprawdzić DOM - otwórz tę stronę z index.html', 'warn');
+            } else {
+                if (!desktopNav) {
+                    log('❌ Nie znaleziono desktop navigation (header nav ul)', 'error');
+                } else {
+                    log('✅ Desktop navigation znaleziono: ' + desktopNav.children.length + ' elementów', 'success');
+                }
+                
+                if (!mobileNav) {
+                    log('❌ Nie znaleziono mobile navigation (#mobile-menu ul.mobile-nav)', 'error');
+                } else {
+                    log('✅ Mobile navigation znaleziono: ' + mobileNav.children.length + ' elementów', 'success');
+                }
+                
+                if (!propertiesGrid) {
+                    log('❌ Nie znaleziono kontenera properties (#live-properties .grid)', 'error');
+                } else {
+                    log('✅ Properties grid znaleziono: ' + propertiesGrid.children.length + ' elementów', 'success');
+                }
+            }
+
+            // 6. Wersja danych
+            log('\n=== KROK 6: Wersja danych ===', 'info');
+            if (data && data.version) {
+                log('✅ Wersja danych: ' + data.version, 'success');
+            } else {
+                log('⚠️ Brak informacji o wersji danych', 'warn');
+            }
+
+            // PODSUMOWANIE
+            log('\n=== PODSUMOWANIE ===', 'info');
+            const hasNavigation = data && data.navigation && Array.isArray(data.navigation) && data.navigation.length > 0;
+            const hasProperties = data && ((data.liveProperties && data.liveProperties.length > 0) || (data.properties && data.properties.filter(p => !p.status || p.status === 'live').length > 0));
+            
+            if (hasNavigation && hasProperties) {
+                log('✅ Wszystko wygląda dobrze! Menu i LIVE Properties powinny być widoczne.', 'success');
+                log('   Jeśli nie są widoczne, sprawdź konsolę przeglądarki w index.html', 'info');
+            } else {
+                if (!hasNavigation) {
+                    log('❌ PROBLEM: Brak danych navigation', 'error');
+                    log('   ROZWIĄZANIE: Przejdź do CMS i zapisz nawigację', 'warn');
+                }
+                if (!hasProperties) {
+                    log('❌ PROBLEM: Brak danych LIVE Properties', 'error');
+                    log('   ROZWIĄZANIE: Przejdź do CMS → LIVE Properties i dodaj nieruchomości', 'warn');
+                }
+            }
+        }
+
+        // Uruchom diagnostykę
+        diagnose();
+    </script>
+</body>
+</html>
