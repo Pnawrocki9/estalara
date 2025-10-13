@@ -1,8 +1,35 @@
 // Estalara Admin Integration
 // This file handles dynamic content loading from Admin panel
 
+// Test localStorage availability immediately (for incognito mode detection)
+(function testLocalStorage() {
+    try {
+        if (typeof localStorage === 'undefined') {
+            console.warn('⚠️ [Mobile Fix] localStorage is undefined - running in restricted mode');
+            window.ESTALARA_STORAGE_AVAILABLE = false;
+            return;
+        }
+        
+        // Test if we can actually write to localStorage (incognito mode check)
+        const testKey = '__estalara_storage_test__';
+        localStorage.setItem(testKey, '1');
+        localStorage.removeItem(testKey);
+        
+        console.log('✅ [Mobile Debug] localStorage is available and writable');
+        window.ESTALARA_STORAGE_AVAILABLE = true;
+    } catch (e) {
+        console.warn('⚠️ [Mobile Fix] localStorage is blocked (incognito mode?):', e.message);
+        window.ESTALARA_STORAGE_AVAILABLE = false;
+    }
+})();
+
 class EstalaraAdmin {
     constructor() {
+        console.log('🚀 [Mobile Debug] EstalaraAdmin initializing...');
+        console.log('   - Storage available:', window.ESTALARA_STORAGE_AVAILABLE);
+        console.log('   - User Agent:', navigator.userAgent);
+        console.log('   - Viewport:', window.innerWidth + 'x' + window.innerHeight);
+        
         this.content = this.loadContent();
         this.init();
     }
@@ -413,13 +440,35 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         // migrations to detect outdated data. Save back to localStorage in case
         // defaults were used or the version was updated.
         loaded.version = defaultContent.version;
-        localStorage.setItem('estalaraAdminData', JSON.stringify(loaded));
+        
+        // FIX: Safe localStorage write with fallback for incognito mode
+        if (window.ESTALARA_STORAGE_AVAILABLE) {
+            try {
+                localStorage.setItem('estalaraAdminData', JSON.stringify(loaded));
+                console.log('✅ [Mobile Debug] Content saved to localStorage');
+            } catch (e) {
+                console.error('❌ [Mobile Fix] localStorage.setItem failed:', e.message);
+                // In incognito mode, continue with in-memory content only
+            }
+        } else {
+            console.warn('⚠️ [Mobile Fix] Skipping localStorage save (not available)');
+        }
+        
         return loaded;
     }
 
     // Save content to localStorage
     saveContent() {
-        localStorage.setItem('estalaraAdminData', JSON.stringify(this.content));
+        if (window.ESTALARA_STORAGE_AVAILABLE) {
+            try {
+                localStorage.setItem('estalaraAdminData', JSON.stringify(this.content));
+            } catch (e) {
+                console.error('❌ [Mobile Fix] saveContent failed:', e.message);
+                // Continue silently - in incognito mode saves are not persisted
+            }
+        } else {
+            console.warn('⚠️ [Mobile Fix] Skipping save (storage not available)');
+        }
     }
 
     // Load dynamic content into the website
@@ -475,50 +524,54 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
     // Update logo on all pages
     updateLogo(logoUrl) {
-        if (!logoUrl) {
-            console.warn('⚠️ updateLogo called with empty logoUrl');
-            return;
-        }
-        
-        // Handle URL encoding - only encode spaces in relative paths, preserve slashes
-        let finalUrl = logoUrl;
-        if (!logoUrl.startsWith('data:') && 
-            !logoUrl.startsWith('http://') && 
-            !logoUrl.startsWith('https://') && 
-            logoUrl.includes(' ')) {
-            // Only replace spaces, don't encode slashes
-            finalUrl = logoUrl.replace(/ /g, '%20');
-        }
-        
-        console.log('🔄 Updating logo to:', finalUrl);
-        
-        // Find all logo images - use specific selector for ESTALARA logos
-        const logoImages = document.querySelectorAll('img[alt="ESTALARA"]');
-        
-        console.log('📸 Found', logoImages.length, 'logo elements with alt="ESTALARA"');
-        
-        if (logoImages.length > 0) {
-            logoImages.forEach((img, index) => {
-                const oldSrc = img.src;
-                img.src = finalUrl;
-                console.log(`✅ Logo ${index + 1} updated:`, oldSrc, '→', img.src);
-            });
-        } else {
-            // Fallback: search for any image in header/footer that has 'logo' in src
-            console.warn('⚠️ No logos with alt="ESTALARA" found, trying fallback search...');
-            const fallbackImages = document.querySelectorAll('header img, footer img, nav img');
-            let updated = 0;
-            fallbackImages.forEach((img) => {
-                if (img.src.includes('logo')) {
+        try {
+            if (!logoUrl) {
+                console.warn('⚠️ updateLogo called with empty logoUrl');
+                return;
+            }
+            
+            // Handle URL encoding - only encode spaces in relative paths, preserve slashes
+            let finalUrl = logoUrl;
+            if (!logoUrl.startsWith('data:') && 
+                !logoUrl.startsWith('http://') && 
+                !logoUrl.startsWith('https://') && 
+                logoUrl.includes(' ')) {
+                // Only replace spaces, don't encode slashes
+                finalUrl = logoUrl.replace(/ /g, '%20');
+            }
+            
+            console.log('🔄 Updating logo to:', finalUrl);
+            
+            // Find all logo images - use specific selector for ESTALARA logos
+            const logoImages = document.querySelectorAll('img[alt="ESTALARA"]');
+            
+            console.log('📸 Found', logoImages.length, 'logo elements with alt="ESTALARA"');
+            
+            if (logoImages.length > 0) {
+                logoImages.forEach((img, index) => {
                     const oldSrc = img.src;
                     img.src = finalUrl;
-                    console.log(`✅ Logo (fallback) updated:`, oldSrc, '→', img.src);
-                    updated++;
+                    console.log(`✅ Logo ${index + 1} updated:`, oldSrc, '→', img.src);
+                });
+            } else {
+                // Fallback: search for any image in header/footer that has 'logo' in src
+                console.warn('⚠️ No logos with alt="ESTALARA" found, trying fallback search...');
+                const fallbackImages = document.querySelectorAll('header img, footer img, nav img');
+                let updated = 0;
+                fallbackImages.forEach((img) => {
+                    if (img.src.includes('logo')) {
+                        const oldSrc = img.src;
+                        img.src = finalUrl;
+                        console.log(`✅ Logo (fallback) updated:`, oldSrc, '→', img.src);
+                        updated++;
+                    }
+                });
+                if (updated === 0) {
+                    console.error('❌ No logo elements found on page!');
                 }
-            });
-            if (updated === 0) {
-                console.error('❌ No logo elements found on page!');
             }
+        } catch (e) {
+            console.error('❌ [Mobile Fix] updateLogo failed:', e);
         }
     }
 
@@ -583,26 +636,62 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             console.log('✅ [Mobile Debug] Created', newCards.length, 'property cards');
 
             // FIX 2: Enhanced fallback for reveal animation (mobile-friendly)
-            if (typeof window.observeReveals === 'function') {
-                console.log('✅ [Mobile Debug] Using IntersectionObserver for reveals');
-                window.observeReveals(newCards);
-            } else {
-                console.warn('⚠️ [Mobile Fix] IntersectionObserver not available, using fallback');
-                // If reveal observer isn't available, immediately activate cards
-                newCards.forEach(card => card.classList.add('active'));
-            }
+            // Check if IntersectionObserver exists AND if our wrapper function is available
+            const hasIntersectionObserver = 'IntersectionObserver' in window;
+            const hasObserveFunction = typeof window.observeReveals === 'function';
             
-            // Mobile fallback: Force visibility after delay if cards are still hidden
-            setTimeout(() => {
-                newCards.forEach(card => {
-                    if (!card.classList.contains('active')) {
-                        console.warn('⚠️ [Mobile Fix] Card not activated, forcing visibility');
+            if (hasIntersectionObserver && hasObserveFunction && window.revealObserver) {
+                console.log('✅ [Mobile Debug] Using IntersectionObserver for reveals');
+                try {
+                    window.observeReveals(newCards);
+                } catch (e) {
+                    console.error('❌ [Mobile Fix] observeReveals failed:', e);
+                    // Fallback to immediate activation
+                    newCards.forEach(card => {
                         card.classList.add('active');
                         card.style.opacity = '1';
                         card.style.transform = 'none';
+                    });
+                }
+            } else {
+                console.warn('⚠️ [Mobile Fix] IntersectionObserver not available, using immediate activation');
+                console.warn('   - IntersectionObserver exists:', hasIntersectionObserver);
+                console.warn('   - observeReveals function exists:', hasObserveFunction);
+                console.warn('   - revealObserver exists:', !!window.revealObserver);
+                
+                // Immediately activate cards for incognito/mobile
+                newCards.forEach(card => {
+                    card.classList.add('active');
+                    card.style.opacity = '1';
+                    card.style.transform = 'none';
+                });
+            }
+            
+            // AGGRESSIVE fallback: Force visibility after delay if cards are STILL hidden
+            // Increased timeout for slower mobile devices and incognito mode
+            setTimeout(() => {
+                let hiddenCount = 0;
+                newCards.forEach((card, index) => {
+                    const isHidden = !card.classList.contains('active') || 
+                                   card.style.opacity === '0' || 
+                                   parseFloat(window.getComputedStyle(card).opacity) < 0.5;
+                    
+                    if (isHidden) {
+                        console.warn(`⚠️ [Mobile Fix] Card ${index + 1} still hidden, forcing visibility`);
+                        card.classList.add('active');
+                        card.style.opacity = '1';
+                        card.style.transform = 'none';
+                        card.style.transition = 'all 0.6s ease';
+                        hiddenCount++;
                     }
                 });
-            }, 200);
+                
+                if (hiddenCount > 0) {
+                    console.warn(`⚠️ [Mobile Fix] Force-activated ${hiddenCount} hidden cards`);
+                } else {
+                    console.log('✅ [Mobile Debug] All cards are visible');
+                }
+            }, 500);
 
             // Initialise hover animations using the global helper
             if (typeof window.initPropertyCards === 'function') {
