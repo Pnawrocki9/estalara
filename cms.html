@@ -1115,6 +1115,31 @@
         </div>
     </div>
 
+    <script>
+        // Protection: Redirect to login if not authenticated
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Wait for Firebase to initialize
+            if (window.authService) {
+                const user = await window.authService.waitForAuth();
+                if (!user) {
+                    console.warn('⚠️ Not authenticated. Redirecting to login page...');
+                    window.location.href = 'cms-login.html';
+                }
+            } else {
+                console.error('❌ Auth service not initialized. Redirecting to login...');
+                window.location.href = 'cms-login.html';
+            }
+        });
+        
+        // Logout function
+        function logout() {
+            if (window.authService) {
+                window.authService.signOut().then(() => {
+                    window.location.href = 'cms-login.html';
+                });
+            }
+        }
+    </script>
     <script src="cms.js"></script>
 </body>
 </html>
