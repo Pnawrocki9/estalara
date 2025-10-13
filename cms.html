@@ -272,6 +272,12 @@
                             <button onclick="showFrontendTab('howitworks')" id="tab-howitworks" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 🔄 How It Works
                             </button>
+                            <button onclick="showFrontendTab('agentsfeatures')" id="tab-agentsfeatures" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                👔 Agents Features
+                            </button>
+                            <button onclick="showFrontendTab('aboutcontent')" id="tab-aboutcontent" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                📖 About Content
+                            </button>
                         </nav>
                     </div>
 
@@ -529,6 +535,68 @@
                             </div>
 
                             <button onclick="saveHowItWorks()" class="cms-btn cms-btn-success">💾 Save How It Works</button>
+                        </div>
+                    </div>
+
+                    <!-- Agents Features Tab -->
+                    <div id="frontend-agentsfeatures" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Agents Page Features</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit the 6 detailed feature cards on the Agents page (with bullet lists)</p>
+                        
+                        <div id="agents-features-container" class="space-y-6">
+                            <!-- Features will be loaded here -->
+                        </div>
+
+                        <button onclick="saveAgentsFeatures()" class="cms-btn cms-btn-success mt-4">💾 Save Agents Features</button>
+                    </div>
+
+                    <!-- About Content Tab -->
+                    <div id="frontend-aboutcontent" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">About Page Content</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit paragraph content for Mission, Vision, and What is Estalara sections</p>
+                        
+                        <div class="space-y-6">
+                            <!-- Mission Content -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Mission Statement</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">First Paragraph</label>
+                                        <textarea id="mission-p1" class="cms-input" rows="4" placeholder="To democratize global real estate..."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Second Paragraph</label>
+                                        <textarea id="mission-p2" class="cms-input" rows="3" placeholder="Through cutting-edge AI technology..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vision Content -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Vision Statement</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">First Paragraph</label>
+                                        <textarea id="vision-p1" class="cms-input" rows="4" placeholder="To become the world's leading platform..."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Second Paragraph</label>
+                                        <textarea id="vision-p2" class="cms-input" rows="3" placeholder="By 2030, we aim to facilitate..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- What is Estalara -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">What is Estalara?</h4>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                                    <textarea id="what-is-estalara-content" class="cms-input" rows="6" placeholder="Estalara is the game-changer..."></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Main description paragraph</p>
+                                </div>
+                            </div>
+
+                            <button onclick="saveAboutContent()" class="cms-btn cms-btn-success">💾 Save About Content</button>
                         </div>
                     </div>
                 </div>

@@ -2124,3 +2124,148 @@ function saveHowItWorks() {
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     showNotification('How It Works section saved successfully!', 'success');
 }
+
+// ===== AGENTS FEATURES EDITOR =====
+
+function loadAgentsFeatures() {
+    const admin = loadAdminData();
+    
+    if (!admin.agentsFeatures) {
+        // Default 6 features from agents.html
+        admin.agentsFeatures = [
+            {
+                icon: '📺',
+                title: 'Live Property Shows',
+                description: 'Stream your listings to hundreds of verified investors simultaneously with our advanced livestreaming platform.',
+                bullets: ['HD video streaming', 'Real-time chat translation', 'Instant lead capture', 'Automated follow-up']
+            },
+            {
+                icon: '🤖',
+                title: 'AI Lead Generation',
+                description: 'Our AI analyzes investor behavior and preferences to deliver qualified leads directly to your dashboard.',
+                bullets: ['Behavioral analysis', 'Preference matching', 'Automated scoring', 'Priority notifications']
+            },
+            {
+                icon: '🌐',
+                title: 'Global Reach',
+                description: 'Connect with investors from over 50 countries through our multilingual platform and translation services.',
+                bullets: ['25+ languages supported', 'Real-time translation', 'Currency conversion', 'Cultural insights']
+            },
+            {
+                icon: '📱',
+                title: 'Mobile Studio',
+                description: 'Professional livestreaming capabilities from your smartphone with broadcast-quality results.',
+                bullets: ['One-tap streaming', 'Professional filters', 'Stabilization technology', 'Multi-device support']
+            },
+            {
+                icon: '📊',
+                title: 'Smart Analytics',
+                description: 'Track viewer engagement, lead conversion, and ROI with comprehensive analytics dashboard.',
+                bullets: ['Engagement metrics', 'Conversion tracking', 'ROI calculation', 'Performance insights']
+            },
+            {
+                icon: '⚡',
+                title: 'Instant Matching',
+                description: 'Get notified immediately when investors show interest in your properties during live streams.',
+                bullets: ['Real-time notifications', 'Lead prioritization', 'Automated scheduling', 'Follow-up automation']
+            }
+        ];
+    }
+    
+    const container = document.getElementById('agents-features-container');
+    container.innerHTML = admin.agentsFeatures.map((feature, index) => `
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="font-medium text-gray-900 mb-3">Feature ${index + 1}</h4>
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Icon/Emoji</label>
+                        <input type="text" class="cms-input" data-feature="${index}" data-field="icon" value="${feature.icon}" placeholder="📺">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <input type="text" class="cms-input" data-feature="${index}" data-field="title" value="${feature.title}" placeholder="Feature Title">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea class="cms-input" rows="2" data-feature="${index}" data-field="description" placeholder="Feature description...">${feature.description}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Bullet Points (one per line)</label>
+                    <textarea class="cms-input" rows="4" data-feature="${index}" data-field="bullets" placeholder="• Point 1\n• Point 2\n• Point 3">${feature.bullets.join('\n')}</textarea>
+                    <p class="text-xs text-gray-500 mt-1">Each line becomes a bullet point</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function saveAgentsFeatures() {
+    const admin = loadAdminData();
+    admin.agentsFeatures = [];
+    
+    // Find the highest feature index
+    const featureIndices = Array.from(document.querySelectorAll('[data-feature]'))
+        .map(el => parseInt(el.dataset.feature))
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .sort((a, b) => a - b);
+    
+    featureIndices.forEach(index => {
+        const icon = document.querySelector(`[data-feature="${index}"][data-field="icon"]`).value;
+        const title = document.querySelector(`[data-feature="${index}"][data-field="title"]`).value;
+        const description = document.querySelector(`[data-feature="${index}"][data-field="description"]`).value;
+        const bulletsText = document.querySelector(`[data-feature="${index}"][data-field="bullets"]`).value;
+        const bullets = bulletsText.split('\n').map(b => b.trim()).filter(b => b.length > 0);
+        
+        admin.agentsFeatures.push({ icon, title, description, bullets });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Agents Features saved successfully!', 'success');
+}
+
+// ===== ABOUT CONTENT EDITOR =====
+
+function loadAboutContent() {
+    const admin = loadAdminData();
+    
+    if (!admin.aboutContent) {
+        admin.aboutContent = {
+            mission: {
+                p1: 'To democratize global real estate investment by removing barriers, simplifying processes, and creating transparent connections between agents and investors worldwide. We believe everyone should have access to international property opportunities regardless of their location.',
+                p2: 'Through cutting-edge AI technology and immersive live experiences, we\'re transforming how properties are discovered, evaluated, and purchased across borders.'
+            },
+            vision: {
+                p1: 'To become the world\'s leading platform for global real estate transactions, where agents and investors connect seamlessly across continents. We envision a future where buying property in another country is as simple as shopping online.',
+                p2: 'By 2030, we aim to facilitate over $100 billion in international real estate transactions, making global property investment accessible to millions of people worldwide.'
+            },
+            whatIs: 'Estalara is the game-changer our industry has been waiting for. After years of watching good deals fall through due to distance, language barriers, and trust issues, we built a platform that solves these problems.'
+        };
+    }
+    
+    document.getElementById('mission-p1').value = admin.aboutContent.mission.p1;
+    document.getElementById('mission-p2').value = admin.aboutContent.mission.p2;
+    document.getElementById('vision-p1').value = admin.aboutContent.vision.p1;
+    document.getElementById('vision-p2').value = admin.aboutContent.vision.p2;
+    document.getElementById('what-is-estalara-content').value = admin.aboutContent.whatIs;
+}
+
+function saveAboutContent() {
+    const admin = loadAdminData();
+    
+    admin.aboutContent = {
+        mission: {
+            p1: document.getElementById('mission-p1').value,
+            p2: document.getElementById('mission-p2').value
+        },
+        vision: {
+            p1: document.getElementById('vision-p1').value,
+            p2: document.getElementById('vision-p2').value
+        },
+        whatIs: document.getElementById('what-is-estalara-content').value
+    };
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('About page content saved successfully!', 'success');
+}

@@ -48,6 +48,8 @@ class EstalaraAdmin {
         this.loadButtons();
         this.loadSectionHeadings();
         this.loadHowItWorks();
+        this.loadAgentsFeatures();
+        this.loadAboutContent();
     }
 
     // Load content from localStorage (simulating Admin database)
@@ -1702,6 +1704,67 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         if (path.includes('about.html')) return 'about';
         if (path.includes('faq.html')) return 'faq';
         return 'home';
+    }
+
+    // Load Agents Page Features
+    loadAgentsFeatures() {
+        if (!this.content.agentsFeatures) return;
+        if (this.getCurrentPage() !== 'agents') return;
+        
+        const featuresSection = document.getElementById('features');
+        if (!featuresSection) return;
+        
+        const grid = featuresSection.querySelector('.grid');
+        if (!grid) return;
+        
+        // Replace hardcoded features with CMS content
+        grid.innerHTML = this.content.agentsFeatures.map(feature => `
+            <div class="feature-card p-8">
+                <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">${feature.icon}</div>
+                <h3 class="text-2xl font-bold mb-4">${feature.title}</h3>
+                <p class="text-gray-600 mb-6">${feature.description}</p>
+                <ul class="text-sm text-gray-500 space-y-2">
+                    ${feature.bullets.map(bullet => `<li>• ${bullet}</li>`).join('')}
+                </ul>
+            </div>
+        `).join('');
+    }
+
+    // Load About Page Content
+    loadAboutContent() {
+        if (!this.content.aboutContent) return;
+        if (this.getCurrentPage() !== 'about') return;
+        
+        const content = this.content.aboutContent;
+        
+        // Load Mission content
+        const missionSection = document.getElementById('mission');
+        if (missionSection) {
+            const paragraphs = missionSection.querySelectorAll('p');
+            if (paragraphs.length >= 2) {
+                paragraphs[0].textContent = content.mission.p1;
+                paragraphs[1].textContent = content.mission.p2;
+            }
+        }
+        
+        // Load Vision content
+        const visionDiv = document.getElementById('vision');
+        if (visionDiv) {
+            const paragraphs = visionDiv.querySelectorAll('p');
+            if (paragraphs.length >= 2) {
+                paragraphs[0].textContent = content.vision.p1;
+                paragraphs[1].textContent = content.vision.p2;
+            }
+        }
+        
+        // Load "What is Estalara" content
+        const whatIsSection = document.getElementById('what-is-estalara');
+        if (whatIsSection && content.whatIs) {
+            const paragraph = whatIsSection.querySelector('p.body-text');
+            if (paragraph) {
+                paragraph.textContent = content.whatIs;
+            }
+        }
     }
 }
 
