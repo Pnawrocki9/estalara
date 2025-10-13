@@ -4,15 +4,43 @@
 
 class CMSFirebaseAdapter {
     constructor() {
-        this.db = firebase.database();
-        this.adminDataRef = this.db.ref('adminData');
+        this.db = null;
+        this.adminDataRef = null;
         this.cache = null;
         this.initialized = false;
+        
+        // Delay Firebase initialization until Firebase SDK is ready
+        this.initializeFirebaseRefs();
+    }
+    
+    // Initialize Firebase references after Firebase is ready
+    initializeFirebaseRefs() {
+        // Wait for Firebase to be initialized
+        const checkFirebase = () => {
+            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+                try {
+                    this.db = firebase.database();
+                    this.adminDataRef = this.db.ref('adminData');
+                    console.log('✅ Firebase adapter references initialized');
+                } catch (error) {
+                    console.error('❌ Failed to initialize Firebase adapter references:', error);
+                }
+            } else {
+                // Retry after a short delay
+                setTimeout(checkFirebase, 100);
+            }
+        };
+        checkFirebase();
     }
 
     // Initialize and load data from Firebase
     async init() {
         if (this.initialized) return this.cache;
+        
+        // Wait for Firebase refs to be initialized
+        while (!this.adminDataRef) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
         
         try {
             const snapshot = await this.adminDataRef.once('value');
@@ -37,6 +65,11 @@ class CMSFirebaseAdapter {
 
     // Save admin data to Firebase
     async saveAdminData(data) {
+        // Wait for Firebase refs to be initialized
+        while (!this.adminDataRef) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
         try {
             // Add timestamp
             data.lastUpdated = firebase.database.ServerValue.TIMESTAMP;
