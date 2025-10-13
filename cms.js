@@ -1319,5 +1319,509 @@ showSection = function(sectionId) {
         loadPropertiesTable();
     } else if (sectionId === 'live-properties') {
         loadLivePropertiesGrid();
+    } else if (sectionId === 'frontend-editor') {
+        loadFrontendEditor();
     }
 };
+
+// ===== FRONTEND EDITOR FUNCTIONS =====
+
+// Tab switching for Frontend Editor
+function showFrontendTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.frontend-tab').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+    
+    // Remove active state from all tab buttons
+    document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+        btn.classList.remove('border-blue-500', 'text-blue-600');
+        btn.classList.add('border-transparent', 'text-gray-600');
+    });
+    
+    // Show selected tab
+    document.getElementById(`frontend-${tabName}`).classList.remove('hidden');
+    
+    // Add active state to selected tab button
+    const activeBtn = document.getElementById(`tab-${tabName}`);
+    activeBtn.classList.add('border-blue-500', 'text-blue-600');
+    activeBtn.classList.remove('border-transparent', 'text-gray-600');
+    
+    // Load data for specific tabs
+    if (tabName === 'global') {
+        loadFrontendGlobal();
+    } else if (tabName === 'navigation') {
+        loadNavigationEditor();
+    } else if (tabName === 'hero') {
+        loadHeroEditor();
+    } else if (tabName === 'features') {
+        loadFeaturesEditor();
+    } else if (tabName === 'buttons') {
+        loadButtonsEditor();
+    } else if (tabName === 'footer') {
+        loadFooterEditor();
+    }
+}
+
+// Load Frontend Editor initial state
+function loadFrontendEditor() {
+    // Load global tab by default
+    showFrontendTab('global');
+}
+
+// Global Elements Functions
+function loadFrontendGlobal() {
+    const admin = loadAdminData();
+    
+    document.getElementById('global-site-title').value = admin.siteTitle || '';
+    document.getElementById('global-site-description').value = admin.siteDescription || '';
+    document.getElementById('global-logo-url').value = admin.logoUrl || '';
+    document.getElementById('global-contact-email').value = admin.contactEmail || '';
+    document.getElementById('global-footer-text').value = admin.footerText || '';
+}
+
+function saveFrontendGlobal() {
+    const admin = loadAdminData();
+    
+    admin.siteTitle = document.getElementById('global-site-title').value;
+    admin.siteDescription = document.getElementById('global-site-description').value;
+    admin.logoUrl = document.getElementById('global-logo-url').value;
+    admin.contactEmail = document.getElementById('global-contact-email').value;
+    admin.footerText = document.getElementById('global-footer-text').value;
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Global settings saved successfully!', 'success');
+}
+
+// Navigation Functions
+function loadNavigationEditor() {
+    const admin = loadAdminData();
+    const container = document.getElementById('navigation-items');
+    
+    // Initialize navigation array if it doesn't exist
+    if (!admin.navigation || !Array.isArray(admin.navigation)) {
+        admin.navigation = [
+            { id: 1, label: 'Home', url: 'index.html', order: 1 },
+            { id: 2, label: 'For Agents', url: 'agents.html', order: 2 },
+            { id: 3, label: 'For Agencies', url: 'agencies.html', order: 3 },
+            { id: 4, label: 'For Investors', url: 'investors.html', order: 4 },
+            { id: 5, label: 'About', url: 'about.html', order: 5 }
+        ];
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    }
+    
+    container.innerHTML = admin.navigation
+        .sort((a, b) => a.order - b.order)
+        .map((item, index) => `
+            <div class="cms-card p-4" data-nav-id="${item.id}">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Label</label>
+                        <input type="text" value="${item.label}" class="cms-input" data-field="label">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">URL</label>
+                        <input type="text" value="${item.url}" class="cms-input" data-field="url">
+                    </div>
+                    <div class="flex items-end gap-2">
+                        <button onclick="moveNavItem(${item.id}, -1)" class="cms-btn cms-btn-secondary text-sm" ${index === 0 ? 'disabled' : ''}>↑</button>
+                        <button onclick="moveNavItem(${item.id}, 1)" class="cms-btn cms-btn-secondary text-sm" ${index === admin.navigation.length - 1 ? 'disabled' : ''}>↓</button>
+                        <button onclick="deleteNavItem(${item.id})" class="cms-btn cms-btn-danger text-sm flex-1">Delete</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+}
+
+function addNavigationItem() {
+    const admin = loadAdminData();
+    if (!admin.navigation) admin.navigation = [];
+    
+    const newId = Math.max(0, ...admin.navigation.map(n => n.id)) + 1;
+    admin.navigation.push({
+        id: newId,
+        label: 'New Link',
+        url: '#',
+        order: admin.navigation.length + 1
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadNavigationEditor();
+}
+
+function deleteNavItem(id) {
+    if (confirm('Delete this navigation item?')) {
+        const admin = loadAdminData();
+        admin.navigation = admin.navigation.filter(n => n.id !== id);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        loadNavigationEditor();
+    }
+}
+
+function moveNavItem(id, direction) {
+    const admin = loadAdminData();
+    const index = admin.navigation.findIndex(n => n.id === id);
+    if (index === -1) return;
+    
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= admin.navigation.length) return;
+    
+    // Swap items
+    [admin.navigation[index], admin.navigation[newIndex]] = [admin.navigation[newIndex], admin.navigation[index]];
+    
+    // Update order values
+    admin.navigation.forEach((item, idx) => {
+        item.order = idx + 1;
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadNavigationEditor();
+}
+
+function saveFrontendNavigation() {
+    const admin = loadAdminData();
+    const items = document.querySelectorAll('[data-nav-id]');
+    
+    items.forEach(item => {
+        const id = parseInt(item.getAttribute('data-nav-id'));
+        const navItem = admin.navigation.find(n => n.id === id);
+        if (navItem) {
+            navItem.label = item.querySelector('[data-field="label"]').value;
+            navItem.url = item.querySelector('[data-field="url"]').value;
+        }
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Navigation saved successfully!', 'success');
+}
+
+// Hero Sections Functions
+function loadHeroEditor() {
+    const pageId = document.getElementById('hero-page-selector').value;
+    const admin = loadAdminData();
+    const container = document.getElementById('hero-editor-content');
+    
+    const page = admin.pages?.[pageId] || {};
+    
+    container.innerHTML = `
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Hero Title</label>
+            <input type="text" id="hero-title" class="cms-input" value="${page.heroTitle || ''}" placeholder="Enter hero title">
+            <p class="text-xs text-gray-500 mt-1">Main headline displayed in the hero section</p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Hero Subtitle</label>
+            <textarea id="hero-subtitle" class="cms-input" rows="3" placeholder="Enter hero subtitle">${page.heroSubtitle || ''}</textarea>
+            <p class="text-xs text-gray-500 mt-1">Supporting text below the hero title</p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Hero CTA Text</label>
+            <input type="text" id="hero-cta-text" class="cms-input" value="${page.heroCtaText || 'Get Started'}" placeholder="Button text">
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Hero CTA Link</label>
+            <input type="text" id="hero-cta-link" class="cms-input" value="${page.heroCtaLink || 'https://app.estalara.com'}" placeholder="Button URL">
+        </div>
+    `;
+}
+
+function saveFrontendHero() {
+    const pageId = document.getElementById('hero-page-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages[pageId]) admin.pages[pageId] = {};
+    
+    admin.pages[pageId].heroTitle = document.getElementById('hero-title').value;
+    admin.pages[pageId].heroSubtitle = document.getElementById('hero-subtitle').value;
+    admin.pages[pageId].heroCtaText = document.getElementById('hero-cta-text').value;
+    admin.pages[pageId].heroCtaLink = document.getElementById('hero-cta-link').value;
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Hero section saved successfully!', 'success');
+}
+
+// Feature Cards Functions
+function loadFeaturesEditor() {
+    const pageId = document.getElementById('features-page-selector').value;
+    const admin = loadAdminData();
+    const container = document.getElementById('features-editor-content');
+    
+    if (!admin.features) admin.features = {};
+    if (!admin.features[pageId]) admin.features[pageId] = [];
+    
+    const features = admin.features[pageId];
+    
+    container.innerHTML = features.map((feature, index) => `
+        <div class="cms-card p-4" data-feature-index="${index}">
+            <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Icon/Emoji</label>
+                    <input type="text" value="${feature.icon || '⭐'}" class="cms-input" data-field="icon" placeholder="⭐">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Title</label>
+                    <input type="text" value="${feature.title || ''}" class="cms-input" data-field="title">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Description</label>
+                    <textarea class="cms-input" rows="2" data-field="description">${feature.description || ''}</textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="deleteFeature('${pageId}', ${index})" class="cms-btn cms-btn-danger text-sm">Delete Feature</button>
+                </div>
+            </div>
+        </div>
+    `).join('') || '<p class="text-gray-500">No feature cards yet. Click "Add Feature Card" to create one.</p>';
+}
+
+function addFeatureCard() {
+    const pageId = document.getElementById('features-page-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.features) admin.features = {};
+    if (!admin.features[pageId]) admin.features[pageId] = [];
+    
+    admin.features[pageId].push({
+        icon: '⭐',
+        title: 'New Feature',
+        description: 'Feature description here'
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadFeaturesEditor();
+}
+
+function deleteFeature(pageId, index) {
+    if (confirm('Delete this feature card?')) {
+        const admin = loadAdminData();
+        admin.features[pageId].splice(index, 1);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        loadFeaturesEditor();
+    }
+}
+
+function saveFrontendFeatures() {
+    const pageId = document.getElementById('features-page-selector').value;
+    const admin = loadAdminData();
+    const items = document.querySelectorAll('[data-feature-index]');
+    
+    if (!admin.features) admin.features = {};
+    admin.features[pageId] = [];
+    
+    items.forEach((item, index) => {
+        admin.features[pageId].push({
+            icon: item.querySelector('[data-field="icon"]').value,
+            title: item.querySelector('[data-field="title"]').value,
+            description: item.querySelector('[data-field="description"]').value
+        });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Features saved successfully!', 'success');
+}
+
+// Buttons & CTAs Functions
+function loadButtonsEditor() {
+    const pageId = document.getElementById('buttons-page-selector').value;
+    const admin = loadAdminData();
+    const container = document.getElementById('buttons-editor-content');
+    
+    if (!admin.buttons) admin.buttons = {};
+    if (!admin.buttons[pageId]) {
+        admin.buttons[pageId] = {
+            primary: { text: 'Get Started', url: 'https://app.estalara.com' },
+            secondary: { text: 'Learn More', url: '#features' }
+        };
+    }
+    
+    const buttons = admin.buttons[pageId];
+    
+    container.innerHTML = `
+        <div class="cms-card p-4">
+            <h4 class="font-medium mb-3">Primary Button</h4>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Button Text</label>
+                    <input type="text" id="primary-btn-text" class="cms-input" value="${buttons.primary?.text || ''}">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Button URL</label>
+                    <input type="text" id="primary-btn-url" class="cms-input" value="${buttons.primary?.url || ''}">
+                </div>
+            </div>
+        </div>
+        
+        <div class="cms-card p-4">
+            <h4 class="font-medium mb-3">Secondary Button</h4>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Button Text</label>
+                    <input type="text" id="secondary-btn-text" class="cms-input" value="${buttons.secondary?.text || ''}">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-600 mb-1">Button URL</label>
+                    <input type="text" id="secondary-btn-url" class="cms-input" value="${buttons.secondary?.url || ''}">
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function saveFrontendButtons() {
+    const pageId = document.getElementById('buttons-page-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.buttons) admin.buttons = {};
+    
+    admin.buttons[pageId] = {
+        primary: {
+            text: document.getElementById('primary-btn-text').value,
+            url: document.getElementById('primary-btn-url').value
+        },
+        secondary: {
+            text: document.getElementById('secondary-btn-text').value,
+            url: document.getElementById('secondary-btn-url').value
+        }
+    };
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Buttons saved successfully!', 'success');
+}
+
+// Footer Functions
+function loadFooterEditor() {
+    const admin = loadAdminData();
+    
+    if (!admin.footer) {
+        admin.footer = {
+            companyName: 'Estalara',
+            tagline: 'Go LIVE. Go GLOBAL.',
+            description: 'Connecting real estate agents with global investors through AI and livestreaming technology.',
+            links: [
+                { label: 'Home', url: 'index.html' },
+                { label: 'About', url: 'about.html' },
+                { label: 'Privacy Policy', url: 'privacy.html' },
+                { label: 'Terms of Service', url: 'terms.html' }
+            ],
+            socialLinks: [
+                { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/estalara' },
+                { platform: 'Instagram', url: 'https://www.instagram.com/estalara' },
+                { platform: 'TikTok', url: 'https://www.tiktok.com/@estalara' }
+            ]
+        };
+    }
+    
+    document.getElementById('footer-company-name').value = admin.footer.companyName || '';
+    document.getElementById('footer-tagline').value = admin.footer.tagline || '';
+    document.getElementById('footer-description').value = admin.footer.description || '';
+    
+    loadFooterLinks();
+    loadSocialLinks();
+}
+
+function loadFooterLinks() {
+    const admin = loadAdminData();
+    const container = document.getElementById('footer-links-container');
+    
+    container.innerHTML = (admin.footer?.links || []).map((link, index) => `
+        <div class="flex gap-2">
+            <input type="text" value="${link.label}" class="cms-input flex-1" data-link-label="${index}">
+            <input type="text" value="${link.url}" class="cms-input flex-1" data-link-url="${index}">
+            <button onclick="deleteFooterLink(${index})" class="cms-btn cms-btn-danger text-sm">Delete</button>
+        </div>
+    `).join('');
+}
+
+function loadSocialLinks() {
+    const admin = loadAdminData();
+    const container = document.getElementById('social-links-container');
+    
+    container.innerHTML = (admin.footer?.socialLinks || []).map((link, index) => `
+        <div class="flex gap-2">
+            <input type="text" value="${link.platform}" class="cms-input flex-1" data-social-platform="${index}" placeholder="Platform">
+            <input type="text" value="${link.url}" class="cms-input flex-1" data-social-url="${index}" placeholder="URL">
+            <button onclick="deleteSocialLink(${index})" class="cms-btn cms-btn-danger text-sm">Delete</button>
+        </div>
+    `).join('');
+}
+
+function addFooterLink() {
+    const admin = loadAdminData();
+    if (!admin.footer.links) admin.footer.links = [];
+    admin.footer.links.push({ label: 'New Link', url: '#' });
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadFooterLinks();
+}
+
+function addSocialLink() {
+    const admin = loadAdminData();
+    if (!admin.footer.socialLinks) admin.footer.socialLinks = [];
+    admin.footer.socialLinks.push({ platform: 'New Platform', url: '#' });
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadSocialLinks();
+}
+
+function deleteFooterLink(index) {
+    const admin = loadAdminData();
+    admin.footer.links.splice(index, 1);
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadFooterLinks();
+}
+
+function deleteSocialLink(index) {
+    const admin = loadAdminData();
+    admin.footer.socialLinks.splice(index, 1);
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadSocialLinks();
+}
+
+function saveFrontendFooter() {
+    const admin = loadAdminData();
+    
+    admin.footer.companyName = document.getElementById('footer-company-name').value;
+    admin.footer.tagline = document.getElementById('footer-tagline').value;
+    admin.footer.description = document.getElementById('footer-description').value;
+    
+    // Save footer links
+    admin.footer.links = [];
+    document.querySelectorAll('[data-link-label]').forEach((input, index) => {
+        const label = input.value;
+        const url = document.querySelector(`[data-link-url="${index}"]`).value;
+        admin.footer.links.push({ label, url });
+    });
+    
+    // Save social links
+    admin.footer.socialLinks = [];
+    document.querySelectorAll('[data-social-platform]').forEach((input, index) => {
+        const platform = input.value;
+        const url = document.querySelector(`[data-social-url="${index}"]`).value;
+        admin.footer.socialLinks.push({ platform, url });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Footer saved successfully!', 'success');
+}
+
+// Preview and Reset Functions
+function previewChanges() {
+    window.open('index.html', '_blank');
+}
+
+function resetAllFrontend() {
+    if (confirm('Are you sure you want to reset ALL frontend elements to default? This cannot be undone.')) {
+        const admin = loadAdminData();
+        delete admin.navigation;
+        delete admin.features;
+        delete admin.buttons;
+        delete admin.footer;
+        // Reset pages to defaults but keep properties
+        admin.pages = {};
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        showNotification('Frontend reset to defaults!', 'success');
+        loadFrontendEditor();
+    }
+}
