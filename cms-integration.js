@@ -440,8 +440,13 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             const firebaseData = window.cmsFirebaseAdapter.cache;
             if (firebaseData && Object.keys(firebaseData).length > 0) {
                 console.log('📥 Using cached Firebase data');
+                console.log('🔍 [Debug] Firebase data has liveProperties:', Array.isArray(firebaseData.liveProperties), 'count:', firebaseData.liveProperties?.length);
                 return firebaseData;
+            } else {
+                console.warn('⚠️ [Debug] Firebase cache exists but is empty');
             }
+        } else {
+            console.warn('⚠️ [Debug] Firebase adapter not available or cache not initialized');
         }
         
         // FIX 4: Safe localStorage access with fallback for mobile devices
@@ -1825,17 +1830,34 @@ hideEmptyPlaceholders();
     }
     
     // Initialize EstalaraAdmin with retry mechanism to ensure main.js is ready
-    function initializeWhenReady(retryCount = 0) {
+    async function initializeWhenReady(retryCount = 0) {
         const maxRetries = 20; // Max 1 second (20 * 50ms)
         
         if (isMainJsReady()) {
-            console.log('✅ [CMS] main.js is ready, initializing EstalaraAdmin');
+            console.log('✅ [CMS] main.js is ready, initializing Firebase adapter...');
+            
+            // Initialize Firebase adapter first to load data from Firebase
+            if (window.cmsFirebaseAdapter && typeof window.cmsFirebaseAdapter.init === 'function') {
+                console.log('🔄 [CMS] Initializing Firebase adapter...');
+                await window.cmsFirebaseAdapter.init();
+                console.log('✅ [CMS] Firebase adapter initialized');
+            } else {
+                console.warn('⚠️ [CMS] Firebase adapter not available, using localStorage fallback');
+            }
+            
+            console.log('✅ [CMS] Creating EstalaraAdmin instance');
             window.estalaraAdmin = new EstalaraAdmin();
         } else if (retryCount < maxRetries) {
             console.log(`⏳ [CMS] Waiting for main.js to initialize (attempt ${retryCount + 1}/${maxRetries})...`);
             setTimeout(() => initializeWhenReady(retryCount + 1), 50);
         } else {
             console.warn('⚠️ [CMS] main.js not ready after max retries, initializing anyway');
+            
+            // Still try to initialize Firebase adapter even if main.js isn't ready
+            if (window.cmsFirebaseAdapter && typeof window.cmsFirebaseAdapter.init === 'function') {
+                await window.cmsFirebaseAdapter.init();
+            }
+            
             window.estalaraAdmin = new EstalaraAdmin();
         }
     }
