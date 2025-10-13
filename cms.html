@@ -1118,16 +1118,36 @@
     <script>
         // Protection: Redirect to login if not authenticated
         window.addEventListener('DOMContentLoaded', async () => {
-            // Wait for Firebase to initialize
-            if (window.authService) {
-                const user = await window.authService.waitForAuth();
-                if (!user) {
-                    console.warn('⚠️ Not authenticated. Redirecting to login page...');
-                    window.location.href = 'cms-login.html';
-                }
-            } else {
+            // Check if we were just redirected from login
+            const fromLogin = sessionStorage.getItem('redirectingToCms');
+            if (fromLogin) {
+                sessionStorage.removeItem('redirectingToCms');
+                console.log('✅ Redirected from login page successfully');
+            }
+            
+            // Wait for auth service to be ready
+            let waitTime = 0;
+            const maxWait = 5000;
+            while (!window.authService && waitTime < maxWait) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                waitTime += 100;
+            }
+            
+            if (!window.authService) {
                 console.error('❌ Auth service not initialized. Redirecting to login...');
+                sessionStorage.setItem('redirectedFromCms', 'true');
                 window.location.href = 'cms-login.html';
+                return;
+            }
+            
+            // Wait for Firebase to initialize auth state
+            const user = await window.authService.waitForAuth();
+            if (!user) {
+                console.warn('⚠️ Not authenticated. Redirecting to login page...');
+                sessionStorage.setItem('redirectedFromCms', 'true');
+                window.location.href = 'cms-login.html';
+            } else {
+                console.log('✅ Authenticated as:', user.email);
             }
         });
         

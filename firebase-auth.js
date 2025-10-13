@@ -5,10 +5,21 @@ class FirebaseAuthService {
   constructor() {
     this.auth = firebase.auth();
     this.currentUser = null;
+    this.authInitialized = false;
+    
+    // Set persistence to LOCAL (survives browser restarts)
+    this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        console.log('✅ Firebase Auth persistence set to LOCAL');
+      })
+      .catch((error) => {
+        console.error('❌ Error setting persistence:', error);
+      });
     
     // Listen for auth state changes
     this.auth.onAuthStateChanged((user) => {
       this.currentUser = user;
+      this.authInitialized = true;
       this.onAuthStateChange(user);
     });
   }
@@ -93,12 +104,27 @@ class FirebaseAuthService {
   }
 
   // Wait for auth to initialize
-  async waitForAuth() {
+  async waitForAuth(timeout = 5000) {
+    // If already initialized, return current user immediately
+    if (this.authInitialized) {
+      return this.currentUser;
+    }
+    
     return new Promise((resolve) => {
+      let timeoutId = null;
+      
       const unsubscribe = this.auth.onAuthStateChanged((user) => {
+        if (timeoutId) clearTimeout(timeoutId);
         unsubscribe();
         resolve(user);
       });
+      
+      // Timeout fallback
+      timeoutId = setTimeout(() => {
+        unsubscribe();
+        console.warn('⚠️ Auth initialization timeout, using current state');
+        resolve(this.currentUser);
+      }, timeout);
     });
   }
 }

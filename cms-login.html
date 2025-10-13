@@ -120,6 +120,9 @@
                 if (result.success) {
                     console.log('✅ Login successful:', result.user.email);
                     
+                    // Mark that we're redirecting to CMS after successful login
+                    sessionStorage.setItem('redirectingToCms', 'true');
+                    
                     // Redirect to CMS dashboard
                     window.location.href = 'cms.html';
                 } else {
@@ -137,6 +140,14 @@
 
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', async () => {
+            // Prevent redirect loop - check if we were just redirected from CMS
+            const fromCms = sessionStorage.getItem('redirectedFromCms');
+            if (fromCms) {
+                sessionStorage.removeItem('redirectedFromCms');
+                console.log('⚠️ Redirected from CMS, staying on login page');
+                return;
+            }
+            
             // Check if Firebase is loaded
             if (typeof firebase === 'undefined') {
                 showError('❌ Błąd ładowania Firebase. Sprawdź połączenie internetowe i odśwież stronę.');
@@ -163,6 +174,8 @@
             if (user) {
                 console.log('✅ Already logged in as:', user.email);
                 console.log('Redirecting to CMS...');
+                // Mark that we're redirecting to CMS
+                sessionStorage.setItem('redirectingToCms', 'true');
                 window.location.href = 'cms.html';
             } else {
                 console.log('Not logged in. Please sign in.');
