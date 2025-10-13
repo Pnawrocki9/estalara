@@ -12,13 +12,22 @@ const firebaseConfig = {
   measurementId: "G-G15DR28Y5J"
 };
 
+// Promise that resolves when Firebase is fully initialized
+window.firebaseReadyPromise = new Promise((resolve, reject) => {
+  // Store resolve/reject for later use
+  window._firebaseResolve = resolve;
+  window._firebaseReject = reject;
+});
+
 // Initialize Firebase with proper error handling
 function initializeFirebase() {
   try {
     // Check if Firebase SDK is loaded
     if (typeof firebase === 'undefined') {
       console.error('❌ Firebase SDK not loaded');
-      throw new Error('Firebase SDK not loaded. Please check your internet connection.');
+      const error = new Error('Firebase SDK not loaded. Please check your internet connection.');
+      window._firebaseReject(error);
+      throw error;
     }
 
     // Initialize Firebase
@@ -35,6 +44,9 @@ function initializeFirebase() {
     console.log('🔐 Auth ready');
     console.log('💾 Database ready');
     
+    // Resolve the promise to notify all waiting services
+    window._firebaseResolve();
+    
     return true;
   } catch (error) {
     console.error('❌ Firebase initialization failed:', error);
@@ -43,6 +55,9 @@ function initializeFirebase() {
       code: error.code,
       stack: error.stack
     });
+    
+    // Reject the promise to notify all waiting services
+    window._firebaseReject(error);
     
     // Show user-friendly error message with help
     let errorMessage = 'Błąd połączenia Firebase';
@@ -81,5 +96,19 @@ window.getAdminDataRef = () => {
 
 // Export for use in other scripts
 window.firebaseConfig = firebaseConfig;
+
+// Promise that resolves when ALL Firebase services are initialized
+window.firebaseServicesReady = Promise.all([
+  window.firebaseReadyPromise,
+  // Wait a bit for services to initialize
+  new Promise(resolve => {
+    window.firebaseReadyPromise.then(() => {
+      // Small delay to ensure services are created
+      setTimeout(resolve, 50);
+    });
+  })
+]).then(() => {
+  console.log('🎉 All Firebase services initialized and ready');
+});
 
 console.log('🔥 Firebase Config Loaded - Estalara CMS');

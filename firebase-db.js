@@ -192,16 +192,17 @@ class FirebaseDatabaseService {
 }
 
 // Initialize database service after Firebase is ready
-function initializeDatabaseService() {
-  if (typeof firebase === 'undefined' || !firebase.apps || firebase.apps.length === 0) {
-    console.warn('⏳ Waiting for Firebase to initialize before creating database service...');
-    setTimeout(initializeDatabaseService, 100);
-    return;
+async function initializeDatabaseService() {
+  try {
+    // Wait for Firebase to be ready using the Promise from firebase-config.js
+    await window.firebaseReadyPromise;
+    
+    // Create global database service instance
+    window.dbService = new FirebaseDatabaseService();
+    console.log('✅ Firebase Database Service initialized');
+  } catch (error) {
+    console.error('❌ Failed to initialize Database Service:', error);
   }
-  
-  // Create global database service instance
-  window.dbService = new FirebaseDatabaseService();
-  console.log('✅ Firebase Database Service initialized');
 }
 
 // Start initialization
