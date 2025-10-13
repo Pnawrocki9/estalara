@@ -239,8 +239,19 @@ function deleteUser(id) {
     }
 }
 
-function logout() {
+async function logout() {
     if (confirm('Are you sure you want to logout?')) {
+        // Sign out from Firebase
+        if (window.authService) {
+            await window.authService.signOut();
+            console.log('✅ Signed out from Firebase');
+        }
+        
+        // Clear localStorage session (backward compatibility)
+        localStorage.removeItem('cmsLoggedIn');
+        localStorage.removeItem('cmsUsername');
+        
+        // Redirect to login page
         window.location.href = 'cms-login.html';
     }
 }
@@ -341,9 +352,54 @@ function updateLogoPreview(url) {
     testImg.src = encodedUrl;
 }
 
+// Firebase-aware localStorage wrapper
+window.saveAdminDataToFirebase = async function(data) {
+    try {
+        // Save to Firebase
+        if (window.cmsFirebaseAdapter) {
+            await window.cmsFirebaseAdapter.saveAdminData(data);
+            console.log('✅ Saved to Firebase');
+        }
+        
+        // Also save to localStorage as backup
+        localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+        console.log('✅ Saved to localStorage (backup)');
+        
+        return true;
+    } catch (error) {
+        console.error('❌ Error saving data:', error);
+        // Fallback to localStorage only
+        localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+        return false;
+    }
+};
+
 // Property Form Handler
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('🚀 CMS initialized - DOM Content Loaded');
+    
+    // Check authentication
+    if (window.authService) {
+        const user = await window.authService.waitForAuth();
+        if (!user) {
+            console.warn('⚠️ No authenticated user, redirecting to login...');
+            window.location.href = 'cms-login.html';
+            return;
+        }
+        console.log('✅ Authenticated as:', user.email);
+        
+        // Update UI with user email
+        const welcomeText = document.querySelector('nav span.text-sm');
+        if (welcomeText && welcomeText.textContent.includes('Welcome')) {
+            welcomeText.textContent = `Welcome, ${user.email}`;
+        }
+    }
+    
+    // Initialize Firebase adapter
+    if (window.cmsFirebaseAdapter) {
+        await window.cmsFirebaseAdapter.init();
+        console.log('✅ Firebase adapter initialized');
+    }
     
     // Initialize dashboard
     showSection('dashboard');
@@ -1000,6 +1056,7 @@ function savePageContent(pageId, formData) {
 }
 
 function loadAdminData() {
+    // Check localStorage for backward compatibility
     const stored = localStorage.getItem('estalaraAdminData');
     if (stored) {
         const data = JSON.parse(stored);
@@ -1010,6 +1067,29 @@ function loadAdminData() {
         return data;
     }
     return { version: 4, pages: {}, settings: {}, liveProperties: [], properties: [] };
+}
+
+// Async version that checks Firebase first
+async function loadAdminDataAsync() {
+    try {
+        // Try loading from Firebase first
+        if (window.cmsFirebaseAdapter) {
+            const firebaseData = await window.cmsFirebaseAdapter.getAdminData();
+            if (firebaseData && Object.keys(firebaseData).length > 0) {
+                console.log('📥 Loaded admin data from Firebase');
+                // Ensure version is set
+                if (!firebaseData.version) {
+                    firebaseData.version = 4;
+                }
+                return firebaseData;
+            }
+        }
+    } catch (error) {
+        console.warn('⚠️ Failed to load from Firebase, falling back to localStorage:', error);
+    }
+    
+    // Fallback to localStorage
+    return loadAdminData();
 }
 
 // ===== PAGE STRUCTURE EDITOR FUNCTIONS =====

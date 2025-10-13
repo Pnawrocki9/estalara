@@ -548,6 +548,12 @@
         </div>
     </footer>
     
+    <!-- Firebase SDK (for loading CMS data) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="cms-firebase-adapter.js"></script>
+    
     <!-- Load scripts synchronously to ensure proper initialization on mobile devices.
          main.js must load first to set up IntersectionObserver helpers (window.observeReveals, window.revealObserver). -->
     <script src="main.js"></script>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate to Firebase - Estalara CMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        .step { opacity: 0.5; }
+        .step.active { opacity: 1; }
+        .step.completed { opacity: 1; color: #10b981; }
+    </style>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <h1 class="text-3xl font-bold mb-2">🔥 Migrate to Firebase</h1>
+            <p class="text-gray-600">Transfer your CMS data from localStorage to Firebase Database</p>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+            <h2 class="font-bold text-lg mb-2">📋 Before You Start</h2>
+            <ol class="list-decimal list-inside space-y-2 text-sm">
+                <li>Make sure you've completed Firebase setup</li>
+                <li>Ensure <code class="bg-blue-100 px-2 py-1 rounded">firebase-config.js</code> has your credentials</li>
+                <li>You should have data in localStorage to migrate</li>
+                <li>This is a ONE-TIME operation</li>
+            </ol>
+        </div>
+
+        <!-- Migration Steps -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <h2 class="text-2xl font-bold mb-6">Migration Progress</h2>
+            
+            <div class="space-y-4">
+                <div id="step1" class="step flex items-start gap-4 p-4 bg-gray-50 rounded">
+                    <div class="text-2xl">1️⃣</div>
+                    <div class="flex-1">
+                        <h3 class="font-bold">Check localStorage Data</h3>
+                        <p class="text-sm text-gray-600">Verify you have CMS data to migrate</p>
+                        <div id="step1-status" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <div id="step2" class="step flex items-start gap-4 p-4 bg-gray-50 rounded">
+                    <div class="text-2xl">2️⃣</div>
+                    <div class="flex-1">
+                        <h3 class="font-bold">Initialize Firebase</h3>
+                        <p class="text-sm text-gray-600">Connect to Firebase Database</p>
+                        <div id="step2-status" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <div id="step3" class="step flex items-start gap-4 p-4 bg-gray-50 rounded">
+                    <div class="text-2xl">3️⃣</div>
+                    <div class="flex-1">
+                        <h3 class="font-bold">Backup Data</h3>
+                        <p class="text-sm text-gray-600">Create backup of localStorage data</p>
+                        <div id="step3-status" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <div id="step4" class="step flex items-start gap-4 p-4 bg-gray-50 rounded">
+                    <div class="text-2xl">4️⃣</div>
+                    <div class="flex-1">
+                        <h3 class="font-bold">Upload to Firebase</h3>
+                        <p class="text-sm text-gray-600">Transfer data to Firebase Database</p>
+                        <div id="step4-status" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <div id="step5" class="step flex items-start gap-4 p-4 bg-gray-50 rounded">
+                    <div class="text-2xl">5️⃣</div>
+                    <div class="flex-1">
+                        <h3 class="font-bold">Verify Migration</h3>
+                        <p class="text-sm text-gray-600">Confirm data was transferred correctly</p>
+                        <div id="step5-status" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Preview -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <h2 class="text-2xl font-bold mb-4">📊 Data Preview</h2>
+            
+            <div class="mb-4">
+                <h3 class="font-bold mb-2">localStorage Data:</h3>
+                <pre id="localStorage-preview" class="bg-gray-100 p-4 rounded text-xs overflow-x-auto max-h-96">Loading...</pre>
+            </div>
+
+            <div class="mb-4">
+                <h3 class="font-bold mb-2">Firebase Data (after migration):</h3>
+                <pre id="firebase-preview" class="bg-gray-100 p-4 rounded text-xs overflow-x-auto max-h-96">Not migrated yet</pre>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold mb-4">🚀 Actions</h2>
+            
+            <div class="space-y-4">
+                <button id="migrate-btn" onclick="startMigration()" 
+                        class="w-full bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Start Migration
+                </button>
+
+                <button id="verify-btn" onclick="verifyMigration()" 
+                        class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">
+                    Verify Migration
+                </button>
+
+                <button onclick="downloadBackup()" 
+                        class="w-full bg-gray-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-700">
+                    Download Backup (JSON)
+                </button>
+
+                <div class="pt-4 border-t">
+                    <a href="cms.html" class="block text-center bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800">
+                        Go to CMS →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Firebase Config (must be created with your credentials) -->
+    <script src="firebase-config.js"></script>
+
+    <script>
+        let localStorageData = null;
+        let migrationComplete = false;
+
+        // Step 1: Check localStorage
+        function checkLocalStorage() {
+            const step = document.getElementById('step1');
+            const status = document.getElementById('step1-status');
+            step.classList.add('active');
+
+            try {
+                const data = localStorage.getItem('estalaraAdminData');
+                
+                if (!data) {
+                    status.innerHTML = '<span class="text-orange-600">⚠️ No data found in localStorage. You can skip migration.</span>';
+                    localStorageData = null;
+                    return false;
+                }
+
+                localStorageData = JSON.parse(data);
+                
+                // Display preview
+                document.getElementById('localStorage-preview').textContent = JSON.stringify(localStorageData, null, 2);
+                
+                // Count items
+                const propertyCount = localStorageData.properties?.length || 0;
+                const livePropertyCount = localStorageData.liveProperties?.length || 0;
+                
+                status.innerHTML = `
+                    <span class="text-green-600">✅ Found data:</span>
+                    <ul class="list-disc list-inside ml-4 mt-2">
+                        <li>${propertyCount} properties</li>
+                        <li>${livePropertyCount} LIVE properties</li>
+                        <li>Version: ${localStorageData.version || 'unknown'}</li>
+                    </ul>
+                `;
+                
+                step.classList.add('completed');
+                return true;
+            } catch (error) {
+                status.innerHTML = `<span class="text-red-600">❌ Error reading localStorage: ${error.message}</span>`;
+                return false;
+            }
+        }
+
+        // Step 2: Initialize Firebase
+        function initializeFirebase() {
+            const step = document.getElementById('step2');
+            const status = document.getElementById('step2-status');
+            step.classList.add('active');
+
+            try {
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase SDK not loaded');
+                }
+
+                if (typeof firebaseConfig === 'undefined') {
+                    throw new Error('firebase-config.js not loaded or configured');
+                }
+
+                status.innerHTML = `
+                    <span class="text-green-600">✅ Firebase initialized:</span>
+                    <ul class="list-disc list-inside ml-4 mt-2">
+                        <li>Project: ${firebaseConfig.projectId}</li>
+                        <li>Database: ${firebaseConfig.databaseURL}</li>
+                    </ul>
+                `;
+                
+                step.classList.add('completed');
+                return true;
+            } catch (error) {
+                status.innerHTML = `<span class="text-red-600">❌ Firebase initialization failed: ${error.message}</span>`;
+                return false;
+            }
+        }
+
+        // Step 3: Create backup
+        function createBackup() {
+            const step = document.getElementById('step3');
+            const status = document.getElementById('step3-status');
+            step.classList.add('active');
+
+            try {
+                if (!localStorageData) {
+                    status.innerHTML = '<span class="text-gray-600">⚠️ No data to backup</span>';
+                    step.classList.add('completed');
+                    return true;
+                }
+
+                const backupKey = `estalara_backup_${Date.now()}`;
+                localStorage.setItem(backupKey, JSON.stringify(localStorageData));
+                
+                status.innerHTML = `<span class="text-green-600">✅ Backup created: ${backupKey}</span>`;
+                step.classList.add('completed');
+                return true;
+            } catch (error) {
+                status.innerHTML = `<span class="text-red-600">❌ Backup failed: ${error.message}</span>`;
+                return false;
+            }
+        }
+
+        // Step 4: Upload to Firebase
+        async function uploadToFirebase() {
+            const step = document.getElementById('step4');
+            const status = document.getElementById('step4-status');
+            step.classList.add('active');
+
+            try {
+                if (!localStorageData) {
+                    status.innerHTML = '<span class="text-gray-600">⚠️ No data to upload</span>';
+                    step.classList.add('completed');
+                    return true;
+                }
+
+                status.innerHTML = '<span class="text-blue-600">⏳ Uploading to Firebase...</span>';
+
+                const db = firebase.database();
+                const ref = db.ref('adminData');
+                
+                // Add migration metadata
+                const dataToUpload = {
+                    ...localStorageData,
+                    migratedAt: firebase.database.ServerValue.TIMESTAMP,
+                    migratedFrom: 'localStorage'
+                };
+
+                await ref.set(dataToUpload);
+                
+                status.innerHTML = `
+                    <span class="text-green-600">✅ Upload complete!</span>
+                    <ul class="list-disc list-inside ml-4 mt-2">
+                        <li>All data transferred to Firebase</li>
+                        <li>Migration timestamp added</li>
+                    </ul>
+                `;
+                
+                step.classList.add('completed');
+                migrationComplete = true;
+                return true;
+            } catch (error) {
+                status.innerHTML = `<span class="text-red-600">❌ Upload failed: ${error.message}</span>`;
+                return false;
+            }
+        }
+
+        // Step 5: Verify
+        async function verifyUpload() {
+            const step = document.getElementById('step5');
+            const status = document.getElementById('step5-status');
+            step.classList.add('active');
+
+            try {
+                status.innerHTML = '<span class="text-blue-600">⏳ Verifying...</span>';
+
+                const db = firebase.database();
+                const ref = db.ref('adminData');
+                const snapshot = await ref.once('value');
+                const firebaseData = snapshot.val();
+
+                if (!firebaseData) {
+                    throw new Error('No data found in Firebase');
+                }
+
+                // Display Firebase data
+                document.getElementById('firebase-preview').textContent = JSON.stringify(firebaseData, null, 2);
+
+                const propertyCount = firebaseData.properties?.length || 0;
+                const livePropertyCount = firebaseData.liveProperties?.length || 0;
+
+                status.innerHTML = `
+                    <span class="text-green-600">✅ Verification successful!</span>
+                    <ul class="list-disc list-inside ml-4 mt-2">
+                        <li>${propertyCount} properties in Firebase</li>
+                        <li>${livePropertyCount} LIVE properties in Firebase</li>
+                        <li>Migration completed at: ${new Date(firebaseData.migratedAt).toLocaleString()}</li>
+                    </ul>
+                `;
+                
+                step.classList.add('completed');
+                
+                // Enable CMS button
+                document.getElementById('migrate-btn').disabled = true;
+                document.getElementById('migrate-btn').textContent = '✅ Migration Complete';
+                
+                return true;
+            } catch (error) {
+                status.innerHTML = `<span class="text-red-600">❌ Verification failed: ${error.message}</span>`;
+                return false;
+            }
+        }
+
+        // Run all migration steps
+        async function startMigration() {
+            const btn = document.getElementById('migrate-btn');
+            btn.disabled = true;
+            btn.textContent = 'Migrating...';
+
+            try {
+                // Run steps sequentially
+                if (!checkLocalStorage()) return;
+                await new Promise(r => setTimeout(r, 500));
+                
+                if (!initializeFirebase()) return;
+                await new Promise(r => setTimeout(r, 500));
+                
+                if (!createBackup()) return;
+                await new Promise(r => setTimeout(r, 500));
+                
+                if (!await uploadToFirebase()) return;
+                await new Promise(r => setTimeout(r, 500));
+                
+                if (!await verifyUpload()) return;
+
+                alert('🎉 Migration completed successfully!\n\nYou can now use the CMS with Firebase.');
+                
+            } catch (error) {
+                alert('❌ Migration failed: ' + error.message);
+                btn.disabled = false;
+                btn.textContent = 'Retry Migration';
+            }
+        }
+
+        // Verify existing migration
+        async function verifyMigration() {
+            if (!initializeFirebase()) return;
+            await verifyUpload();
+        }
+
+        // Download backup
+        function downloadBackup() {
+            const data = localStorageData || JSON.parse(localStorage.getItem('estalaraAdminData'));
+            
+            if (!data) {
+                alert('No data to backup');
+                return;
+            }
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `estalara-cms-backup-${new Date().toISOString()}.json`;
+            a.click();
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkLocalStorage();
+            
+            // Show localStorage preview
+            const data = localStorage.getItem('estalaraAdminData');
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    document.getElementById('localStorage-preview').textContent = JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                    document.getElementById('localStorage-preview').textContent = 'Error parsing data';
+                }
+            } else {
+                document.getElementById('localStorage-preview').textContent = 'No data in localStorage';
+            }
+        });
+    </script>
+</body>
+</html>
