@@ -36,7 +36,16 @@ class EstalaraAdmin {
 
     init() {
         this.loadDynamicContent();
+        this.loadFrontendElements();
         this.setupEventListeners();
+    }
+
+    // Load all frontend elements from CMS
+    loadFrontendElements() {
+        this.loadNavigation();
+        this.loadFooter();
+        this.loadFeatureCards();
+        this.loadButtons();
     }
 
     // Load content from localStorage (simulating Admin database)
@@ -291,6 +300,79 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             // Translation dictionary. Each language can override page and section content. Initially empty for English.
             translations: {
                 en: {}
+            },
+            // Navigation menu items
+            navigation: [
+                { id: 1, label: "Home", url: "index.html", order: 1 },
+                { id: 2, label: "For Agents", url: "agents.html", order: 2 },
+                { id: 3, label: "For Agencies", url: "agencies.html", order: 3 },
+                { id: 4, label: "For Investors", url: "investors.html", order: 4 },
+                { id: 5, label: "About", url: "about.html", order: 5 },
+                { id: 6, label: "FAQ", url: "faq.html", order: 6 }
+            ],
+            // Footer content
+            footer: {
+                companyName: "Estalara",
+                tagline: "Go LIVE. Go GLOBAL.",
+                description: "Connecting real estate agents and global investors through AI and live experiences.",
+                links: [
+                    { label: "Home", url: "index.html" },
+                    { label: "About", url: "about.html" },
+                    { label: "Privacy Policy", url: "privacy.html" },
+                    { label: "Terms of Service", url: "terms.html" }
+                ],
+                socialLinks: [
+                    { platform: "LinkedIn", url: "https://www.linkedin.com/company/estalara" },
+                    { platform: "Instagram", url: "https://www.instagram.com/estalara" },
+                    { platform: "TikTok", url: "https://www.tiktok.com/@estalara" }
+                ]
+            },
+            // Feature cards per page
+            features: {
+                home: [
+                    { icon: "🌍", title: "Global Reach", description: "Connect with investors and agents worldwide through our platform." },
+                    { icon: "🎥", title: "Live Tours", description: "Stream property tours in real-time to engage buyers instantly." },
+                    { icon: "🤖", title: "AI-Powered", description: "Leverage AI for lead generation and property matching." }
+                ],
+                agents: [
+                    { icon: "📈", title: "Grow Your Business", description: "Reach international buyers and close deals faster." },
+                    { icon: "⚡", title: "Instant Leads", description: "Get verified leads delivered directly to your dashboard." },
+                    { icon: "🎯", title: "Smart Targeting", description: "AI matches your properties with the right buyers." }
+                ],
+                agencies: [
+                    { icon: "🏢", title: "Enterprise Solutions", description: "Scale your agency with our comprehensive platform." },
+                    { icon: "👥", title: "Team Management", description: "Manage multiple agents and track performance." },
+                    { icon: "📊", title: "Analytics", description: "Data-driven insights to optimize your strategy." }
+                ],
+                investors: [
+                    { icon: "💰", title: "Smart Investments", description: "Discover vetted properties with high ROI potential." },
+                    { icon: "🔒", title: "Secure Transactions", description: "Safe and transparent property transactions." },
+                    { icon: "🌐", title: "Global Portfolio", description: "Diversify with international real estate." }
+                ],
+                about: []
+            },
+            // Buttons and CTAs
+            buttons: {
+                global: {
+                    primary: { text: "Get Started", url: "https://app.estalara.com" },
+                    secondary: { text: "Learn More", url: "#features" }
+                },
+                home: {
+                    primary: { text: "Get Started", url: "https://app.estalara.com" },
+                    secondary: { text: "See How It Works", url: "#how-it-works" }
+                },
+                agents: {
+                    primary: { text: "Join as Agent", url: "https://app.estalara.com/signup/agent" },
+                    secondary: { text: "Watch Demo", url: "#demo" }
+                },
+                agencies: {
+                    primary: { text: "Enterprise Contact", url: "mailto:peter@estalara.com" },
+                    secondary: { text: "View Features", url: "#enterprise-features" }
+                },
+                investors: {
+                    primary: { text: "Browse Properties", url: "https://app.estalara.com/properties" },
+                    secondary: { text: "Learn More", url: "#investing-without-borders" }
+                }
             },
             // Page structures defining blocks/sections for each page
             pageStructures: {
@@ -1311,6 +1393,223 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 }
             }
         });
+    }
+
+    // Load navigation from CMS
+    loadNavigation() {
+        if (!this.content.navigation || !Array.isArray(this.content.navigation)) {
+            return;
+        }
+
+        // Find desktop navigation ul
+        const desktopNav = document.querySelector('header nav:not(#mobile-menu) ul');
+        // Find mobile navigation ul
+        const mobileNav = document.querySelector('#mobile-menu ul.mobile-nav');
+
+        if (desktopNav) {
+            // Clear existing links
+            desktopNav.innerHTML = '';
+
+            // Add navigation items
+            this.content.navigation
+                .sort((a, b) => (a.order || 0) - (b.order || 0))
+                .forEach(item => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = item.url || '#';
+                    a.textContent = item.label || '';
+                    a.className = 'text-white hover:text-gray-300 transition-colors';
+                    li.appendChild(a);
+                    desktopNav.appendChild(li);
+                });
+        }
+
+        if (mobileNav) {
+            // Clear existing links
+            mobileNav.innerHTML = '';
+
+            // Add navigation items to mobile menu
+            this.content.navigation
+                .sort((a, b) => (a.order || 0) - (b.order || 0))
+                .forEach(item => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = item.url || '#';
+                    a.textContent = item.label || '';
+                    a.className = 'block text-white hover:text-white py-2 hover:bg-white/5 px-2 rounded transition-colors';
+                    li.appendChild(a);
+                    mobileNav.appendChild(li);
+                });
+        }
+
+        console.log('✅ [CMS] Navigation loaded with', this.content.navigation.length, 'items');
+    }
+
+    // Load footer from CMS
+    loadFooter() {
+        if (!this.content.footer) {
+            return;
+        }
+
+        const footer = this.content.footer;
+
+        // Update company name
+        const companyNameEl = document.querySelector('footer .footer-company-name, footer h3');
+        if (companyNameEl && footer.companyName) {
+            companyNameEl.textContent = footer.companyName;
+        }
+
+        // Update tagline
+        const taglineEl = document.querySelector('footer .footer-tagline');
+        if (taglineEl && footer.tagline) {
+            taglineEl.textContent = footer.tagline;
+        }
+
+        // Update description
+        const descriptionEl = document.querySelector('footer .footer-description, footer p:first-of-type');
+        if (descriptionEl && footer.description) {
+            descriptionEl.textContent = footer.description;
+        }
+
+        // Update footer links
+        if (footer.links && Array.isArray(footer.links)) {
+            const footerLinksContainer = document.querySelector('footer .footer-links, footer nav ul');
+            if (footerLinksContainer) {
+                footerLinksContainer.innerHTML = '';
+                footer.links.forEach(link => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = link.url || '#';
+                    a.textContent = link.label || '';
+                    a.className = 'hover:text-gray-300 transition-colors';
+                    li.appendChild(a);
+                    footerLinksContainer.appendChild(li);
+                });
+            }
+        }
+
+        // Update social media links
+        if (footer.socialLinks && Array.isArray(footer.socialLinks)) {
+            const socialContainer = document.querySelector('footer .social-links, footer .flex.space-x-4');
+            if (socialContainer) {
+                socialContainer.innerHTML = '';
+                footer.socialLinks.forEach(social => {
+                    const a = document.createElement('a');
+                    a.href = social.url || '#';
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    a.className = 'hover:text-gray-300 transition-colors';
+                    a.setAttribute('aria-label', social.platform || 'Social Link');
+                    
+                    // Add icon based on platform
+                    const iconMap = {
+                        'LinkedIn': '🔗',
+                        'Instagram': '📷',
+                        'TikTok': '🎵',
+                        'Facebook': '👤',
+                        'Twitter': '🐦',
+                        'YouTube': '▶️'
+                    };
+                    a.textContent = iconMap[social.platform] || '🔗';
+                    
+                    socialContainer.appendChild(a);
+                });
+            }
+        }
+
+        console.log('✅ [CMS] Footer loaded');
+    }
+
+    // Load feature cards from CMS
+    loadFeatureCards() {
+        // Determine current page
+        const path = window.location.pathname;
+        let pageKey = 'home';
+        if (path.includes('agents.html')) pageKey = 'agents';
+        else if (path.includes('investors.html')) pageKey = 'investors';
+        else if (path.includes('agencies.html')) pageKey = 'agencies';
+        else if (path.includes('about.html')) pageKey = 'about';
+
+        if (!this.content.features || !this.content.features[pageKey]) {
+            return;
+        }
+
+        const features = this.content.features[pageKey];
+        if (!Array.isArray(features) || features.length === 0) {
+            return;
+        }
+
+        // Find features container
+        const featuresContainer = document.querySelector('#features .grid, .features-grid');
+        if (!featuresContainer) {
+            return;
+        }
+
+        // Clear existing feature cards
+        featuresContainer.innerHTML = '';
+
+        // Add feature cards
+        features.forEach((feature, index) => {
+            const card = document.createElement('div');
+            card.className = 'card-hover bg-white text-black p-8 rounded-lg reveal';
+            card.style.animationDelay = `${index * 0.1}s`;
+            
+            card.innerHTML = `
+                ${feature.icon ? `<div class="text-4xl mb-4">${feature.icon}</div>` : ''}
+                <h3 class="text-2xl font-bold mb-4">${feature.title || ''}</h3>
+                <p class="text-gray-600">${feature.description || ''}</p>
+            `;
+            
+            featuresContainer.appendChild(card);
+        });
+
+        console.log('✅ [CMS] Feature cards loaded for', pageKey, ':', features.length, 'cards');
+    }
+
+    // Load buttons from CMS
+    loadButtons() {
+        // Determine current page
+        const path = window.location.pathname;
+        let pageKey = 'home';
+        if (path.includes('agents.html')) pageKey = 'agents';
+        else if (path.includes('investors.html')) pageKey = 'investors';
+        else if (path.includes('agencies.html')) pageKey = 'agencies';
+        else if (path.includes('about.html')) pageKey = 'about';
+
+        if (!this.content.buttons) {
+            return;
+        }
+
+        // Get page-specific buttons or fall back to global
+        const pageButtons = this.content.buttons[pageKey] || this.content.buttons.global || {};
+
+        // Update primary buttons
+        if (pageButtons.primary) {
+            const primaryButtons = document.querySelectorAll('.btn-primary, .cta-button a');
+            primaryButtons.forEach(btn => {
+                if (pageButtons.primary.text) {
+                    btn.textContent = pageButtons.primary.text;
+                }
+                if (pageButtons.primary.url) {
+                    btn.href = pageButtons.primary.url;
+                }
+            });
+        }
+
+        // Update secondary buttons
+        if (pageButtons.secondary) {
+            const secondaryButtons = document.querySelectorAll('.btn-secondary');
+            secondaryButtons.forEach(btn => {
+                if (pageButtons.secondary.text) {
+                    btn.textContent = pageButtons.secondary.text;
+                }
+                if (pageButtons.secondary.url) {
+                    btn.href = pageButtons.secondary.url;
+                }
+            });
+        }
+
+        console.log('✅ [CMS] Buttons loaded for', pageKey);
     }
 }
 
