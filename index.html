@@ -554,9 +554,9 @@
     </footer>
     
     <!-- Load scripts synchronously to ensure proper initialization on mobile devices.
-         cms-integration.js must load before DOM manipulation to avoid race conditions. -->
-    <script src="cms-integration.js"></script>
-    <!-- Load main.js synchronously to ensure animations (Typed.js, IntersectionObserver) initialise before content is displayed. -->
+         main.js must load first to set up IntersectionObserver helpers (window.observeReveals, window.revealObserver). -->
     <script src="main.js"></script>
+    <!-- Load cms-integration.js after main.js so it can use the IntersectionObserver helpers for dynamic content. -->
+    <script src="cms-integration.js"></script>
 </body>
 </html>
