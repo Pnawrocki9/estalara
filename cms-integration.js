@@ -53,7 +53,7 @@ class EstalaraAdmin {
     }
 
     // Load content from Firebase or localStorage
-    async loadContentAsync() {
+    loadContent() {
         const defaultContent = {
             siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
             siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.",
