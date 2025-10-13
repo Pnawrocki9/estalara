@@ -651,11 +651,12 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             const hasObserveFunction = typeof window.observeReveals === 'function';
             
             if (hasIntersectionObserver && hasObserveFunction && window.revealObserver) {
-                console.log('✅ [Mobile Debug] Using IntersectionObserver for reveals');
+                console.log('✅ [CMS] Using IntersectionObserver for reveal animations');
                 try {
                     window.observeReveals(newCards);
+                    console.log('✅ [CMS] Successfully registered', newCards.length, 'cards with IntersectionObserver');
                 } catch (e) {
-                    console.error('❌ [Mobile Fix] observeReveals failed:', e);
+                    console.error('❌ [CMS] observeReveals failed:', e);
                     // Fallback to immediate activation
                     newCards.forEach(card => {
                         card.classList.add('active');
@@ -664,12 +665,13 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                     });
                 }
             } else {
-                console.warn('⚠️ [Mobile Fix] IntersectionObserver not available, using immediate activation');
+                console.warn('⚠️ [CMS] IntersectionObserver not available, using immediate activation');
                 console.warn('   - IntersectionObserver exists:', hasIntersectionObserver);
                 console.warn('   - observeReveals function exists:', hasObserveFunction);
                 console.warn('   - revealObserver exists:', !!window.revealObserver);
+                console.warn('   - This should not happen if main.js is properly initialized!');
                 
-                // Immediately activate cards for incognito/mobile
+                // Immediately activate cards as fallback
                 newCards.forEach(card => {
                     card.classList.add('active');
                     card.style.opacity = '1';
@@ -677,8 +679,9 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 });
             }
             
-            // AGGRESSIVE fallback: Force visibility after delay if cards are STILL hidden
-            // Increased timeout for slower mobile devices and incognito mode
+            // Safety fallback: Check visibility after animations should have completed
+            // This ensures cards are visible even if IntersectionObserver hasn't triggered yet
+            // (e.g., cards below viewport or slow devices)
             setTimeout(() => {
                 let hiddenCount = 0;
                 newCards.forEach((card, index) => {
@@ -687,19 +690,27 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                                    parseFloat(window.getComputedStyle(card).opacity) < 0.5;
                     
                     if (isHidden) {
-                        console.warn(`⚠️ [Mobile Fix] Card ${index + 1} still hidden, forcing visibility`);
-                        card.classList.add('active');
-                        card.style.opacity = '1';
-                        card.style.transform = 'none';
-                        card.style.transition = 'all 0.6s ease';
-                        hiddenCount++;
+                        console.log(`📍 [CMS] Card ${index + 1} not yet visible (likely below viewport), will animate on scroll`);
+                        // Don't force activation - let IntersectionObserver handle it when card scrolls into view
+                        // Only force if card should be visible but isn't
+                        const rect = card.getBoundingClientRect();
+                        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+                        
+                        if (isInViewport) {
+                            console.warn(`⚠️ [CMS] Card ${index + 1} is in viewport but hidden, forcing visibility`);
+                            card.classList.add('active');
+                            card.style.opacity = '1';
+                            card.style.transform = 'none';
+                            card.style.transition = 'all 0.6s ease';
+                            hiddenCount++;
+                        }
                     }
                 });
                 
                 if (hiddenCount > 0) {
-                    console.warn(`⚠️ [Mobile Fix] Force-activated ${hiddenCount} hidden cards`);
+                    console.warn(`⚠️ [CMS] Force-activated ${hiddenCount} cards that were in viewport but hidden`);
                 } else {
-                    console.log('✅ [Mobile Debug] All cards are visible');
+                    console.log('✅ [CMS] All visible cards are properly displayed');
                 }
             }, 500);
 
@@ -1327,20 +1338,42 @@ function hideEmptyPlaceholders() {
 // Run immediately to hide placeholders before CMS loads
 hideEmptyPlaceholders();
 
-// Initialize Admin when DOM is loaded
+// Initialize Admin when DOM is loaded AND main.js is ready
 // Since scripts are loaded at the end of <body>, DOM may already be ready
 (function initAdmin() {
+    // Helper function to check if main.js has initialized
+    function isMainJsReady() {
+        return typeof window.observeReveals === 'function' && 
+               typeof window.revealObserver !== 'undefined';
+    }
+    
+    // Initialize EstalaraAdmin with retry mechanism to ensure main.js is ready
+    function initializeWhenReady(retryCount = 0) {
+        const maxRetries = 20; // Max 1 second (20 * 50ms)
+        
+        if (isMainJsReady()) {
+            console.log('✅ [CMS] main.js is ready, initializing EstalaraAdmin');
+            window.estalaraAdmin = new EstalaraAdmin();
+        } else if (retryCount < maxRetries) {
+            console.log(`⏳ [CMS] Waiting for main.js to initialize (attempt ${retryCount + 1}/${maxRetries})...`);
+            setTimeout(() => initializeWhenReady(retryCount + 1), 50);
+        } else {
+            console.warn('⚠️ [CMS] main.js not ready after max retries, initializing anyway');
+            window.estalaraAdmin = new EstalaraAdmin();
+        }
+    }
+    
     if (document.readyState === 'loading') {
         // DOM is still loading, wait for DOMContentLoaded
         console.log('📋 [CMS] DOM is loading, waiting for DOMContentLoaded...');
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('📋 [CMS] DOMContentLoaded fired, initializing EstalaraAdmin');
-            window.estalaraAdmin = new EstalaraAdmin();
+            console.log('📋 [CMS] DOMContentLoaded fired, checking main.js readiness...');
+            initializeWhenReady();
         });
     } else {
-        // DOM is already loaded (interactive or complete), initialize immediately
-        console.log('📋 [CMS] DOM already loaded (state: ' + document.readyState + '), initializing EstalaraAdmin immediately');
-        window.estalaraAdmin = new EstalaraAdmin();
+        // DOM is already loaded (interactive or complete), check main.js readiness
+        console.log('📋 [CMS] DOM already loaded (state: ' + document.readyState + '), checking main.js readiness...');
+        initializeWhenReady();
     }
 })();
 
