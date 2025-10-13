@@ -247,24 +247,30 @@
                 <!-- Editor Tabs -->
                 <div class="cms-card">
                     <div class="border-b border-gray-200">
-                        <nav class="flex -mb-px">
-                            <button onclick="showFrontendTab('global')" id="tab-global" class="px-6 py-3 border-b-2 border-blue-500 font-medium text-blue-600">
-                                🌍 Global Elements
+                        <nav class="flex -mb-px overflow-x-auto">
+                            <button onclick="showFrontendTab('global')" id="tab-global" class="px-6 py-3 border-b-2 border-blue-500 font-medium text-blue-600 whitespace-nowrap">
+                                🌍 Global
                             </button>
-                            <button onclick="showFrontendTab('navigation')" id="tab-navigation" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
+                            <button onclick="showFrontendTab('navigation')" id="tab-navigation" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 🧭 Navigation
                             </button>
-                            <button onclick="showFrontendTab('hero')" id="tab-hero" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
-                                🎯 Hero Sections
+                            <button onclick="showFrontendTab('hero')" id="tab-hero" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                🎯 Hero
                             </button>
-                            <button onclick="showFrontendTab('features')" id="tab-features" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
-                                ⭐ Feature Cards
+                            <button onclick="showFrontendTab('sections')" id="tab-sections" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                📋 Sections
                             </button>
-                            <button onclick="showFrontendTab('buttons')" id="tab-buttons" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
-                                🔘 Buttons & CTAs
+                            <button onclick="showFrontendTab('features')" id="tab-features" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                ⭐ Features
                             </button>
-                            <button onclick="showFrontendTab('footer')" id="tab-footer" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
+                            <button onclick="showFrontendTab('buttons')" id="tab-buttons" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                🔘 Buttons
+                            </button>
+                            <button onclick="showFrontendTab('footer')" id="tab-footer" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 👣 Footer
+                            </button>
+                            <button onclick="showFrontendTab('howitworks')" id="tab-howitworks" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                🔄 How It Works
                             </button>
                         </nav>
                     </div>
@@ -429,6 +435,57 @@
                             </div>
 
                             <button onclick="saveFrontendFooter()" class="cms-btn cms-btn-success">💾 Save Footer</button>
+                        </div>
+                    </div>
+
+                    <!-- Section Headings Tab -->
+                    <div id="frontend-sections" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Section Headings & Subtitles</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit all section headings and subtitles across all pages</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Page</label>
+                            <select id="sections-page-selector" class="cms-input w-full md:w-1/2" onchange="loadSectionsEditor()">
+                                <option value="home">Home</option>
+                                <option value="agents">For Agents</option>
+                                <option value="agencies">For Agencies</option>
+                                <option value="investors">For Investors</option>
+                                <option value="about">About</option>
+                            </select>
+                        </div>
+
+                        <div id="sections-editor-content" class="space-y-6">
+                            <!-- Section headings will be loaded here -->
+                        </div>
+
+                        <button onclick="saveSectionsContent()" class="cms-btn cms-btn-success mt-4">💾 Save Section Headings</button>
+                    </div>
+
+                    <!-- How It Works Tab -->
+                    <div id="frontend-howitworks" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">How It Works Section</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit the steps in the "How It Works" section on the homepage</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Heading</label>
+                                <input type="text" id="hiw-heading" class="cms-input" placeholder="How It Works">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Subtitle</label>
+                                <textarea id="hiw-subtitle" class="cms-input" rows="2" placeholder="Three simple steps..."></textarea>
+                            </div>
+
+                            <div class="border-t pt-4">
+                                <h4 class="font-medium text-gray-900 mb-4">Steps</h4>
+                                <div id="hiw-steps-container" class="space-y-4">
+                                    <!-- Steps will be loaded here -->
+                                </div>
+                                <button onclick="addHowItWorksStep()" class="cms-btn cms-btn-primary mt-3">+ Add Step</button>
+                            </div>
+
+                            <button onclick="saveHowItWorks()" class="cms-btn cms-btn-success">💾 Save How It Works</button>
                         </div>
                     </div>
                 </div>
