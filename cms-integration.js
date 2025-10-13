@@ -52,8 +52,8 @@ class EstalaraAdmin {
         this.loadAboutContent();
     }
 
-    // Load content from localStorage (simulating Admin database)
-    loadContent() {
+    // Load content from Firebase or localStorage
+    async loadContentAsync() {
         const defaultContent = {
             siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
             siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.",
@@ -434,6 +434,15 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         // ensure that breaking changes or major updates to the default content
         // automatically override old stored data. If the stored content lacks a
         // version or has an older version than the default, we discard it.
+        
+        // First try Firebase if available
+        if (window.cmsFirebaseAdapter && window.cmsFirebaseAdapter.cache) {
+            const firebaseData = window.cmsFirebaseAdapter.cache;
+            if (firebaseData && Object.keys(firebaseData).length > 0) {
+                console.log('📥 Using cached Firebase data');
+                return firebaseData;
+            }
+        }
         
         // FIX 4: Safe localStorage access with fallback for mobile devices
         const storedRaw = (() => {
@@ -1255,6 +1264,20 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 this.loadDynamicContent();
             }
         });
+        
+        // Listen for Firebase data changes (real-time sync)
+        if (window.firebaseDb) {
+            const ref = window.firebaseDb.ref('adminData');
+            ref.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    console.log('🔄 Firebase data updated, reloading content');
+                    window.cmsFirebaseAdapter.cache = data;
+                    this.content = this.loadContent();
+                    this.loadDynamicContent();
+                }
+            });
+        }
 
         // Listen for admin updates from admin panel
         window.addEventListener('message', (e) => {
