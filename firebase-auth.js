@@ -103,13 +103,25 @@ class FirebaseAuthService {
   }
 }
 
-// Create global auth service instance
-window.authService = new FirebaseAuthService();
+// Initialize auth service after Firebase is ready
+function initializeAuthService() {
+  if (typeof firebase === 'undefined' || !firebase.apps || firebase.apps.length === 0) {
+    console.warn('⏳ Waiting for Firebase to initialize before creating auth service...');
+    setTimeout(initializeAuthService, 100);
+    return;
+  }
+  
+  // Create global auth service instance
+  window.authService = new FirebaseAuthService();
 
-// Convenience functions
-window.firebaseSignIn = (email, password) => window.authService.signIn(email, password);
-window.firebaseSignOut = () => window.authService.signOut();
-window.isAuthenticated = () => window.authService.isAuthenticated();
-window.requireAuth = (redirectUrl) => window.authService.requireAuth(redirectUrl);
+  // Convenience functions
+  window.firebaseSignIn = (email, password) => window.authService.signIn(email, password);
+  window.firebaseSignOut = () => window.authService.signOut();
+  window.isAuthenticated = () => window.authService.isAuthenticated();
+  window.requireAuth = (redirectUrl) => window.authService.requireAuth(redirectUrl);
 
-console.log('✅ Firebase Auth Service initialized');
+  console.log('✅ Firebase Auth Service initialized');
+}
+
+// Start initialization
+initializeAuthService();
