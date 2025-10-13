@@ -156,9 +156,6 @@ function showUploadModal() {
     alert('Media upload coming soon! You can currently add image URLs directly in property forms.');
 }
 
-function showUserModal() {
-    alert('User management coming soon!');
-}
 
 function editProperty(id) {
     const admin = loadAdminData();
@@ -221,15 +218,6 @@ function deleteMedia(id) {
     }
 }
 
-function editUser(id) {
-    alert('User editor coming soon!');
-}
-
-function deleteUser(id) {
-    if (confirm('Are you sure you want to delete this user?')) {
-        alert('User deleted successfully!');
-    }
-}
 
 async function logout() {
     if (confirm('Are you sure you want to logout?')) {
