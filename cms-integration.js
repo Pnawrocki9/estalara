@@ -494,8 +494,18 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         }
 
         // Load properties if on home page
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+        // DEBUG: Log pathname to diagnose routing issues
+        console.log('🔍 [CMS Debug] Current pathname:', window.location.pathname);
+        const isHomePage = window.location.pathname.includes('index.html') || 
+                          window.location.pathname === '/' ||
+                          window.location.pathname.endsWith('/');
+        console.log('🔍 [CMS Debug] Is home page?', isHomePage);
+        
+        if (isHomePage) {
+            console.log('📋 [CMS] Loading properties for home page');
             this.loadProperties();
+        } else {
+            console.warn('⚠️ [CMS] Not on home page, skipping loadProperties()');
         }
 
         // Load page-specific content
@@ -1087,7 +1097,10 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         this.saveContent();
         
         // Reload properties if on home page
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+        const isHomePage = window.location.pathname.includes('index.html') || 
+                          window.location.pathname === '/' ||
+                          window.location.pathname.endsWith('/');
+        if (isHomePage) {
             this.loadProperties();
         }
 
@@ -1114,7 +1127,10 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         this.saveContent();
         
         // Reload properties if on home page
-        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+        const isHomePage = window.location.pathname.includes('index.html') || 
+                          window.location.pathname === '/' ||
+                          window.location.pathname.endsWith('/');
+        if (isHomePage) {
             this.loadProperties();
         }
     }
