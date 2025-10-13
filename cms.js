@@ -1663,12 +1663,16 @@ function saveFrontendButtons() {
     
     admin.buttons[pageId] = {
         primary: {
-            text: document.getElementById('primary-btn-text').value,
-            url: document.getElementById('primary-btn-url').value
+            text: document.getElementById('primary-button-text').value,
+            url: document.getElementById('primary-button-url').value
         },
         secondary: {
-            text: document.getElementById('secondary-btn-text').value,
-            url: document.getElementById('secondary-btn-url').value
+            text: document.getElementById('secondary-button-text').value,
+            url: document.getElementById('secondary-button-url').value
+        },
+        headerCta: {
+            text: document.getElementById('header-cta-text').value,
+            url: document.getElementById('header-cta-url').value
         }
     };
     
