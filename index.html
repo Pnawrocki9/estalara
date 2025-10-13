@@ -553,10 +553,9 @@
         </div>
     </footer>
     
-    <!-- Defer loading of our application scripts until the HTML has been parsed. This
-         prevents these scripts from blocking page rendering and improves perceived
-         performance. -->
-    <script src="cms-integration.js" defer></script>
+    <!-- Load scripts synchronously to ensure proper initialization on mobile devices.
+         cms-integration.js must load before DOM manipulation to avoid race conditions. -->
+    <script src="cms-integration.js"></script>
     <!-- Load main.js synchronously to ensure animations (Typed.js, IntersectionObserver) initialise before content is displayed. -->
     <script src="main.js"></script>
 </body>
