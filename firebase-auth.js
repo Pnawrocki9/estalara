@@ -3,9 +3,18 @@
 
 class FirebaseAuthService {
   constructor() {
-    this.auth = firebase.auth();
+    this.auth = null;
     this.currentUser = null;
     this.authInitialized = false;
+    
+    // Initialize auth reference after ensuring Firebase is ready
+    this.initAuth();
+  }
+  
+  // Initialize auth reference and setup listeners
+  initAuth() {
+    // Get auth reference (this is now safe because initializeAuthService already checked)
+    this.auth = firebase.auth();
     
     // Set persistence to LOCAL (survives browser restarts)
     this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
@@ -35,6 +44,11 @@ class FirebaseAuthService {
 
   // Sign in with email and password
   async signIn(email, password) {
+    // Ensure auth is initialized
+    if (!this.auth) {
+      return { success: false, error: 'Firebase Auth not initialized yet' };
+    }
+    
     try {
       const userCredential = await this.auth.signInWithEmailAndPassword(email, password);
       console.log('✅ User signed in:', userCredential.user.email);
@@ -68,6 +82,11 @@ class FirebaseAuthService {
 
   // Sign out
   async signOut() {
+    // Ensure auth is initialized
+    if (!this.auth) {
+      return { success: false, error: 'Firebase Auth not initialized yet' };
+    }
+    
     try {
       await this.auth.signOut();
       console.log('✅ User signed out');
@@ -105,6 +124,11 @@ class FirebaseAuthService {
 
   // Wait for auth to initialize
   async waitForAuth(timeout = 5000) {
+    // Wait for auth reference to be available
+    while (!this.auth) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
     // If already initialized, return current user immediately
     if (this.authInitialized) {
       return this.currentUser;
