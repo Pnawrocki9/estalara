@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Połączenia Firebase - Estalara</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+        
+        .status {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+        
+        .status.loading {
+            background: #ebf8ff;
+            color: #2c5282;
+            border-left: 4px solid #3182ce;
+        }
+        
+        .status.success {
+            background: #f0fff4;
+            color: #22543d;
+            border-left: 4px solid #38a169;
+        }
+        
+        .status.error {
+            background: #fff5f5;
+            color: #742a2a;
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .status.warning {
+            background: #fffaf0;
+            color: #7c2d12;
+            border-left: 4px solid #dd6b20;
+        }
+        
+        .icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .details {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .detail-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .label {
+            font-weight: bold;
+            color: #4a5568;
+            margin-right: 10px;
+        }
+        
+        .value {
+            color: #2d3748;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .help-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .help-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .help-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Test Połączenia Firebase</h1>
+        <p class="subtitle">Diagnostyka konfiguracji Estalara</p>
+        
+        <div id="status-container">
+            <div class="status loading">
+                <span class="icon spinner">⏳</span>
+                <span>Sprawdzanie połączenia z Firebase...</span>
+            </div>
+        </div>
+        
+        <div id="details" class="details" style="display: none;">
+            <div class="detail-item">
+                <span class="label">Status:</span>
+                <span class="value" id="test-status">Testowanie...</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Projekt:</span>
+                <span class="value" id="project-id">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Baza Danych:</span>
+                <span class="value" id="database-url">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Authentication:</span>
+                <span class="value" id="auth-status">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Test Odczytu:</span>
+                <span class="value" id="read-test">-</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Błąd:</span>
+                <span class="value" id="error-message" style="color: #e53e3e;">-</span>
+            </div>
+        </div>
+        
+        <button onclick="runTest()">🔄 Uruchom Test Ponownie</button>
+        
+        <div class="help-link">
+            <a href="NAPRAWA_FIREBASE.md">📖 Instrukcja Naprawy Firebase</a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjsYOYP5IvNKo5KkN7AxN2br0oC4Mbs0w",
+            authDomain: "estalara-8e22a.firebaseapp.com",
+            databaseURL: "https://estalara-8e22a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "estalara-8e22a",
+            storageBucket: "estalara-8e22a.appspot.com",
+            messagingSenderId: "296468410777",
+            appId: "1:296468410777:web:7171b74908b747dadfa308",
+            measurementId: "G-G15DR28Y5J"
+        };
+
+        function updateStatus(type, message, icon) {
+            const container = document.getElementById('status-container');
+            const iconMap = {
+                loading: '⏳',
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+            
+            container.innerHTML = `
+                <div class="status ${type}">
+                    <span class="icon">${icon || iconMap[type]}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+        }
+
+        function updateDetails(details) {
+            const detailsDiv = document.getElementById('details');
+            detailsDiv.style.display = 'block';
+            
+            if (details.status) document.getElementById('test-status').textContent = details.status;
+            if (details.projectId) document.getElementById('project-id').textContent = details.projectId;
+            if (details.databaseURL) document.getElementById('database-url').textContent = details.databaseURL;
+            if (details.authStatus) document.getElementById('auth-status').textContent = details.authStatus;
+            if (details.readTest) document.getElementById('read-test').textContent = details.readTest;
+            if (details.error) {
+                document.getElementById('error-message').textContent = details.error;
+                document.getElementById('error-message').style.color = '#e53e3e';
+            } else {
+                document.getElementById('error-message').textContent = 'Brak błędów';
+                document.getElementById('error-message').style.color = '#38a169';
+            }
+        }
+
+        async function runTest() {
+            updateStatus('loading', 'Inicjalizacja Firebase...', '🔄');
+            
+            const details = {
+                status: 'Testowanie...',
+                projectId: firebaseConfig.projectId,
+                databaseURL: firebaseConfig.databaseURL,
+                authStatus: 'Sprawdzanie...',
+                readTest: 'Oczekiwanie...',
+                error: null
+            };
+            
+            updateDetails(details);
+
+            try {
+                // Test 1: SDK loaded?
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase SDK nie został załadowany. Sprawdź połączenie internetowe.');
+                }
+                
+                updateStatus('loading', 'Firebase SDK załadowany. Inicjalizacja...', '📦');
+                
+                // Test 2: Initialize Firebase
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                
+                updateStatus('loading', 'Firebase zainicjalizowany. Testowanie połączenia...', '🔌');
+                details.status = 'Zainicjalizowany';
+                updateDetails(details);
+                
+                // Test 3: Database connection
+                const db = firebase.database();
+                const testRef = db.ref('.info/connected');
+                
+                await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => {
+                        reject(new Error('Timeout: Brak odpowiedzi z bazy danych'));
+                    }, 10000);
+                    
+                    testRef.once('value', (snapshot) => {
+                        clearTimeout(timeout);
+                        const connected = snapshot.val();
+                        
+                        if (connected) {
+                            resolve();
+                        } else {
+                            reject(new Error('Brak połączenia z bazą danych'));
+                        }
+                    }, (error) => {
+                        clearTimeout(timeout);
+                        reject(error);
+                    });
+                });
+                
+                updateStatus('loading', 'Połączenie OK. Testowanie odczytu danych...', '📖');
+                details.authStatus = 'Gotowy';
+                updateDetails(details);
+                
+                // Test 4: Read test
+                try {
+                    const dataRef = db.ref('adminData');
+                    const snapshot = await dataRef.once('value');
+                    const data = snapshot.val();
+                    
+                    if (data !== null) {
+                        details.readTest = `✅ Sukces! Znaleziono dane (${Object.keys(data).length} kluczy)`;
+                        updateStatus('success', '🎉 Firebase działa poprawnie! Wszystkie testy przeszły pomyślnie.', '✅');
+                    } else {
+                        details.readTest = '⚠️ Baza jest pusta (to normalne przed pierwszą migracją)';
+                        updateStatus('warning', 'Połączenie OK, ale baza jest pusta. Uruchom migrację danych.', '⚠️');
+                    }
+                } catch (readError) {
+                    if (readError.code === 'PERMISSION_DENIED') {
+                        details.readTest = '❌ Odmowa dostępu - sprawdź reguły bezpieczeństwa';
+                        details.error = 'Reguły bezpieczeństwa blokują odczyt. Zobacz NAPRAWA_FIREBASE.md';
+                        updateStatus('error', 'Błąd reguł bezpieczeństwa. Kliknij link poniżej aby naprawić.', '🔒');
+                    } else {
+                        throw readError;
+                    }
+                }
+                
+                details.status = '✅ Test zakończony';
+                updateDetails(details);
+                
+            } catch (error) {
+                console.error('Firebase test failed:', error);
+                
+                details.status = '❌ Test nieudany';
+                details.error = `${error.code || 'ERROR'}: ${error.message}`;
+                updateDetails(details);
+                
+                let errorMessage = 'Błąd połączenia Firebase: ' + error.message;
+                let helpText = '';
+                
+                if (error.code === 'PERMISSION_DENIED') {
+                    errorMessage = 'Brak dostępu do bazy danych';
+                    helpText = ' - Sprawdź reguły bezpieczeństwa w Firebase Console';
+                } else if (error.message.includes('network')) {
+                    errorMessage = 'Brak połączenia sieciowego';
+                    helpText = ' - Sprawdź połączenie internetowe';
+                } else if (error.message.includes('SDK')) {
+                    errorMessage = 'Firebase SDK nie załadowany';
+                    helpText = ' - Odśwież stronę (Ctrl+F5)';
+                }
+                
+                updateStatus('error', errorMessage + helpText, '❌');
+            }
+        }
+
+        // Run test on page load
+        window.addEventListener('load', runTest);
+    </script>
+</body>
+</html>
