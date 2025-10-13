@@ -154,23 +154,24 @@ class FirebaseAuthService {
 }
 
 // Initialize auth service after Firebase is ready
-function initializeAuthService() {
-  if (typeof firebase === 'undefined' || !firebase.apps || firebase.apps.length === 0) {
-    console.warn('⏳ Waiting for Firebase to initialize before creating auth service...');
-    setTimeout(initializeAuthService, 100);
-    return;
+async function initializeAuthService() {
+  try {
+    // Wait for Firebase to be ready using the Promise from firebase-config.js
+    await window.firebaseReadyPromise;
+    
+    // Create global auth service instance
+    window.authService = new FirebaseAuthService();
+
+    // Convenience functions
+    window.firebaseSignIn = (email, password) => window.authService.signIn(email, password);
+    window.firebaseSignOut = () => window.authService.signOut();
+    window.isAuthenticated = () => window.authService.isAuthenticated();
+    window.requireAuth = (redirectUrl) => window.authService.requireAuth(redirectUrl);
+
+    console.log('✅ Firebase Auth Service initialized');
+  } catch (error) {
+    console.error('❌ Failed to initialize Auth Service:', error);
   }
-  
-  // Create global auth service instance
-  window.authService = new FirebaseAuthService();
-
-  // Convenience functions
-  window.firebaseSignIn = (email, password) => window.authService.signIn(email, password);
-  window.firebaseSignOut = () => window.authService.signOut();
-  window.isAuthenticated = () => window.authService.isAuthenticated();
-  window.requireAuth = (redirectUrl) => window.authService.requireAuth(redirectUrl);
-
-  console.log('✅ Firebase Auth Service initialized');
 }
 
 // Start initialization

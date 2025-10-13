@@ -14,23 +14,17 @@ class CMSFirebaseAdapter {
     }
     
     // Initialize Firebase references after Firebase is ready
-    initializeFirebaseRefs() {
-        // Wait for Firebase to be initialized
-        const checkFirebase = () => {
-            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-                try {
-                    this.db = firebase.database();
-                    this.adminDataRef = this.db.ref('adminData');
-                    console.log('✅ Firebase adapter references initialized');
-                } catch (error) {
-                    console.error('❌ Failed to initialize Firebase adapter references:', error);
-                }
-            } else {
-                // Retry after a short delay
-                setTimeout(checkFirebase, 100);
-            }
-        };
-        checkFirebase();
+    async initializeFirebaseRefs() {
+        try {
+            // Wait for Firebase to be ready using the Promise from firebase-config.js
+            await window.firebaseReadyPromise;
+            
+            this.db = firebase.database();
+            this.adminDataRef = this.db.ref('adminData');
+            console.log('✅ Firebase adapter references initialized');
+        } catch (error) {
+            console.error('❌ Failed to initialize Firebase adapter references:', error);
+        }
     }
 
     // Initialize and load data from Firebase
