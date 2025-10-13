@@ -46,6 +46,10 @@ class EstalaraAdmin {
         this.loadFooter();
         this.loadFeatureCards();
         this.loadButtons();
+        this.loadSectionHeadings();
+        this.loadHowItWorks();
+        this.loadAgentsFeatures();
+        this.loadAboutContent();
     }
 
     // Load content from localStorage (simulating Admin database)
@@ -1610,6 +1614,157 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         }
 
         console.log('✅ [CMS] Buttons loaded for', pageKey);
+    }
+
+    // Load section headings and subtitles
+    loadSectionHeadings() {
+        if (!this.content.sectionHeadings) return;
+        
+        // Get current page name from URL
+        const page = this.getCurrentPage();
+        const headings = this.content.sectionHeadings[page];
+        
+        if (!headings) return;
+        
+        // Apply each section's heading and subtitle
+        for (const [sectionId, data] of Object.entries(headings)) {
+            const section = document.getElementById(sectionId);
+            if (!section) continue;
+            
+            // Find and update heading (h2)
+            if (data.heading) {
+                const heading = section.querySelector('h2');
+                if (heading) {
+                    heading.textContent = data.heading;
+                }
+            }
+            
+            // Find and update subtitle (p after h2)
+            if (data.subtitle) {
+                const heading = section.querySelector('h2');
+                if (heading) {
+                    const subtitle = heading.nextElementSibling;
+                    if (subtitle && subtitle.tagName === 'P') {
+                        subtitle.textContent = data.subtitle;
+                    }
+                }
+            }
+        }
+    }
+
+    // Load How It Works section
+    loadHowItWorks() {
+        if (!this.content.howItWorks) return;
+        
+        const section = document.getElementById('how-it-works');
+        if (!section) return;
+        
+        const data = this.content.howItWorks;
+        
+        // Update section heading
+        if (data.heading) {
+            const heading = section.querySelector('h2');
+            if (heading) {
+                heading.textContent = data.heading;
+            }
+        }
+        
+        // Update section subtitle
+        if (data.subtitle) {
+            const heading = section.querySelector('h2');
+            if (heading) {
+                const subtitle = heading.parentElement.querySelector('p');
+                if (subtitle) {
+                    subtitle.textContent = data.subtitle;
+                }
+            }
+        }
+        
+        // Update steps
+        if (data.steps && data.steps.length > 0) {
+            const stepsContainer = section.querySelector('.grid');
+            if (!stepsContainer) return;
+            
+            stepsContainer.innerHTML = data.steps.map(step => `
+                <div class="text-center reveal card-hover p-8">
+                    <div class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">${step.number}</div>
+                    <h3 class="text-2xl font-bold mb-4">${step.title}</h3>
+                    <p class="text-gray-300">${step.description}</p>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Helper to get current page name from URL
+    getCurrentPage() {
+        const path = window.location.pathname;
+        if (path.includes('agents.html')) return 'agents';
+        if (path.includes('agencies.html')) return 'agencies';
+        if (path.includes('investors.html')) return 'investors';
+        if (path.includes('about.html')) return 'about';
+        if (path.includes('faq.html')) return 'faq';
+        return 'home';
+    }
+
+    // Load Agents Page Features
+    loadAgentsFeatures() {
+        if (!this.content.agentsFeatures) return;
+        if (this.getCurrentPage() !== 'agents') return;
+        
+        const featuresSection = document.getElementById('features');
+        if (!featuresSection) return;
+        
+        const grid = featuresSection.querySelector('.grid');
+        if (!grid) return;
+        
+        // Replace hardcoded features with CMS content
+        grid.innerHTML = this.content.agentsFeatures.map(feature => `
+            <div class="feature-card p-8">
+                <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">${feature.icon}</div>
+                <h3 class="text-2xl font-bold mb-4">${feature.title}</h3>
+                <p class="text-gray-600 mb-6">${feature.description}</p>
+                <ul class="text-sm text-gray-500 space-y-2">
+                    ${feature.bullets.map(bullet => `<li>• ${bullet}</li>`).join('')}
+                </ul>
+            </div>
+        `).join('');
+    }
+
+    // Load About Page Content
+    loadAboutContent() {
+        if (!this.content.aboutContent) return;
+        if (this.getCurrentPage() !== 'about') return;
+        
+        const content = this.content.aboutContent;
+        
+        // Load Mission content
+        const missionSection = document.getElementById('mission');
+        if (missionSection) {
+            const paragraphs = missionSection.querySelectorAll('p');
+            if (paragraphs.length >= 2) {
+                paragraphs[0].textContent = content.mission.p1;
+                paragraphs[1].textContent = content.mission.p2;
+            }
+        }
+        
+        // Load Vision content
+        const visionDiv = document.getElementById('vision');
+        if (visionDiv) {
+            const paragraphs = visionDiv.querySelectorAll('p');
+            if (paragraphs.length >= 2) {
+                paragraphs[0].textContent = content.vision.p1;
+                paragraphs[1].textContent = content.vision.p2;
+            }
+        }
+        
+        // Load "What is Estalara" content
+        const whatIsSection = document.getElementById('what-is-estalara');
+        if (whatIsSection && content.whatIs) {
+            const paragraph = whatIsSection.querySelector('p.body-text');
+            if (paragraph) {
+                paragraph.textContent = content.whatIs;
+            }
+        }
     }
 }
 

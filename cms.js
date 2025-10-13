@@ -1354,12 +1354,16 @@ function showFrontendTab(tabName) {
         loadNavigationEditor();
     } else if (tabName === 'hero') {
         loadHeroEditor();
+    } else if (tabName === 'sections') {
+        loadSectionsEditor();
     } else if (tabName === 'features') {
         loadFeaturesEditor();
     } else if (tabName === 'buttons') {
         loadButtonsEditor();
     } else if (tabName === 'footer') {
         loadFooterEditor();
+    } else if (tabName === 'howitworks') {
+        loadHowItWorksEditor();
     }
 }
 
@@ -1626,49 +1630,29 @@ function saveFrontendFeatures() {
 
 // Buttons & CTAs Functions
 function loadButtonsEditor() {
-    const pageId = document.getElementById('buttons-page-selector').value;
+    const page = document.getElementById('buttons-page-selector').value;
     const admin = loadAdminData();
-    const container = document.getElementById('buttons-editor-content');
     
-    if (!admin.buttons) admin.buttons = {};
-    if (!admin.buttons[pageId]) {
-        admin.buttons[pageId] = {
-            primary: { text: 'Get Started', url: 'https://app.estalara.com' },
-            secondary: { text: 'Learn More', url: '#features' }
-        };
+    if (!admin.buttons) {
+        admin.buttons = {};
     }
     
-    const buttons = admin.buttons[pageId];
+    // Get buttons for selected page or global defaults
+    const pageButtons = admin.buttons[page] || {
+        primary: { text: 'Get Started', url: 'https://app.estalara.com' },
+        secondary: { text: 'Learn More', url: '#features' },
+        headerCta: { text: 'Launch App', url: 'https://app.estalara.com' }
+    };
     
-    container.innerHTML = `
-        <div class="cms-card p-4">
-            <h4 class="font-medium mb-3">Primary Button</h4>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button Text</label>
-                    <input type="text" id="primary-btn-text" class="cms-input" value="${buttons.primary?.text || ''}">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button URL</label>
-                    <input type="text" id="primary-btn-url" class="cms-input" value="${buttons.primary?.url || ''}">
-                </div>
-            </div>
-        </div>
-        
-        <div class="cms-card p-4">
-            <h4 class="font-medium mb-3">Secondary Button</h4>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button Text</label>
-                    <input type="text" id="secondary-btn-text" class="cms-input" value="${buttons.secondary?.text || ''}">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button URL</label>
-                    <input type="text" id="secondary-btn-url" class="cms-input" value="${buttons.secondary?.url || ''}">
-                </div>
-            </div>
-        </div>
-    `;
+    // Populate form fields
+    document.getElementById('primary-button-text').value = pageButtons.primary?.text || 'Get Started';
+    document.getElementById('primary-button-url').value = pageButtons.primary?.url || 'https://app.estalara.com';
+    
+    document.getElementById('secondary-button-text').value = pageButtons.secondary?.text || 'Learn More';
+    document.getElementById('secondary-button-url').value = pageButtons.secondary?.url || '#features';
+    
+    document.getElementById('header-cta-text').value = pageButtons.headerCta?.text || 'Launch App';
+    document.getElementById('header-cta-url').value = pageButtons.headerCta?.url || 'https://app.estalara.com';
 }
 
 function saveFrontendButtons() {
@@ -1679,12 +1663,16 @@ function saveFrontendButtons() {
     
     admin.buttons[pageId] = {
         primary: {
-            text: document.getElementById('primary-btn-text').value,
-            url: document.getElementById('primary-btn-url').value
+            text: document.getElementById('primary-button-text').value,
+            url: document.getElementById('primary-button-url').value
         },
         secondary: {
-            text: document.getElementById('secondary-btn-text').value,
-            url: document.getElementById('secondary-btn-url').value
+            text: document.getElementById('secondary-button-text').value,
+            url: document.getElementById('secondary-button-url').value
+        },
+        headerCta: {
+            text: document.getElementById('header-cta-text').value,
+            url: document.getElementById('header-cta-url').value
         }
     };
     
@@ -1818,10 +1806,466 @@ function resetAllFrontend() {
         delete admin.features;
         delete admin.buttons;
         delete admin.footer;
+        delete admin.sectionHeadings;
+        delete admin.howItWorks;
         // Reset pages to defaults but keep properties
         admin.pages = {};
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
         showNotification('Frontend reset to defaults!', 'success');
         loadFrontendEditor();
     }
+}
+
+// ===== SECTION HEADINGS EDITOR =====
+
+function loadSectionsEditor() {
+    const page = document.getElementById('sections-page-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.sectionHeadings) {
+        admin.sectionHeadings = {};
+    }
+    
+    if (!admin.sectionHeadings[page]) {
+        // Set defaults based on page
+        admin.sectionHeadings[page] = getDefaultSectionHeadings(page);
+    }
+    
+    const sections = admin.sectionHeadings[page];
+    const container = document.getElementById('sections-editor-content');
+    
+    let html = '';
+    for (const [sectionId, data] of Object.entries(sections)) {
+        html += `
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h4 class="font-medium text-gray-900 mb-3">${data.label || sectionId}</h4>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Heading</label>
+                        <input type="text" 
+                               class="cms-input" 
+                               data-section="${sectionId}" 
+                               data-field="heading" 
+                               value="${data.heading || ''}" 
+                               placeholder="${data.placeholderHeading || 'Section heading'}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
+                        <textarea class="cms-input" 
+                                  rows="2" 
+                                  data-section="${sectionId}" 
+                                  data-field="subtitle" 
+                                  placeholder="${data.placeholderSubtitle || 'Section subtitle'}">${data.subtitle || ''}</textarea>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+}
+
+function getDefaultSectionHeadings(page) {
+    const defaults = {
+        home: {
+            'how-it-works': {
+                label: 'How It Works Section',
+                heading: 'How It Works',
+                subtitle: 'Three simple steps to revolutionize your real estate experience',
+                placeholderHeading: 'How It Works',
+                placeholderSubtitle: 'Three simple steps...'
+            },
+            'live-properties': {
+                label: 'LIVE Properties Section',
+                heading: 'LIVE Properties',
+                subtitle: 'Discover properties currently available on our platform',
+                placeholderHeading: 'LIVE Properties',
+                placeholderSubtitle: 'Discover properties...'
+            },
+            'features': {
+                label: 'Features Section',
+                heading: 'Powerful Features',
+                subtitle: 'Advanced technology designed for modern real estate professionals',
+                placeholderHeading: 'Powerful Features',
+                placeholderSubtitle: 'Advanced technology...'
+            },
+            'cta': {
+                label: 'Final CTA Section',
+                heading: 'Join the Future of Global Real Estate',
+                subtitle: 'Whether you\'re an agent looking to expand globally or an investor seeking international opportunities, Estalara provides the platform you need to succeed.',
+                placeholderHeading: 'Join the Future...',
+                placeholderSubtitle: 'Whether you\'re an agent...'
+            }
+        },
+        agents: {
+            'features': {
+                label: 'Features Section',
+                heading: 'Everything You Need to Succeed',
+                subtitle: 'Powerful tools designed specifically for real estate agents to expand their global reach',
+                placeholderHeading: 'Everything You Need...',
+                placeholderSubtitle: 'Powerful tools...'
+            }
+        },
+        agencies: {
+            'live-selling': {
+                label: 'Live Selling Section',
+                heading: 'Live selling meets social media',
+                subtitle: 'Live tours and real‑time interaction build trust...',
+                placeholderHeading: 'Live selling...',
+                placeholderSubtitle: 'Live tours...'
+            },
+            'enterprise-features': {
+                label: 'Enterprise Features',
+                heading: 'Enterprise Solutions for Growing Agencies',
+                subtitle: 'Comprehensive tools and features designed to help real estate agencies scale operations',
+                placeholderHeading: 'Enterprise Solutions...',
+                placeholderSubtitle: 'Comprehensive tools...'
+            }
+        },
+        investors: {
+            'investing-without-borders': {
+                label: 'Investing Without Borders',
+                heading: 'Investing without borders',
+                subtitle: '',
+                placeholderHeading: 'Investing without borders',
+                placeholderSubtitle: ''
+            }
+        },
+        about: {
+            'mission': {
+                label: 'Mission Section',
+                heading: 'Our Mission',
+                subtitle: '',
+                placeholderHeading: 'Our Mission',
+                placeholderSubtitle: ''
+            },
+            'vision': {
+                label: 'Vision Section',
+                heading: 'Our Vision',
+                subtitle: '',
+                placeholderHeading: 'Our Vision',
+                placeholderSubtitle: ''
+            },
+            'values': {
+                label: 'Core Values Section',
+                heading: 'Our Core Values',
+                subtitle: 'The principles that guide everything we do at Estalara',
+                placeholderHeading: 'Our Core Values',
+                placeholderSubtitle: 'The principles...'
+            },
+            'what-is-estalara': {
+                label: 'What is Estalara Section',
+                heading: 'What is Estalara?',
+                subtitle: '',
+                placeholderHeading: 'What is Estalara?',
+                placeholderSubtitle: ''
+            }
+        }
+    };
+    
+    return defaults[page] || {};
+}
+
+function saveSectionsContent() {
+    const page = document.getElementById('sections-page-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.sectionHeadings) {
+        admin.sectionHeadings = {};
+    }
+    
+    if (!admin.sectionHeadings[page]) {
+        admin.sectionHeadings[page] = {};
+    }
+    
+    // Collect all inputs
+    document.querySelectorAll('[data-section]').forEach(input => {
+        const section = input.dataset.section;
+        const field = input.dataset.field;
+        
+        if (!admin.sectionHeadings[page][section]) {
+            admin.sectionHeadings[page][section] = {};
+        }
+        
+        admin.sectionHeadings[page][section][field] = input.value;
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Section headings saved successfully!', 'success');
+}
+
+// ===== HOW IT WORKS EDITOR =====
+
+function loadHowItWorksEditor() {
+    const admin = loadAdminData();
+    
+    if (!admin.howItWorks) {
+        admin.howItWorks = {
+            heading: 'How It Works',
+            subtitle: 'Three simple steps to revolutionize your real estate experience',
+            steps: [
+                {
+                    number: '1',
+                    title: 'Go Live',
+                    description: 'Stream your properties to global investors in real-time with our advanced livestreaming technology.'
+                },
+                {
+                    number: '2',
+                    title: 'Connect',
+                    description: 'Engage with verified investors through AI-powered matching and instant translation capabilities.'
+                },
+                {
+                    number: '3',
+                    title: 'Close Fast',
+                    description: 'Complete transactions efficiently with our trusted network and streamlined processes.'
+                }
+            ]
+        };
+    }
+    
+    document.getElementById('hiw-heading').value = admin.howItWorks.heading || '';
+    document.getElementById('hiw-subtitle').value = admin.howItWorks.subtitle || '';
+    
+    loadHowItWorksSteps();
+}
+
+function loadHowItWorksSteps() {
+    const admin = loadAdminData();
+    const container = document.getElementById('hiw-steps-container');
+    
+    if (!admin.howItWorks || !admin.howItWorks.steps) {
+        container.innerHTML = '<p class="text-gray-500 text-sm">No steps added yet. Click "+ Add Step" to begin.</p>';
+        return;
+    }
+    
+    container.innerHTML = admin.howItWorks.steps.map((step, index) => `
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div class="flex justify-between items-center mb-3">
+                <h5 class="font-medium text-gray-900">Step ${index + 1}</h5>
+                <button onclick="deleteHowItWorksStep(${index})" class="cms-btn cms-btn-danger text-sm">Delete</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Step Number</label>
+                    <input type="text" class="cms-input" data-step-index="${index}" data-step-field="number" value="${step.number || (index + 1)}" placeholder="${index + 1}">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Step Title</label>
+                    <input type="text" class="cms-input" data-step-index="${index}" data-step-field="title" value="${step.title || ''}" placeholder="Step title">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Step Description</label>
+                    <textarea class="cms-input" rows="3" data-step-index="${index}" data-step-field="description" placeholder="Step description">${step.description || ''}</textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addHowItWorksStep() {
+    const admin = loadAdminData();
+    
+    if (!admin.howItWorks) {
+        admin.howItWorks = { heading: '', subtitle: '', steps: [] };
+    }
+    
+    if (!admin.howItWorks.steps) {
+        admin.howItWorks.steps = [];
+    }
+    
+    const stepNumber = admin.howItWorks.steps.length + 1;
+    admin.howItWorks.steps.push({
+        number: stepNumber.toString(),
+        title: `Step ${stepNumber}`,
+        description: 'Add step description...'
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadHowItWorksSteps();
+}
+
+function deleteHowItWorksStep(index) {
+    if (confirm('Delete this step?')) {
+        const admin = loadAdminData();
+        admin.howItWorks.steps.splice(index, 1);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        loadHowItWorksSteps();
+    }
+}
+
+function saveHowItWorks() {
+    const admin = loadAdminData();
+    
+    if (!admin.howItWorks) {
+        admin.howItWorks = {};
+    }
+    
+    admin.howItWorks.heading = document.getElementById('hiw-heading').value;
+    admin.howItWorks.subtitle = document.getElementById('hiw-subtitle').value;
+    
+    // Save steps
+    admin.howItWorks.steps = [];
+    const maxIndex = Math.max(...Array.from(document.querySelectorAll('[data-step-index]')).map(el => parseInt(el.dataset.stepIndex)));
+    
+    for (let i = 0; i <= maxIndex; i++) {
+        const numberInput = document.querySelector(`[data-step-index="${i}"][data-step-field="number"]`);
+        const titleInput = document.querySelector(`[data-step-index="${i}"][data-step-field="title"]`);
+        const descInput = document.querySelector(`[data-step-index="${i}"][data-step-field="description"]`);
+        
+        if (titleInput) {
+            admin.howItWorks.steps.push({
+                number: numberInput?.value || (i + 1).toString(),
+                title: titleInput.value,
+                description: descInput?.value || ''
+            });
+        }
+    }
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('How It Works section saved successfully!', 'success');
+}
+
+// ===== AGENTS FEATURES EDITOR =====
+
+function loadAgentsFeatures() {
+    const admin = loadAdminData();
+    
+    if (!admin.agentsFeatures) {
+        // Default 6 features from agents.html
+        admin.agentsFeatures = [
+            {
+                icon: '📺',
+                title: 'Live Property Shows',
+                description: 'Stream your listings to hundreds of verified investors simultaneously with our advanced livestreaming platform.',
+                bullets: ['HD video streaming', 'Real-time chat translation', 'Instant lead capture', 'Automated follow-up']
+            },
+            {
+                icon: '🤖',
+                title: 'AI Lead Generation',
+                description: 'Our AI analyzes investor behavior and preferences to deliver qualified leads directly to your dashboard.',
+                bullets: ['Behavioral analysis', 'Preference matching', 'Automated scoring', 'Priority notifications']
+            },
+            {
+                icon: '🌐',
+                title: 'Global Reach',
+                description: 'Connect with investors from over 50 countries through our multilingual platform and translation services.',
+                bullets: ['25+ languages supported', 'Real-time translation', 'Currency conversion', 'Cultural insights']
+            },
+            {
+                icon: '📱',
+                title: 'Mobile Studio',
+                description: 'Professional livestreaming capabilities from your smartphone with broadcast-quality results.',
+                bullets: ['One-tap streaming', 'Professional filters', 'Stabilization technology', 'Multi-device support']
+            },
+            {
+                icon: '📊',
+                title: 'Smart Analytics',
+                description: 'Track viewer engagement, lead conversion, and ROI with comprehensive analytics dashboard.',
+                bullets: ['Engagement metrics', 'Conversion tracking', 'ROI calculation', 'Performance insights']
+            },
+            {
+                icon: '⚡',
+                title: 'Instant Matching',
+                description: 'Get notified immediately when investors show interest in your properties during live streams.',
+                bullets: ['Real-time notifications', 'Lead prioritization', 'Automated scheduling', 'Follow-up automation']
+            }
+        ];
+    }
+    
+    const container = document.getElementById('agents-features-container');
+    container.innerHTML = admin.agentsFeatures.map((feature, index) => `
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 class="font-medium text-gray-900 mb-3">Feature ${index + 1}</h4>
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Icon/Emoji</label>
+                        <input type="text" class="cms-input" data-feature="${index}" data-field="icon" value="${feature.icon}" placeholder="📺">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <input type="text" class="cms-input" data-feature="${index}" data-field="title" value="${feature.title}" placeholder="Feature Title">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea class="cms-input" rows="2" data-feature="${index}" data-field="description" placeholder="Feature description...">${feature.description}</textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Bullet Points (one per line)</label>
+                    <textarea class="cms-input" rows="4" data-feature="${index}" data-field="bullets" placeholder="• Point 1\n• Point 2\n• Point 3">${feature.bullets.join('\n')}</textarea>
+                    <p class="text-xs text-gray-500 mt-1">Each line becomes a bullet point</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function saveAgentsFeatures() {
+    const admin = loadAdminData();
+    admin.agentsFeatures = [];
+    
+    // Find the highest feature index
+    const featureIndices = Array.from(document.querySelectorAll('[data-feature]'))
+        .map(el => parseInt(el.dataset.feature))
+        .filter((v, i, a) => a.indexOf(v) === i)
+        .sort((a, b) => a - b);
+    
+    featureIndices.forEach(index => {
+        const icon = document.querySelector(`[data-feature="${index}"][data-field="icon"]`).value;
+        const title = document.querySelector(`[data-feature="${index}"][data-field="title"]`).value;
+        const description = document.querySelector(`[data-feature="${index}"][data-field="description"]`).value;
+        const bulletsText = document.querySelector(`[data-feature="${index}"][data-field="bullets"]`).value;
+        const bullets = bulletsText.split('\n').map(b => b.trim()).filter(b => b.length > 0);
+        
+        admin.agentsFeatures.push({ icon, title, description, bullets });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Agents Features saved successfully!', 'success');
+}
+
+// ===== ABOUT CONTENT EDITOR =====
+
+function loadAboutContent() {
+    const admin = loadAdminData();
+    
+    if (!admin.aboutContent) {
+        admin.aboutContent = {
+            mission: {
+                p1: 'To democratize global real estate investment by removing barriers, simplifying processes, and creating transparent connections between agents and investors worldwide. We believe everyone should have access to international property opportunities regardless of their location.',
+                p2: 'Through cutting-edge AI technology and immersive live experiences, we\'re transforming how properties are discovered, evaluated, and purchased across borders.'
+            },
+            vision: {
+                p1: 'To become the world\'s leading platform for global real estate transactions, where agents and investors connect seamlessly across continents. We envision a future where buying property in another country is as simple as shopping online.',
+                p2: 'By 2030, we aim to facilitate over $100 billion in international real estate transactions, making global property investment accessible to millions of people worldwide.'
+            },
+            whatIs: 'Estalara is the game-changer our industry has been waiting for. After years of watching good deals fall through due to distance, language barriers, and trust issues, we built a platform that solves these problems.'
+        };
+    }
+    
+    document.getElementById('mission-p1').value = admin.aboutContent.mission.p1;
+    document.getElementById('mission-p2').value = admin.aboutContent.mission.p2;
+    document.getElementById('vision-p1').value = admin.aboutContent.vision.p1;
+    document.getElementById('vision-p2').value = admin.aboutContent.vision.p2;
+    document.getElementById('what-is-estalara-content').value = admin.aboutContent.whatIs;
+}
+
+function saveAboutContent() {
+    const admin = loadAdminData();
+    
+    admin.aboutContent = {
+        mission: {
+            p1: document.getElementById('mission-p1').value,
+            p2: document.getElementById('mission-p2').value
+        },
+        vision: {
+            p1: document.getElementById('vision-p1').value,
+            p2: document.getElementById('vision-p2').value
+        },
+        whatIs: document.getElementById('what-is-estalara-content').value
+    };
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('About page content saved successfully!', 'success');
 }
