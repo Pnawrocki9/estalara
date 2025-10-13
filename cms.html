@@ -62,6 +62,9 @@
                 <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('page-structure')">
                     🧩 Page Structure
                 </a>
+                <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('frontend-editor')">
+                    🎨 Frontend Editor
+                </a>
                 <a href="#" class="block p-3 rounded hover:bg-gray-700" onclick="showSection('media')">
                     🖼️ Media Library
                 </a>
@@ -213,6 +216,232 @@
                         </button>
                         <button class="cms-btn cms-btn-secondary" onclick="resetPageStructure()">
                             🔄 Reset to Default
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frontend Editor Section -->
+            <div id="frontend-editor" class="section hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">🎨 Frontend Element Editor</h2>
+                    <p class="text-gray-600">Edit every single element of your frontend - navigation, buttons, features, footer, and more</p>
+                </div>
+
+                <!-- Info Card -->
+                <div class="cms-card p-6 mb-6 bg-purple-50 border border-purple-200">
+                    <h3 class="font-semibold text-purple-900 mb-2">✨ Complete Frontend Control</h3>
+                    <p class="text-purple-800 text-sm mb-2">
+                        This comprehensive editor allows you to edit every single frontend element without touching code:
+                    </p>
+                    <ul class="text-purple-800 text-sm space-y-1">
+                        <li>• <strong>Navigation</strong> - Edit menu links, labels, and URLs</li>
+                        <li>• <strong>Hero Sections</strong> - Customize hero text, CTAs, and images for all pages</li>
+                        <li>• <strong>Feature Cards</strong> - Edit icons, titles, descriptions</li>
+                        <li>• <strong>Buttons & CTAs</strong> - Change button text and links</li>
+                        <li>• <strong>Footer</strong> - Update footer text, links, and contact info</li>
+                        <li>• <strong>Global Elements</strong> - Site-wide settings affecting all pages</li>
+                    </ul>
+                </div>
+
+                <!-- Editor Tabs -->
+                <div class="cms-card">
+                    <div class="border-b border-gray-200">
+                        <nav class="flex -mb-px">
+                            <button onclick="showFrontendTab('global')" id="tab-global" class="px-6 py-3 border-b-2 border-blue-500 font-medium text-blue-600">
+                                🌍 Global Elements
+                            </button>
+                            <button onclick="showFrontendTab('navigation')" id="tab-navigation" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
+                                🧭 Navigation
+                            </button>
+                            <button onclick="showFrontendTab('hero')" id="tab-hero" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
+                                🎯 Hero Sections
+                            </button>
+                            <button onclick="showFrontendTab('features')" id="tab-features" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
+                                ⭐ Feature Cards
+                            </button>
+                            <button onclick="showFrontendTab('buttons')" id="tab-buttons" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
+                                🔘 Buttons & CTAs
+                            </button>
+                            <button onclick="showFrontendTab('footer')" id="tab-footer" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600">
+                                👣 Footer
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Global Elements Tab -->
+                    <div id="frontend-global" class="frontend-tab p-6">
+                        <h3 class="text-lg font-semibold mb-4">Global Site Elements</h3>
+                        <p class="text-sm text-gray-600 mb-6">These settings affect all pages across your website</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Title</label>
+                                <input type="text" id="global-site-title" class="cms-input" placeholder="Estalara - Go LIVE. Go GLOBAL.">
+                                <p class="text-xs text-gray-500 mt-1">Used in browser tab and SEO</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
+                                <textarea id="global-site-description" class="cms-input" rows="3" placeholder="Estalara connects real estate agents and international investors..."></textarea>
+                                <p class="text-xs text-gray-500 mt-1">Used for SEO and meta descriptions</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Logo URL</label>
+                                <input type="text" id="global-logo-url" class="cms-input" placeholder="assets/EstalaraLogo.png">
+                                <p class="text-xs text-gray-500 mt-1">Path to your logo file</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                                <input type="email" id="global-contact-email" class="cms-input" placeholder="estalara@estalara.com">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Footer Text</label>
+                                <input type="text" id="global-footer-text" class="cms-input" placeholder="© 2025 Estalara. All rights reserved.">
+                            </div>
+
+                            <button onclick="saveFrontendGlobal()" class="cms-btn cms-btn-success">💾 Save Global Settings</button>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tab -->
+                    <div id="frontend-navigation" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Navigation Menu</h3>
+                        <p class="text-sm text-gray-600 mb-6">Customize the main navigation menu links and labels</p>
+                        
+                        <div class="space-y-4" id="navigation-items">
+                            <!-- Navigation items will be loaded here -->
+                        </div>
+
+                        <button onclick="addNavigationItem()" class="cms-btn cms-btn-primary mt-4">+ Add Navigation Link</button>
+                        <button onclick="saveFrontendNavigation()" class="cms-btn cms-btn-success mt-4 ml-2">💾 Save Navigation</button>
+                    </div>
+
+                    <!-- Hero Sections Tab -->
+                    <div id="frontend-hero" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Hero Sections</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit hero text and CTAs for each page</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Page</label>
+                            <select id="hero-page-selector" class="cms-input w-full md:w-1/2" onchange="loadHeroEditor()">
+                                <option value="home">Home</option>
+                                <option value="agents">For Agents</option>
+                                <option value="agencies">For Agencies</option>
+                                <option value="investors">For Investors</option>
+                                <option value="about">About</option>
+                                <option value="faq">FAQ</option>
+                            </select>
+                        </div>
+
+                        <div id="hero-editor-content" class="space-y-6">
+                            <!-- Hero editor content will be loaded here -->
+                        </div>
+
+                        <button onclick="saveFrontendHero()" class="cms-btn cms-btn-success mt-4">💾 Save Hero Section</button>
+                    </div>
+
+                    <!-- Feature Cards Tab -->
+                    <div id="frontend-features" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Feature Cards</h3>
+                        <p class="text-sm text-gray-600 mb-6">Manage feature cards displayed on your pages</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Page</label>
+                            <select id="features-page-selector" class="cms-input w-full md:w-1/2" onchange="loadFeaturesEditor()">
+                                <option value="home">Home</option>
+                                <option value="agents">For Agents</option>
+                                <option value="agencies">For Agencies</option>
+                                <option value="investors">For Investors</option>
+                            </select>
+                        </div>
+
+                        <div id="features-editor-content" class="space-y-4">
+                            <!-- Feature cards will be loaded here -->
+                        </div>
+
+                        <button onclick="addFeatureCard()" class="cms-btn cms-btn-primary mt-4">+ Add Feature Card</button>
+                        <button onclick="saveFrontendFeatures()" class="cms-btn cms-btn-success mt-4 ml-2">💾 Save Features</button>
+                    </div>
+
+                    <!-- Buttons & CTAs Tab -->
+                    <div id="frontend-buttons" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Buttons & Call-to-Actions</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit text and URLs for all buttons and CTAs</p>
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Page</label>
+                            <select id="buttons-page-selector" class="cms-input w-full md:w-1/2" onchange="loadButtonsEditor()">
+                                <option value="global">Global Buttons</option>
+                                <option value="home">Home</option>
+                                <option value="agents">For Agents</option>
+                                <option value="agencies">For Agencies</option>
+                                <option value="investors">For Investors</option>
+                                <option value="about">About</option>
+                            </select>
+                        </div>
+
+                        <div id="buttons-editor-content" class="space-y-4">
+                            <!-- Buttons will be loaded here -->
+                        </div>
+
+                        <button onclick="saveFrontendButtons()" class="cms-btn cms-btn-success mt-4">💾 Save Buttons</button>
+                    </div>
+
+                    <!-- Footer Tab -->
+                    <div id="frontend-footer" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Footer Content</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit footer sections, links, and contact information</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Footer Company Name</label>
+                                <input type="text" id="footer-company-name" class="cms-input" placeholder="Estalara">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Footer Tagline</label>
+                                <input type="text" id="footer-tagline" class="cms-input" placeholder="Go LIVE. Go GLOBAL.">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Footer Description</label>
+                                <textarea id="footer-description" class="cms-input" rows="3" placeholder="Connecting real estate agents with global investors through AI and livestreaming technology."></textarea>
+                            </div>
+
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-3">Footer Links</h4>
+                                <div id="footer-links-container" class="space-y-3">
+                                    <!-- Footer links will be loaded here -->
+                                </div>
+                                <button onclick="addFooterLink()" class="cms-btn cms-btn-primary mt-3">+ Add Footer Link</button>
+                            </div>
+
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-3">Social Media Links</h4>
+                                <div id="social-links-container" class="space-y-3">
+                                    <!-- Social media links will be loaded here -->
+                                </div>
+                                <button onclick="addSocialLink()" class="cms-btn cms-btn-primary mt-3">+ Add Social Link</button>
+                            </div>
+
+                            <button onclick="saveFrontendFooter()" class="cms-btn cms-btn-success">💾 Save Footer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="cms-card p-6 mt-6">
+                    <h3 class="text-lg font-semibold mb-4">Live Preview</h3>
+                    <div class="flex gap-3">
+                        <button onclick="previewChanges()" class="cms-btn cms-btn-success">
+                            👁️ Preview All Changes
+                        </button>
+                        <button onclick="resetAllFrontend()" class="cms-btn cms-btn-danger">
+                            🔄 Reset to Defaults
                         </button>
                     </div>
                 </div>
