@@ -3,13 +3,28 @@
 
 class FirebaseDatabaseService {
   constructor() {
+    this.db = null;
+    this.adminDataRef = null;
+    this.cache = null;
+    
+    // Initialize database reference after ensuring Firebase is ready
+    this.initDatabase();
+  }
+  
+  // Initialize database reference
+  initDatabase() {
+    // Get database reference (this is now safe because we're called after Firebase init)
     this.db = firebase.database();
     this.adminDataRef = this.db.ref('adminData');
-    this.cache = null;
   }
 
   // Save all admin data to Firebase
   async saveAdminData(data) {
+    // Ensure database is initialized
+    while (!this.adminDataRef) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
     try {
       console.log('💾 Saving admin data to Firebase...');
       
@@ -32,6 +47,11 @@ class FirebaseDatabaseService {
 
   // Load all admin data from Firebase
   async loadAdminData() {
+    // Ensure database is initialized
+    while (!this.adminDataRef) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
     try {
       console.log('📥 Loading admin data from Firebase...');
       
@@ -54,6 +74,11 @@ class FirebaseDatabaseService {
 
   // Update specific property in admin data
   async updateProperty(path, value) {
+    // Ensure database is initialized
+    while (!this.adminDataRef) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
     try {
       console.log(`💾 Updating ${path} in Firebase...`);
       
@@ -69,6 +94,11 @@ class FirebaseDatabaseService {
 
   // Add item to array in Firebase
   async pushToArray(path, item) {
+    // Ensure database is initialized
+    while (!this.adminDataRef) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
     try {
       console.log(`➕ Adding item to ${path}...`);
       
@@ -84,6 +114,11 @@ class FirebaseDatabaseService {
 
   // Delete item from Firebase
   async deleteProperty(path) {
+    // Ensure database is initialized
+    while (!this.adminDataRef) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    
     try {
       console.log(`🗑️ Deleting ${path} from Firebase...`);
       
@@ -99,6 +134,12 @@ class FirebaseDatabaseService {
 
   // Listen for real-time changes
   onDataChange(callback) {
+    // Ensure database is initialized
+    if (!this.adminDataRef) {
+      console.warn('⚠️ Database not initialized yet, cannot listen for changes');
+      return;
+    }
+    
     this.adminDataRef.on('value', (snapshot) => {
       const data = snapshot.val();
       this.cache = data;
@@ -108,6 +149,9 @@ class FirebaseDatabaseService {
 
   // Stop listening for changes
   offDataChange() {
+    if (!this.adminDataRef) {
+      return;
+    }
     this.adminDataRef.off();
   }
 
@@ -147,12 +191,43 @@ class FirebaseDatabaseService {
   }
 }
 
-// Create global database service instance
-window.dbService = new FirebaseDatabaseService();
+// Initialize database service after Firebase is ready
+function initializeDatabaseService() {
+  if (typeof firebase === 'undefined' || !firebase.apps || firebase.apps.length === 0) {
+    console.warn('⏳ Waiting for Firebase to initialize before creating database service...');
+    setTimeout(initializeDatabaseService, 100);
+    return;
+  }
+  
+  // Create global database service instance
+  window.dbService = new FirebaseDatabaseService();
+  console.log('✅ Firebase Database Service initialized');
+}
 
-// Convenience functions
-window.saveToFirebase = (data) => window.dbService.saveAdminData(data);
-window.loadFromFirebase = () => window.dbService.loadAdminData();
-window.updateFirebaseProperty = (path, value) => window.dbService.updateProperty(path, value);
+// Start initialization
+initializeDatabaseService();
 
-console.log('✅ Firebase Database Service initialized');
+// Convenience functions (with safety checks)
+window.saveToFirebase = (data) => {
+  if (!window.dbService) {
+    console.error('❌ Database service not initialized yet');
+    return Promise.resolve({ success: false, error: 'Database service not initialized' });
+  }
+  return window.dbService.saveAdminData(data);
+};
+
+window.loadFromFirebase = () => {
+  if (!window.dbService) {
+    console.error('❌ Database service not initialized yet');
+    return Promise.resolve({ success: false, error: 'Database service not initialized' });
+  }
+  return window.dbService.loadAdminData();
+};
+
+window.updateFirebaseProperty = (path, value) => {
+  if (!window.dbService) {
+    console.error('❌ Database service not initialized yet');
+    return Promise.resolve({ success: false, error: 'Database service not initialized' });
+  }
+  return window.dbService.updateProperty(path, value);
+};
