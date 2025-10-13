@@ -160,8 +160,6 @@
     }
     </script>
     
-    <!-- CMS Integration -->
-    <script src="cms-integration.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -170,14 +168,43 @@
             <a href="index.html" class="block">
                 <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-8 md:h-10">
             </a>
-            <nav class="hidden md:flex gap-6 items-center">
-                <a href="index.html" class="text-white hover:text-white">Home</a>
-                <a href="agents.html" class="text-white hover:text-white">For Agents</a>
-                <a href="agencies.html" class="text-white hover:text-white">For Agencies</a>
-                <a href="investors.html" class="text-white hover:text-white">For Investors</a>
-                <a href="about.html" class="text-white hover:text-white">About</a>
-                <a href="faq.html" class="text-white">FAQ</a>
+            
+            <!-- Hamburger (mobile only) -->
+            <button id="menu-toggle" aria-label="Open menu" aria-expanded="false"
+                    class="md:hidden p-2 rounded hover:bg-white/10 focus:outline-none focus:ring focus:ring-white/30 z-[101] relative">
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white"></span>
+            </button>
+            
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-6">
+                <ul class="flex items-center gap-6">
+                    <!-- Navigation items loaded dynamically from CMS -->
+                </ul>
+                <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition ml-2">
+                    Launch App
+                </a>
             </nav>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu"
+                 class="hidden
+                        flex-col
+                        fixed left-0 right-0 top-[60px]
+                        max-h-[calc(100vh-60px)] overflow-y-auto
+                        z-[95]
+                        bg-black px-6 py-6
+                        gap-4
+                        border-b border-white/10
+                        shadow-2xl">
+                <ul class="mobile-nav flex flex-col gap-4">
+                    <!-- Mobile navigation items loaded dynamically from CMS -->
+                </ul>
+                <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition">
+                    Launch App
+                </a>
+            </div>
         </div>
     </header>
     
@@ -311,25 +338,48 @@
     <!-- Footer -->
     <footer class="py-16 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="mb-8 md:mb-0">
-                    <img src="assets/logo.svg" alt="ESTALARA" class="h-10 mb-4">
-                    <p class="text-gray-400 text-sm">
-                        Time2Show, Inc., Dover, DE, USA<br>
-                        estalara@estalara.com
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-10 mb-4">
+                    <h3 class="footer-company-name text-lg font-bold mb-2">Estalara</h3>
+                    <p class="footer-tagline text-gray-400 text-sm mb-2">Go LIVE. Go GLOBAL.</p>
+                    <p class="footer-description text-gray-400 text-sm mb-4">
+                        Connecting real estate agents and global investors through AI and live experiences.
                     </p>
                 </div>
                 
-                <div class="flex flex-col md:flex-row gap-4 md:gap-8 text-sm">
-                    <a href="faq.html" class="text-white font-semibold">FAQ</a>
-                    <a href="privacy.html" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="terms.html" class="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">LinkedIn</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">TikTok</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">Instagram</a>
+                <!-- Footer Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                    <nav>
+                        <ul class="footer-links flex flex-col gap-2">
+                            <!-- Footer links loaded from CMS -->
+                        </ul>
+                    </nav>
                 </div>
+                
+                <!-- Social Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Follow Us</h4>
+                    <div class="social-links flex gap-4">
+                        <!-- Social links loaded from CMS -->
+                    </div>
+                    <p class="text-gray-400 text-sm mt-8">
+                        Time2Show, Inc., Dover, DE, USA<br>
+                        <span id="contact-email">estalara@estalara.com</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-800 text-center">
+                <p id="footer-text" class="text-gray-400 text-sm">© 2025 Estalara. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    
+    <!-- Load scripts synchronously to ensure proper initialization -->
+    <script src="main.js"></script>
+    <script src="cms-integration.js"></script>
 </body>
 </html>
