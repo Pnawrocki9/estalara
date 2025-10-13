@@ -743,7 +743,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             <p class="text-gray-600 mb-4">${property.description}</p>
             <div class="flex justify-between items-center">
                 <span class="font-bold text-lg">€${property.price.toLocaleString()}</span>
-                <a href="${property.link}"
+                <a href="https://app.estalara.com/"
                    target="_blank"
                    class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors">
                     View Property →
