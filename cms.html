@@ -376,7 +376,7 @@
                     <!-- Buttons & CTAs Tab -->
                     <div id="frontend-buttons" class="frontend-tab p-6 hidden">
                         <h3 class="text-lg font-semibold mb-4">Buttons & Call-to-Actions</h3>
-                        <p class="text-sm text-gray-600 mb-6">Edit text and URLs for all buttons and CTAs</p>
+                        <p class="text-sm text-gray-600 mb-6">Edit text and URLs for all buttons and CTAs across your pages</p>
                         
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Select Page</label>
@@ -390,8 +390,51 @@
                             </select>
                         </div>
 
-                        <div id="buttons-editor-content" class="space-y-4">
-                            <!-- Buttons will be loaded here -->
+                        <div id="buttons-editor-content" class="space-y-6">
+                            <!-- Primary Button -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Primary Button (Main CTA)</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                                        <input type="text" id="primary-button-text" class="cms-input" placeholder="Get Started">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Button URL</label>
+                                        <input type="url" id="primary-button-url" class="cms-input" placeholder="https://app.estalara.com">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Secondary Button -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Secondary Button</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                                        <input type="text" id="secondary-button-text" class="cms-input" placeholder="Learn More">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Button URL</label>
+                                        <input type="url" id="secondary-button-url" class="cms-input" placeholder="#features">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Header CTA Button -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Header "Launch App" Button</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                                        <input type="text" id="header-cta-text" class="cms-input" placeholder="Launch App">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Button URL</label>
+                                        <input type="url" id="header-cta-url" class="cms-input" placeholder="https://app.estalara.com">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <button onclick="saveFrontendButtons()" class="cms-btn cms-btn-success mt-4">💾 Save Buttons</button>

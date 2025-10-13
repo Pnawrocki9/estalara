@@ -1630,49 +1630,29 @@ function saveFrontendFeatures() {
 
 // Buttons & CTAs Functions
 function loadButtonsEditor() {
-    const pageId = document.getElementById('buttons-page-selector').value;
+    const page = document.getElementById('buttons-page-selector').value;
     const admin = loadAdminData();
-    const container = document.getElementById('buttons-editor-content');
     
-    if (!admin.buttons) admin.buttons = {};
-    if (!admin.buttons[pageId]) {
-        admin.buttons[pageId] = {
-            primary: { text: 'Get Started', url: 'https://app.estalara.com' },
-            secondary: { text: 'Learn More', url: '#features' }
-        };
+    if (!admin.buttons) {
+        admin.buttons = {};
     }
     
-    const buttons = admin.buttons[pageId];
+    // Get buttons for selected page or global defaults
+    const pageButtons = admin.buttons[page] || {
+        primary: { text: 'Get Started', url: 'https://app.estalara.com' },
+        secondary: { text: 'Learn More', url: '#features' },
+        headerCta: { text: 'Launch App', url: 'https://app.estalara.com' }
+    };
     
-    container.innerHTML = `
-        <div class="cms-card p-4">
-            <h4 class="font-medium mb-3">Primary Button</h4>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button Text</label>
-                    <input type="text" id="primary-btn-text" class="cms-input" value="${buttons.primary?.text || ''}">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button URL</label>
-                    <input type="text" id="primary-btn-url" class="cms-input" value="${buttons.primary?.url || ''}">
-                </div>
-            </div>
-        </div>
-        
-        <div class="cms-card p-4">
-            <h4 class="font-medium mb-3">Secondary Button</h4>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button Text</label>
-                    <input type="text" id="secondary-btn-text" class="cms-input" value="${buttons.secondary?.text || ''}">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Button URL</label>
-                    <input type="text" id="secondary-btn-url" class="cms-input" value="${buttons.secondary?.url || ''}">
-                </div>
-            </div>
-        </div>
-    `;
+    // Populate form fields
+    document.getElementById('primary-button-text').value = pageButtons.primary?.text || 'Get Started';
+    document.getElementById('primary-button-url').value = pageButtons.primary?.url || 'https://app.estalara.com';
+    
+    document.getElementById('secondary-button-text').value = pageButtons.secondary?.text || 'Learn More';
+    document.getElementById('secondary-button-url').value = pageButtons.secondary?.url || '#features';
+    
+    document.getElementById('header-cta-text').value = pageButtons.headerCta?.text || 'Launch App';
+    document.getElementById('header-cta-url').value = pageButtons.headerCta?.url || 'https://app.estalara.com';
 }
 
 function saveFrontendButtons() {
