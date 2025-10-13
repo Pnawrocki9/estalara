@@ -20,7 +20,7 @@ const PUBLIC_PAGES = [
 ];
 
 const ADMIN_PAGES = [
-  'admin.html',
+  'admin/index.html',
   'admin-login.html',
   'cms.html',
   'cms-login.html'
