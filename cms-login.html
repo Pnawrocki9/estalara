@@ -136,12 +136,35 @@
 
         // Check if already logged in
         window.addEventListener('DOMContentLoaded', async () => {
-            if (window.authService) {
-                const user = await window.authService.waitForAuth();
-                if (user) {
-                    console.log('Already logged in, redirecting...');
-                    window.location.href = 'cms.html';
-                }
+            // Check if Firebase is loaded
+            if (typeof firebase === 'undefined') {
+                showError('❌ Błąd ładowania Firebase. Sprawdź połączenie internetowe i odśwież stronę.');
+                loginBtn.disabled = true;
+                return;
+            }
+            
+            // Wait for Firebase to initialize
+            let waitTime = 0;
+            const maxWait = 5000; // 5 seconds
+            while (!window.authService && waitTime < maxWait) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                waitTime += 100;
+            }
+            
+            if (!window.authService) {
+                showError('❌ Błąd inicjalizacji Firebase Authentication. Odśwież stronę.');
+                loginBtn.disabled = true;
+                return;
+            }
+            
+            // Check if already logged in
+            const user = await window.authService.waitForAuth();
+            if (user) {
+                console.log('✅ Already logged in as:', user.email);
+                console.log('Redirecting to CMS...');
+                window.location.href = 'cms.html';
+            } else {
+                console.log('Not logged in. Please sign in.');
             }
         });
     </script>
