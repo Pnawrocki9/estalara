@@ -459,7 +459,52 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                     console.log('✅ Successfully loaded data from Firebase');
                     console.log('🔍 [Debug] Firebase navigation count:', firebaseData.navigation?.length || 0);
                     console.log('🔍 [Debug] Firebase liveProperties count:', firebaseData.liveProperties?.length || 0);
+                    // Shallow-merge Firebase payload onto defaults, then normalise
                     const merged = { ...defaultContent, ...firebaseData };
+
+                    // Ensure pages object exists and merge missing pages from defaults
+                    merged.pages = merged.pages || {};
+                    if (defaultContent.pages) {
+                        for (const key of Object.keys(defaultContent.pages)) {
+                            if (!merged.pages[key]) {
+                                merged.pages[key] = defaultContent.pages[key];
+                            }
+                        }
+                    }
+
+                    // Ensure pageStructures exist and include defaults for any missing pages
+                    if (!merged.pageStructures || typeof merged.pageStructures !== 'object') {
+                        merged.pageStructures = defaultContent.pageStructures || {};
+                    } else if (defaultContent.pageStructures) {
+                        for (const pageKey of Object.keys(defaultContent.pageStructures)) {
+                            if (!merged.pageStructures[pageKey]) {
+                                merged.pageStructures[pageKey] = defaultContent.pageStructures[pageKey];
+                            }
+                        }
+                    }
+
+                    // Ensure LIVE Properties are populated. If Firebase payload has an empty
+                    // liveProperties array, fall back to (a) migrated properties or (b) defaults.
+                    if (!Array.isArray(merged.liveProperties) || merged.liveProperties.length === 0) {
+                        if (Array.isArray(merged.properties) && merged.properties.length > 0) {
+                            merged.liveProperties = merged.properties.map(prop => ({
+                                id: prop.id,
+                                title: prop.title,
+                                location: prop.location,
+                                price: prop.price,
+                                description: prop.description,
+                                image: prop.image,
+                                link: prop.link || 'https://app.estalara.com'
+                            }));
+                            console.log('✅ [CMS] Filled liveProperties from properties (migration)');
+                        } else {
+                            merged.liveProperties = Array.isArray(defaultContent.liveProperties)
+                                ? [...defaultContent.liveProperties]
+                                : [];
+                            console.log('✅ [CMS] Filled liveProperties from defaults');
+                        }
+                    }
+
                     return merged;
                 }
                 
