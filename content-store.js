@@ -339,7 +339,7 @@ class ContentStore {
                     hero: {
                         title: "Go LIVE. Go GLOBAL.",
                         subtitle: "Connect real estate agents with international investors through AI-powered live experiences.",
-                        ctaText: "Launch App",
+                        ctaText: "Estalara Marketplace",
                         ctaUrl: "https://app.estalara.com"
                     }
                 }

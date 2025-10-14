@@ -85,14 +85,15 @@
         }
     </style>
     
-    <!-- CMS Integration -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="firebase-auth.js"></script>
-    <script src="cms-firebase-adapter.js"></script>
-    <script src="cms-integration.js"></script>
+    <!-- Firebase SDK (for loading CMS data) - Deferred -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+    <script src="firebase-init.js" defer></script>
+    
+    <!-- CMS System (Refactored) - Load in order with defer -->
+    <script src="content-store.js" defer></script>
+    <script src="cms-integration-refactored.js" defer></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -104,7 +105,7 @@
             <nav class="hidden md:flex gap-6 items-center">
                 <a href="index.html" class="text-white hover:text-white">Home</a>
                 <a href="faq.html" class="text-white hover:text-white">FAQ</a>
-                <a href="https://app.estalara.com" class="text-white hover:text-white">Launch App</a>
+                <a href="https://app.estalara.com" class="text-white hover:text-white">Estalara Marketplace</a>
             </nav>
         </div>
     </header>

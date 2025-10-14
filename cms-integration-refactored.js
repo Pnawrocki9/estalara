@@ -196,7 +196,7 @@ class EstalaraAdmin {
     loadButtons() {
         const headerBtn = document.querySelector('header .cta-button');
         if (headerBtn && this.content.pages?.home?.hero) {
-            headerBtn.textContent = this.content.pages.home.hero.ctaText || 'Launch App';
+            headerBtn.textContent = this.content.pages.home.hero.ctaText || 'Estalara Marketplace';
             headerBtn.href = this.content.pages.home.hero.ctaUrl || 'https://app.estalara.com';
         }
     }
