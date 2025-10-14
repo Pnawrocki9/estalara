@@ -36,26 +36,42 @@ class EstalaraAdmin {
 
     async initAsync() {
         try {
+            console.log('🔄 [CMS] Starting async initialization...');
+            
             // Load content from Firebase first
             this.content = await this.loadContent();
             
             // FIX: Ensure content is properly loaded before proceeding
-            if (!this.content) {
+            if (!this.content || typeof this.content !== 'object') {
                 console.error('❌ [CMS] Failed to load content, using defaults');
                 this.content = this.getDefaultContent();
             }
             
             // Additional validation: ensure critical properties exist
-            if (!this.content.pages) {
-                console.error('❌ [CMS] Content missing pages object, reinitializing');
-                this.content = this.getDefaultContent();
+            if (!this.content.pages || typeof this.content.pages !== 'object') {
+                console.warn('⚠️ [CMS] Content missing pages object, merging with defaults');
+                const defaults = this.getDefaultContent();
+                this.content.pages = defaults.pages;
             }
+            
+            // Ensure liveProperties array exists
+            if (!Array.isArray(this.content.liveProperties)) {
+                console.warn('⚠️ [CMS] liveProperties missing or not an array, using defaults');
+                const defaults = this.getDefaultContent();
+                this.content.liveProperties = defaults.liveProperties;
+            }
+            
+            console.log('✅ [CMS] Content loaded successfully');
+            console.log('   - liveProperties count:', this.content.liveProperties?.length || 0);
+            console.log('   - pages:', Object.keys(this.content.pages || {}).join(', '));
             
             this.init();
         } catch (error) {
             console.error('❌ [CMS] Critical error in initAsync:', error);
+            console.error('   Stack:', error.stack);
             // Use defaults and continue
             this.content = this.getDefaultContent();
+            console.log('✅ [CMS] Using default content as fallback');
             this.init();
         }
     }
@@ -681,8 +697,19 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         // FIX: Defensive check - ensure content exists
         if (!this.content) {
             console.error('❌ [CMS] loadDynamicContent called but this.content is undefined');
-            return;
+            console.error('   - Reinitializing with default content...');
+            this.content = this.getDefaultContent();
         }
+        
+        // Additional safety check
+        if (!this.content || typeof this.content !== 'object') {
+            console.error('❌ [CMS] this.content is still invalid after reinitialization!');
+            this.content = this.getDefaultContent();
+        }
+        
+        console.log('📋 [CMS] loadDynamicContent executing with:');
+        console.log('   - liveProperties:', this.content.liveProperties?.length || 0);
+        console.log('   - pages:', this.content.pages ? Object.keys(this.content.pages).length : 0);
         
         // Update site title
         if (this.content.siteTitle) {
@@ -714,6 +741,16 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         if (shouldLoadProperties) {
             console.log('📋 [CMS] Loading properties into LIVE Properties section');
             this.loadProperties();
+            
+            // BACKUP: Schedule a delayed reload in case the first attempt fails
+            // This helps with timing issues on mobile devices
+            setTimeout(() => {
+                const container = document.querySelector('#live-properties .grid');
+                if (container && container.children.length === 0) {
+                    console.warn('⚠️ [CMS] Properties container is empty after initial load, retrying...');
+                    this.loadProperties();
+                }
+            }, 1000);
         } else {
             console.warn('⚠️ [CMS] LIVE Properties container not found, skipping loadProperties()');
         }
@@ -818,14 +855,37 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
             // NEW: Use liveProperties array (managed in CMS) instead of old properties array
             // Fall back to old properties array if liveProperties doesn't exist yet (for backward compatibility)
-            const liveProperties = (this.content && Array.isArray(this.content.liveProperties) && this.content.liveProperties.length > 0)
-                ? this.content.liveProperties
-                : (this.content && Array.isArray(this.content.properties))
-                    ? this.content.properties.filter(p => !p.status || p.status === 'live')
-                    : [];
+            let liveProperties = [];
+            
+            // Safety check: ensure this.content exists
+            if (!this.content) {
+                console.error('❌ [Mobile Fix] this.content is undefined in loadProperties!');
+                console.error('   - Reinitializing with default content...');
+                this.content = this.getDefaultContent();
+            }
+            
+            // Try to get liveProperties from content
+            if (Array.isArray(this.content.liveProperties) && this.content.liveProperties.length > 0) {
+                liveProperties = this.content.liveProperties;
+                console.log('✅ [Mobile Debug] Using liveProperties from content');
+            } else if (Array.isArray(this.content.properties) && this.content.properties.length > 0) {
+                // Fallback to old properties array
+                liveProperties = this.content.properties.filter(p => !p.status || p.status === 'live');
+                console.log('⚠️ [Mobile Debug] Falling back to properties array (migrating...)');
+            } else {
+                // Last resort: use defaults
+                console.warn('⚠️ [Mobile Debug] No properties found, using defaults');
+                const defaults = this.getDefaultContent();
+                liveProperties = defaults.liveProperties || [];
+                // Update content to include defaults
+                if (!Array.isArray(this.content.liveProperties)) {
+                    this.content.liveProperties = liveProperties;
+                }
+            }
             
             console.log('🔍 [Mobile Debug] liveProperties count:', liveProperties.length);
-            console.log('🔍 [Mobile Debug] this.content:', this.content);
+            console.log('🔍 [Mobile Debug] this.content exists:', !!this.content);
+            console.log('🔍 [Mobile Debug] Sample property:', liveProperties[0] ? liveProperties[0].title : 'none');
 
             // Always clear existing properties first to remove any hardcoded HTML
             propertiesContainer.innerHTML = '';
@@ -1973,7 +2033,7 @@ hideEmptyPlaceholders();
     
     // Initialize EstalaraAdmin with retry mechanism to ensure main.js is ready
     async function initializeWhenReady(retryCount = 0) {
-        const maxRetries = 20; // Max 1 second (20 * 50ms)
+        const maxRetries = 100; // Increased to 5 seconds (100 * 50ms) for slower devices
         
         if (isMainJsReady()) {
             console.log('✅ [CMS] main.js is ready, initializing Firebase adapter...');
@@ -1981,8 +2041,13 @@ hideEmptyPlaceholders();
             // Initialize Firebase adapter first to load data from Firebase
             if (window.cmsFirebaseAdapter && typeof window.cmsFirebaseAdapter.init === 'function') {
                 console.log('🔄 [CMS] Initializing Firebase adapter...');
-                await window.cmsFirebaseAdapter.init();
-                console.log('✅ [CMS] Firebase adapter initialized');
+                try {
+                    await window.cmsFirebaseAdapter.init();
+                    console.log('✅ [CMS] Firebase adapter initialized');
+                } catch (error) {
+                    console.error('❌ [CMS] Firebase adapter initialization failed:', error);
+                    console.warn('⚠️ [CMS] Continuing with localStorage fallback');
+                }
             } else {
                 console.warn('⚠️ [CMS] Firebase adapter not available, using localStorage fallback');
             }
@@ -1990,14 +2055,53 @@ hideEmptyPlaceholders();
             console.log('✅ [CMS] Creating EstalaraAdmin instance');
             window.estalaraAdmin = new EstalaraAdmin();
         } else if (retryCount < maxRetries) {
-            console.log(`⏳ [CMS] Waiting for main.js to initialize (attempt ${retryCount + 1}/${maxRetries})...`);
+            // Log every 20 attempts to avoid console spam
+            if (retryCount % 20 === 0 || retryCount < 3) {
+                console.log(`⏳ [CMS] Waiting for main.js to initialize (attempt ${retryCount + 1}/${maxRetries})...`);
+                console.log('   - observeReveals exists:', typeof window.observeReveals);
+                console.log('   - revealObserver exists:', typeof window.revealObserver);
+            }
             setTimeout(() => initializeWhenReady(retryCount + 1), 50);
         } else {
-            console.warn('⚠️ [CMS] main.js not ready after max retries, initializing anyway');
+            console.error('❌ [CMS] main.js not ready after max retries!');
+            console.error('   - This indicates a critical timing issue or script loading problem');
+            console.error('   - observeReveals:', typeof window.observeReveals);
+            console.error('   - revealObserver:', typeof window.revealObserver);
+            console.warn('⚠️ [CMS] Initializing anyway with fallback behavior...');
+            
+            // Create fallback functions if main.js helpers aren't available
+            if (typeof window.observeReveals !== 'function') {
+                console.log('🔧 [CMS] Creating fallback observeReveals function');
+                window.observeReveals = function(nodes) {
+                    // Fallback: immediately activate reveal elements
+                    console.log('⚠️ Using fallback observeReveals for', nodes.length, 'nodes');
+                    nodes.forEach(el => {
+                        el.classList.add('active');
+                        el.style.opacity = '1';
+                        el.style.transform = 'none';
+                    });
+                };
+            }
+            
+            if (!window.revealObserver) {
+                console.log('🔧 [CMS] Creating fallback revealObserver');
+                // Create a minimal IntersectionObserver fallback
+                window.revealObserver = {
+                    observe: function(el) {
+                        el.classList.add('active');
+                        el.style.opacity = '1';
+                        el.style.transform = 'none';
+                    }
+                };
+            }
             
             // Still try to initialize Firebase adapter even if main.js isn't ready
             if (window.cmsFirebaseAdapter && typeof window.cmsFirebaseAdapter.init === 'function') {
-                await window.cmsFirebaseAdapter.init();
+                try {
+                    await window.cmsFirebaseAdapter.init();
+                } catch (error) {
+                    console.error('❌ [CMS] Firebase adapter initialization failed:', error);
+                }
             }
             
             window.estalaraAdmin = new EstalaraAdmin();
@@ -2124,8 +2228,113 @@ window.checkCMSSync = async function() {
     }
 };
 
+/**
+ * Diagnostic function to check CMS state
+ * Call this from browser console to debug property loading issues
+ */
+window.diagnoseCMS = function() {
+    console.log('🔍 ========== CMS DIAGNOSTIC REPORT ==========');
+    console.log('');
+    
+    // Check if EstalaraAdmin instance exists
+    console.log('1. EstalaraAdmin Instance:');
+    console.log('   - exists:', !!window.estalaraAdmin);
+    if (window.estalaraAdmin) {
+        console.log('   - content exists:', !!window.estalaraAdmin.content);
+        console.log('   - content type:', typeof window.estalaraAdmin.content);
+        if (window.estalaraAdmin.content) {
+            console.log('   - liveProperties count:', window.estalaraAdmin.content.liveProperties?.length || 0);
+            console.log('   - properties count:', window.estalaraAdmin.content.properties?.length || 0);
+            console.log('   - pages:', window.estalaraAdmin.content.pages ? Object.keys(window.estalaraAdmin.content.pages).join(', ') : 'none');
+        }
+    }
+    console.log('');
+    
+    // Check main.js helpers
+    console.log('2. Main.js Helpers:');
+    console.log('   - observeReveals:', typeof window.observeReveals);
+    console.log('   - revealObserver:', typeof window.revealObserver);
+    console.log('   - IntersectionObserver:', typeof IntersectionObserver);
+    console.log('');
+    
+    // Check DOM elements
+    console.log('3. DOM Elements:');
+    const container = document.querySelector('#live-properties .grid');
+    console.log('   - #live-properties .grid exists:', !!container);
+    if (container) {
+        console.log('   - children count:', container.children.length);
+        console.log('   - innerHTML length:', container.innerHTML.length);
+        console.log('   - Sample child:', container.children[0] ? container.children[0].className : 'none');
+    }
+    console.log('');
+    
+    // Check Firebase
+    console.log('4. Firebase:');
+    console.log('   - firebase object:', typeof firebase);
+    console.log('   - cmsFirebaseAdapter:', typeof window.cmsFirebaseAdapter);
+    console.log('   - loadAdminDataAsync:', typeof window.loadAdminDataAsync);
+    if (window.cmsFirebaseAdapter) {
+        console.log('   - initialized:', window.cmsFirebaseAdapter.initialized);
+        console.log('   - cache exists:', !!window.cmsFirebaseAdapter.cache);
+    }
+    console.log('');
+    
+    // Check localStorage
+    console.log('5. LocalStorage:');
+    try {
+        const stored = localStorage.getItem('estalaraAdminData');
+        console.log('   - available:', typeof localStorage !== 'undefined');
+        console.log('   - estalaraAdminData exists:', !!stored);
+        if (stored) {
+            const data = JSON.parse(stored);
+            console.log('   - liveProperties count:', data.liveProperties?.length || 0);
+            console.log('   - lastUpdated:', data.lastUpdated || 'not set');
+        }
+    } catch (e) {
+        console.log('   - ERROR:', e.message);
+    }
+    console.log('');
+    
+    // Check script loading order
+    console.log('6. Script Loading:');
+    console.log('   - Document ready state:', document.readyState);
+    const scripts = Array.from(document.querySelectorAll('script[src]'));
+    const cmsScript = scripts.find(s => s.src.includes('cms-integration.js'));
+    const mainScript = scripts.find(s => s.src.includes('main.js'));
+    console.log('   - main.js loaded:', !!mainScript);
+    console.log('   - cms-integration.js loaded:', !!cmsScript);
+    console.log('');
+    
+    // Suggest fixes
+    console.log('7. Suggested Actions:');
+    if (!window.estalaraAdmin) {
+        console.log('   ⚠️ EstalaraAdmin not initialized - check console for initialization errors');
+    } else if (!window.estalaraAdmin.content) {
+        console.log('   ⚠️ Content not loaded - try: window.forceRefreshFromCMS()');
+    } else if (!window.estalaraAdmin.content.liveProperties || window.estalaraAdmin.content.liveProperties.length === 0) {
+        console.log('   ⚠️ No liveProperties - try: window.forceRefreshFromCMS()');
+    } else if (container && container.children.length === 0) {
+        console.log('   ⚠️ Properties not rendered - try: window.estalaraAdmin.loadProperties()');
+    } else {
+        console.log('   ✅ Everything looks good! Properties should be visible.');
+    }
+    console.log('');
+    console.log('🔍 ========== END DIAGNOSTIC REPORT ==========');
+    
+    return {
+        estalaraAdmin: !!window.estalaraAdmin,
+        content: !!window.estalaraAdmin?.content,
+        livePropertiesCount: window.estalaraAdmin?.content?.liveProperties?.length || 0,
+        containerExists: !!container,
+        containerChildren: container?.children.length || 0,
+        mainJsReady: typeof window.observeReveals === 'function',
+        firebaseReady: !!window.cmsFirebaseAdapter?.initialized
+    };
+};
+
 // Log available utility functions
 console.log('🛠️ CMS Sync Utilities Available:');
+console.log('  - window.diagnoseCMS() - Run comprehensive diagnostic');
 console.log('  - window.forceRefreshFromCMS() - Force reload from Firebase');
 console.log('  - window.clearCMSCache() - Clear local cache and reload');
 console.log('  - window.checkCMSSync() - Check sync status');
