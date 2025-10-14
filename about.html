@@ -233,7 +233,7 @@
                     <!-- Navigation items loaded dynamically from CMS -->
                 </ul>
                 <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition ml-2">
-                    Launch App
+                    Estalara Marketplace
                 </a>
             </nav>
             
@@ -252,7 +252,7 @@
                     <!-- Mobile navigation items loaded dynamically from CMS -->
                 </ul>
                 <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition">
-                    Launch App
+                    Estalara Marketplace
                 </a>
             </div>
         </div>
@@ -626,18 +626,18 @@
         </div>
     </footer>
     
-    <!-- Firebase SDK (for loading CMS data) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="firebase-auth.js"></script>
-    <script src="cms-firebase-adapter.js"></script>
+    <!-- Firebase SDK (for loading CMS data) - Deferred -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+    <script src="firebase-init.js" defer></script>
     
-    <!-- Load scripts synchronously to ensure proper initialization -->
-    <script src="main.js"></script>
-    <script src="cms-integration.js"></script>
-    <!-- Sync button hidden on public pages by default via internal guard -->
-    <script src="quick-sync-button.js"></script>
+    <!-- CMS System (Refactored) - Load in order with defer -->
+    <script src="main.js" defer></script>
+    <script src="content-store.js" defer></script>
+    <script src="cms-integration-refactored.js" defer></script>
+    
+    <!-- Quick sync button: script contains guard to hide on public site -->
+    <script src="quick-sync-button.js" defer></script>
 </body>
 </html>
