@@ -151,7 +151,7 @@ class EstalaraAdmin {
                         </svg>
                         ${prop.location}
                     </p>
-                    <p class="text-3xl font-bold mb-4 text-black">${prop.price}</p>
+                    <p class="text-3xl font-bold mb-4 text-black">${typeof prop.price === 'number' ? '€' + prop.price.toLocaleString() : (prop.price.startsWith('€') ? prop.price : '€' + prop.price)}</p>
                     <div class="flex gap-4 mb-4 text-gray-600 text-sm">
                         <span class="flex items-center gap-1">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

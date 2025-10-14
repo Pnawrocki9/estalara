@@ -48,7 +48,7 @@ function updateLivePreview() {
     
     document.getElementById('preview-title').textContent = title;
     document.getElementById('preview-location').textContent = location;
-    document.getElementById('preview-price').textContent = `€${parseInt(price).toLocaleString()}`;
+    document.getElementById('preview-price').textContent = `€${parseInt(price || 0).toLocaleString()}`;
     document.getElementById('preview-description').textContent = description;
     document.getElementById('preview-image').src = image;
 }
@@ -128,7 +128,7 @@ async function loadLivePropertiesGrid() {
             <p class="text-sm text-gray-500 mb-2">${property.location}</p>
             <p class="text-sm text-gray-600 mb-3 line-clamp-2">${property.description}</p>
             <div class="flex justify-between items-center mb-3">
-                <span class="font-bold text-lg text-blue-600">€${property.price.toLocaleString()}</span>
+                <span class="font-bold text-lg text-blue-600">${typeof property.price === 'number' ? '€' + property.price.toLocaleString() : (property.price.startsWith('€') ? property.price : '€' + property.price)}</span>
             </div>
             <div class="flex gap-2">
                 <button class="cms-btn cms-btn-primary text-sm flex-1" onclick="editLiveProperty(${property.id})">Edytuj</button>
