@@ -262,7 +262,7 @@
                     url: data.pageButtons?.headerCta?.url || 'Not set'
                 },
                 navigation: `${data.navigation?.length || 0} items`,
-                liveProperties: `${data.liveProperties?.length || 0} properties`,
+                liveProperties: `${Array.isArray(data.liveProperties) ? data.liveProperties.length : 0} properties`,
                 socialLinks: `${data.socialLinks?.length || 0} links`,
                 footerLinks: `${data.footerLinks?.length || 0} links`
             };

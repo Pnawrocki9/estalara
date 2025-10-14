@@ -99,8 +99,11 @@ function deleteLiveProperty(id) {
     }
 }
 
-function loadLivePropertiesGrid() {
-    const admin = loadAdminData();
+async function loadLivePropertiesGrid() {
+    // Prefer Firebase data if available, fallback to localStorage
+    const admin = (typeof loadAdminDataAsync === 'function')
+        ? await loadAdminDataAsync()
+        : loadAdminData();
     const grid = document.getElementById('livePropertiesGrid');
     
     if (!grid) return;
