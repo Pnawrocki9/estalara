@@ -1,6 +1,9 @@
-// Particle Background System
+// Optimized Particle Background System - CSS-based with reduced particle count
 let particles = [];
-let particleCount = 50;
+let particleCount = 25; // Reduced from 50 for better performance
+let lastFrameTime = 0;
+const targetFPS = 30; // Limit to 30 FPS instead of 60
+const frameInterval = 1000 / targetFPS;
 
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
@@ -19,6 +22,13 @@ function setup() {
 }
 
 function draw() {
+    // Throttle to target FPS
+    const currentTime = millis();
+    if (currentTime - lastFrameTime < frameInterval) {
+        return;
+    }
+    lastFrameTime = currentTime;
+    
     clear();
     
     // Update and draw particles
@@ -38,12 +48,13 @@ function draw() {
         ellipse(particle.x, particle.y, particle.size);
     }
     
-    // Draw connections
+    // Optimized connections - only check nearby particles
+    const connectionDistance = 100;
     for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
+        for (let j = i + 1; j < Math.min(i + 5, particles.length); j++) { // Limit connections per particle
             let d = dist(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-            if (d < 100) {
-                stroke(255, 255, 255, 50 * (1 - d / 100));
+            if (d < connectionDistance) {
+                stroke(255, 255, 255, 50 * (1 - d / connectionDistance));
                 strokeWeight(0.5);
                 line(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
             }
@@ -238,14 +249,16 @@ function initializeMain() {
         }
     });
     
-    // Parallax effect for hero section
-    window.addEventListener('scroll', function() {
+    // Throttled parallax effect for hero section
+    const handleParallax = window.EstalaraUtils.throttle(function() {
         const scrolled = window.pageYOffset;
         const hero = document.querySelector('#home');
         if (hero) {
             hero.style.transform = `translateY(${scrolled * 0.5}px)`;
         }
-    });
+    }, 16); // ~60fps
+    
+    window.addEventListener('scroll', handleParallax, { passive: true });
     
     // Form validation (if forms exist)
     const forms = document.querySelectorAll('form');
