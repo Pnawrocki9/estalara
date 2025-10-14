@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ SZYBKA SYNCHRONIZACJA - Estalara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .card {
+            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+            border: 2px solid #333;
+            border-radius: 16px;
+            padding: 3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .btn-huge {
+            padding: 1.5rem 3rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .status-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            font-family: 'Monaco', monospace;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #333;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        .info { color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 class="text-4xl font-bold mb-2 text-center">⚡ SZYBKA SYNCHRONIZACJA</h1>
+        <p class="text-gray-400 text-center mb-8">Natychmiastowe załadowanie danych z Firebase</p>
+
+        <!-- Status Display -->
+        <div class="status-box mb-6">
+            <div id="status" class="text-center">
+                <div class="loading"></div>
+                <p class="mt-3">Łączenie z Firebase...</p>
+            </div>
+        </div>
+
+        <!-- Current Data Display -->
+        <div class="mb-6">
+            <h3 class="text-xl font-bold mb-3">📊 Aktualny tekst przycisku w Firebase:</h3>
+            <div class="status-box">
+                <div id="firebase-button" class="text-2xl font-bold text-center">
+                    <div class="loading"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sync Button -->
+        <button onclick="forceSyncNow()" class="btn-huge btn-primary mb-6">
+            🚀 ZSYNCHRONIZUJ TERAZ
+        </button>
+
+        <!-- Instructions -->
+        <div class="bg-blue-900 bg-opacity-30 border border-blue-500 rounded-lg p-4 mb-4">
+            <h3 class="font-bold mb-2">💡 Instrukcja:</h3>
+            <ol class="text-sm space-y-1 list-decimal list-inside">
+                <li>Sprawdź co pokazuje powyżej jako "tekst przycisku w Firebase"</li>
+                <li>Jeśli to NIE "Estalara Marketplace", zmień w CMS i zapisz</li>
+                <li>Kliknij "ZSYNCHRONIZUJ TERAZ"</li>
+                <li>Strona automatycznie się przeładuje z nowymi danymi</li>
+            </ol>
+        </div>
+
+        <!-- Log -->
+        <div class="mt-6">
+            <h3 class="text-lg font-bold mb-2">📝 Log:</h3>
+            <div id="log" class="status-box text-sm max-h-64 overflow-y-auto">
+                <div class="text-gray-500">Czekam na akcję...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'info',
+                success: 'success',
+                warning: 'warning',
+                error: 'error'
+            };
+            
+            const entry = document.createElement('div');
+            entry.className = colors[type];
+            entry.textContent = `[${timestamp}] ${message}`;
+            
+            if (logDiv.children.length === 1 && logDiv.children[0].textContent.includes('Czekam')) {
+                logDiv.innerHTML = '';
+            }
+            
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        async function checkFirebaseData() {
+            try {
+                log('🔍 Sprawdzam dane w Firebase...', 'info');
+                
+                await window.firebaseReadyPromise;
+                log('✅ Połączono z Firebase', 'success');
+                
+                const snapshot = await firebase.database().ref('adminData').once('value');
+                const data = snapshot.val();
+                
+                if (data) {
+                    const buttonText = data.pageButtons?.headerCta?.text || 'NIE USTAWIONO';
+                    
+                    document.getElementById('firebase-button').innerHTML = 
+                        `<span class="success">"${buttonText}"</span>`;
+                    
+                    document.getElementById('status').innerHTML = 
+                        `<div class="success text-xl">✅ DANE ZAŁADOWANE Z FIREBASE</div>`;
+                    
+                    log(`📦 Tekst przycisku w Firebase: "${buttonText}"`, 'info');
+                    
+                    if (buttonText === 'Launch App') {
+                        log('⚠️ UWAGA: W Firebase nadal jest "Launch App"', 'warning');
+                        log('💡 Musisz najpierw zmienić to w CMS (cms.html)', 'warning');
+                        document.getElementById('status').innerHTML = 
+                            `<div class="warning text-xl">⚠️ W Firebase jest "Launch App"</div>
+                             <div class="text-sm mt-2">Otwórz cms.html i zmień tekst przycisku</div>`;
+                    } else if (buttonText === 'Estalara Marketplace') {
+                        log('🎉 Świetnie! W Firebase jest "Estalara Marketplace"', 'success');
+                        log('👉 Kliknij "ZSYNCHRONIZUJ TERAZ" aby zaktualizować frontend', 'info');
+                    }
+                    
+                    return data;
+                } else {
+                    log('⚠️ Brak danych w Firebase', 'warning');
+                    document.getElementById('status').innerHTML = 
+                        `<div class="error">❌ BRAK DANYCH W FIREBASE</div>`;
+                    document.getElementById('firebase-button').innerHTML = 
+                        `<span class="error">BRAK DANYCH</span>`;
+                }
+            } catch (error) {
+                log(`❌ Błąd: ${error.message}`, 'error');
+                document.getElementById('status').innerHTML = 
+                    `<div class="error">❌ BŁĄD: ${error.message}</div>`;
+            }
+        }
+
+        async function forceSyncNow() {
+            log('🚀 Rozpoczynam synchronizację...', 'info');
+            
+            try {
+                await window.firebaseReadyPromise;
+                
+                // Load fresh data
+                log('📥 Pobieram dane z Firebase...', 'info');
+                const snapshot = await firebase.database().ref('adminData').once('value');
+                const data = snapshot.val();
+                
+                if (!data) {
+                    log('❌ Brak danych w Firebase do synchronizacji', 'error');
+                    alert('❌ Brak danych w Firebase!\n\nMusisz najpierw zapisać dane w CMS (cms.html)');
+                    return;
+                }
+                
+                const buttonText = data.pageButtons?.headerCta?.text || 'NIE USTAWIONO';
+                log(`📦 Załadowano dane. Przycisk: "${buttonText}"`, 'success');
+                
+                // Save to localStorage
+                log('💾 Zapisuję do localStorage...', 'info');
+                localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+                log('✅ Zapisano do localStorage', 'success');
+                
+                // Success message
+                log('🎉 SYNCHRONIZACJA ZAKOŃCZONA!', 'success');
+                log('🔄 Przeładowuję stronę za 2 sekundy...', 'info');
+                
+                // Show success message
+                document.getElementById('status').innerHTML = 
+                    `<div class="success text-2xl text-center">
+                        ✅ SYNCHRONIZACJA UDANA!<br>
+                        <div class="text-lg mt-2">Przycisk: "${buttonText}"</div>
+                        <div class="text-sm mt-2">Przeładowuję...</div>
+                    </div>`;
+                
+                // Reload after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 2000);
+                
+            } catch (error) {
+                log(`❌ Błąd synchronizacji: ${error.message}`, 'error');
+                alert(`❌ Błąd synchronizacji:\n${error.message}`);
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            setTimeout(checkFirebaseData, 1000);
+        });
+    </script>
+</body>
+</html>

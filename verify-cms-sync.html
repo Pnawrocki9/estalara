@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Sync Verification - Estalara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background: #10b981; }
+        .status-warning { background: #f59e0b; }
+        .status-error { background: #ef4444; }
+        .data-preview {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f4f6;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1 class="text-3xl font-bold mb-2">🔄 CMS Sync Verification</h1>
+        <p class="text-gray-600 mb-6">Check if your frontend is synchronized with Firebase CMS data</p>
+
+        <!-- Status Section -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">📊 Sync Status</h2>
+            
+            <div class="space-y-3">
+                <div id="firebase-status" class="flex items-center">
+                    <span class="status-indicator status-warning"></span>
+                    <span>Firebase Connection: <strong>Checking...</strong></span>
+                </div>
+                
+                <div id="data-status" class="flex items-center">
+                    <span class="status-indicator status-warning"></span>
+                    <span>CMS Data: <strong>Loading...</strong></span>
+                </div>
+                
+                <div id="button-status" class="flex items-center">
+                    <span class="status-indicator status-warning"></span>
+                    <span>Header Button Text: <strong id="button-text">Checking...</strong></span>
+                </div>
+                
+                <div id="cache-status" class="flex items-center">
+                    <span class="status-indicator status-warning"></span>
+                    <span>LocalStorage: <strong id="cache-text">Checking...</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mb-8 space-x-3">
+            <button onclick="checkSync()" class="btn btn-primary">
+                🔄 Refresh Check
+            </button>
+            <button onclick="forceReloadFromFirebase()" class="btn btn-success">
+                ⚡ Force Sync from Firebase
+            </button>
+            <button onclick="clearLocalCache()" class="btn btn-warning">
+                🗑️ Clear Local Cache
+            </button>
+        </div>
+
+        <!-- Data Preview -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold mb-2">📦 Firebase Data Preview</h2>
+            <p class="text-sm text-gray-600 mb-2">Current data loaded from Firebase:</p>
+            <div id="data-preview" class="data-preview">
+                <div class="loading"></div> Loading...
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 class="font-semibold text-blue-900 mb-2">💡 How to Use:</h3>
+            <ol class="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+                <li>Click "Refresh Check" to see current sync status</li>
+                <li>If data is stale, click "Force Sync from Firebase" to reload</li>
+                <li>If issues persist, click "Clear Local Cache" and refresh the page</li>
+                <li>Check the data preview to see what's currently loaded</li>
+            </ol>
+        </div>
+
+        <!-- Results Log -->
+        <div class="mt-6">
+            <h3 class="text-lg font-semibold mb-2">📝 Action Log</h3>
+            <div id="log" class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm font-mono max-h-48 overflow-y-auto">
+                <div class="text-gray-500">Waiting for actions...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="cms-firebase-adapter.js"></script>
+
+    <script>
+        let currentData = null;
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: 'text-blue-600',
+                success: 'text-green-600',
+                warning: 'text-yellow-600',
+                error: 'text-red-600'
+            };
+            
+            const entry = document.createElement('div');
+            entry.className = colors[type];
+            entry.textContent = `[${timestamp}] ${message}`;
+            
+            if (logDiv.children.length === 1 && logDiv.children[0].textContent.includes('Waiting')) {
+                logDiv.innerHTML = '';
+            }
+            
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateStatus(elementId, success, text) {
+            const element = document.getElementById(elementId);
+            const indicator = element.querySelector('.status-indicator');
+            const strong = element.querySelector('strong');
+            
+            indicator.className = 'status-indicator ' + (success ? 'status-success' : 'status-error');
+            if (strong) {
+                strong.textContent = text;
+            } else {
+                element.querySelector('span').innerHTML = element.querySelector('span').innerHTML.replace(/<strong>.*<\/strong>/, `<strong>${text}</strong>`);
+            }
+        }
+
+        async function checkSync() {
+            log('Starting sync check...', 'info');
+            
+            try {
+                // Check Firebase connection
+                await window.firebaseReadyPromise;
+                updateStatus('firebase-status', true, 'Connected');
+                log('✅ Firebase connected', 'success');
+                
+                // Load data from Firebase
+                log('Loading data from Firebase...', 'info');
+                const data = await window.loadAdminDataAsync();
+                currentData = data;
+                
+                if (data && Object.keys(data).length > 0) {
+                    updateStatus('data-status', true, `Loaded (${Object.keys(data).length} keys)`);
+                    log(`✅ Data loaded: ${Object.keys(data).length} top-level keys`, 'success');
+                    
+                    // Check specific fields
+                    const buttonText = data.pageButtons?.headerCta?.text || 'Not found';
+                    updateStatus('button-status', true, buttonText);
+                    log(`Header button text: "${buttonText}"`, 'info');
+                    
+                    // Display data preview
+                    displayDataPreview(data);
+                } else {
+                    updateStatus('data-status', false, 'Empty or missing');
+                    log('⚠️ No data found in Firebase', 'warning');
+                    document.getElementById('data-preview').innerHTML = '<div class="text-gray-500">No data available</div>';
+                }
+                
+                // Check localStorage
+                const localData = localStorage.getItem('estalaraAdminData');
+                if (localData) {
+                    const parsed = JSON.parse(localData);
+                    const localButtonText = parsed.pageButtons?.headerCta?.text || 'Not set';
+                    updateStatus('cache-status', true, `Present (button: "${localButtonText}")`);
+                    log(`LocalStorage has data. Button: "${localButtonText}"`, 'info');
+                } else {
+                    updateStatus('cache-status', true, 'Empty (will use Firebase)');
+                    log('LocalStorage is empty', 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                updateStatus('firebase-status', false, 'Connection failed');
+            }
+        }
+
+        function displayDataPreview(data) {
+            const preview = document.getElementById('data-preview');
+            
+            // Create a summary of important data
+            const summary = {
+                lastUpdated: data.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : 'Unknown',
+                version: data.version || 'Not set',
+                siteTitle: data.siteTitle || 'Not set',
+                headerButton: {
+                    text: data.pageButtons?.headerCta?.text || 'Not set',
+                    url: data.pageButtons?.headerCta?.url || 'Not set'
+                },
+                navigation: `${data.navigation?.length || 0} items`,
+                liveProperties: `${data.liveProperties?.length || 0} properties`,
+                socialLinks: `${data.socialLinks?.length || 0} links`,
+                footerLinks: `${data.footerLinks?.length || 0} links`
+            };
+            
+            preview.innerHTML = '<pre>' + JSON.stringify(summary, null, 2) + '</pre>';
+        }
+
+        async function forceReloadFromFirebase() {
+            log('🔄 Force reloading from Firebase...', 'info');
+            
+            try {
+                await window.firebaseReadyPromise;
+                
+                // Force a fresh load from Firebase
+                const snapshot = await firebase.database().ref('adminData').once('value');
+                const data = snapshot.val();
+                
+                if (data) {
+                    currentData = data;
+                    log('✅ Successfully reloaded from Firebase', 'success');
+                    
+                    // Update localStorage with fresh data
+                    localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+                    log('💾 Updated localStorage with fresh data', 'success');
+                    
+                    // Re-check sync
+                    await checkSync();
+                    
+                    log('🎉 Sync complete! Refresh your main page to see changes.', 'success');
+                } else {
+                    log('⚠️ No data found in Firebase', 'warning');
+                }
+                
+            } catch (error) {
+                log(`❌ Force reload failed: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLocalCache() {
+            log('🗑️ Clearing localStorage cache...', 'info');
+            
+            try {
+                localStorage.removeItem('estalaraAdminData');
+                log('✅ LocalStorage cleared', 'success');
+                log('💡 Refresh the page to reload from Firebase', 'info');
+                
+                updateStatus('cache-status', true, 'Cleared');
+            } catch (error) {
+                log(`❌ Failed to clear cache: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('🚀 Auto-checking sync status...', 'info');
+                checkSync();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
