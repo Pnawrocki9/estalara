@@ -660,19 +660,16 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             this.updateLogo(this.content.logoUrl);
         }
 
-        // Load properties if on home page
-        // DEBUG: Log pathname to diagnose routing issues
-        console.log('🔍 [CMS Debug] Current pathname:', window.location.pathname);
-        const isHomePage = window.location.pathname.includes('index.html') || 
-                          window.location.pathname === '/' ||
-                          window.location.pathname.endsWith('/');
-        console.log('🔍 [CMS Debug] Is home page?', isHomePage);
-        
-        if (isHomePage) {
-            console.log('📋 [CMS] Loading properties for home page');
+        // Load properties when LIVE Properties container exists on the page
+        // (more robust than pathname checks which can vary across deployments)
+        const propertiesContainer = document.querySelector('#live-properties .grid');
+        const shouldLoadProperties = !!propertiesContainer;
+        console.log('🔍 [CMS Debug] Properties container present?', shouldLoadProperties, 'Pathname:', window.location.pathname);
+        if (shouldLoadProperties) {
+            console.log('📋 [CMS] Loading properties into LIVE Properties section');
             this.loadProperties();
         } else {
-            console.warn('⚠️ [CMS] Not on home page, skipping loadProperties()');
+            console.warn('⚠️ [CMS] LIVE Properties container not found, skipping loadProperties()');
         }
 
         // Load page-specific content

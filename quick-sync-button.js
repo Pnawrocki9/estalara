@@ -6,12 +6,18 @@
     // Only show this button for authenticated CMS users or on explicit sync pages
     try {
         const isForcedSyncPage = /force-sync-now\.html|verify-cms-sync\.html/i.test(window.location.pathname);
+        const isCMSContext = /cms\.html|admin\.html|admin\//i.test(window.location.pathname);
+        // Consider user authenticated for showing the button if:
+        //  - they are actually authenticated, OR
+        //  - they are in CMS/admin context (button is a CMS tool), OR
+        //  - they are on explicit sync pages
         const isAuthenticated = typeof window.isAuthenticated === 'function' ? !!window.isAuthenticated() : false;
-        if (!isAuthenticated && !isForcedSyncPage) {
-            // Do not render the button on public pages
+        const allowShow = isAuthenticated || isCMSContext || isForcedSyncPage;
+        if (!allowShow) {
+            // Do not render the button on public pages for unauthenticated users
             return;
         }
-    } catch (_) { /* noop: safest default is to hide */ return; }
+    } catch (_) { /* safest default is to hide on unexpected error */ return; }
 
     // Only add button if not already present
     if (document.getElementById('quick-sync-btn')) return;
@@ -64,22 +70,26 @@
         try {
             console.log('🔄 Quick Sync: Rozpoczynam synchronizację...');
             
-            // Wait for Firebase
-            if (!window.firebaseReadyPromise) {
-                throw new Error('Firebase nie jest dostępny na tej stronie');
+            // Wait for Firebase (if present on the page)
+            if (window.firebaseReadyPromise) {
+                await window.firebaseReadyPromise;
             }
             
-            await window.firebaseReadyPromise;
-            
             // Load data from Firebase
-            const snapshot = await firebase.database().ref('adminData').once('value');
-            const data = snapshot.val();
+            let data = null;
+            if (typeof firebase !== 'undefined' && firebase?.database) {
+                const snapshot = await firebase.database().ref('adminData').once('value');
+                data = snapshot.val();
+            } else if (typeof window.loadAdminDataAsync === 'function') {
+                // Fallback: try adapter helper to read current data
+                data = await window.loadAdminDataAsync();
+            }
             
             if (!data) {
                 throw new Error('Brak danych w Firebase. Sprawdź CMS.');
             }
             
-            // Save to localStorage
+            // Save to localStorage to refresh frontend cache
             localStorage.setItem('estalaraAdminData', JSON.stringify(data));
             
             console.log('✅ Quick Sync: Dane zsynchronizowane!');
@@ -89,9 +99,15 @@
             button.innerHTML = '✅';
             button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
             
-            // Reload page after short delay
+            // Reload page after short delay if not inside an iframe
             setTimeout(() => {
-                window.location.reload();
+                try {
+                    if (window.top === window.self) {
+                        window.location.reload();
+                    }
+                } catch (_) {
+                    window.location.reload();
+                }
             }, 500);
             
         } catch (error) {
