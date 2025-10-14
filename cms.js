@@ -1476,7 +1476,10 @@ function loadFooterEditor() {
             socialLinks: [
                 { platform: 'LinkedIn', url: 'https://www.linkedin.com/company/estalara' },
                 { platform: 'Instagram', url: 'https://www.instagram.com/estalara' },
-                { platform: 'TikTok', url: 'https://www.tiktok.com/@estalara' }
+                { platform: 'TikTok', url: 'https://www.tiktok.com/@estalara' },
+                { platform: 'Facebook', url: 'https://www.facebook.com/estalara' },
+                { platform: 'X', url: 'https://twitter.com/estalara' },
+                { platform: 'YouTube', url: 'https://www.youtube.com/@estalara' }
             ]
         };
     }
@@ -1487,6 +1490,7 @@ function loadFooterEditor() {
     
     loadFooterLinks();
     loadSocialLinks();
+    console.log('✅ Footer editor loaded with', admin.footer.socialLinks?.length || 0, 'social links');
 }
 
 function loadFooterLinks() {
@@ -1545,31 +1549,45 @@ function deleteSocialLink(index) {
     loadSocialLinks();
 }
 
-function saveFrontendFooter() {
-    const admin = loadAdminData();
-    
-    admin.footer.companyName = document.getElementById('footer-company-name').value;
-    admin.footer.tagline = document.getElementById('footer-tagline').value;
-    admin.footer.description = document.getElementById('footer-description').value;
-    
-    // Save footer links
-    admin.footer.links = [];
-    document.querySelectorAll('[data-link-label]').forEach((input, index) => {
-        const label = input.value;
-        const url = document.querySelector(`[data-link-url="${index}"]`).value;
-        admin.footer.links.push({ label, url });
-    });
-    
-    // Save social links
-    admin.footer.socialLinks = [];
-    document.querySelectorAll('[data-social-platform]').forEach((input, index) => {
-        const platform = input.value;
-        const url = document.querySelector(`[data-social-url="${index}"]`).value;
-        admin.footer.socialLinks.push({ platform, url });
-    });
-    
-    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
-    showNotification('Footer saved successfully!', 'success');
+async function saveFrontendFooter() {
+    try {
+        const admin = loadAdminData();
+        
+        admin.footer.companyName = document.getElementById('footer-company-name').value;
+        admin.footer.tagline = document.getElementById('footer-tagline').value;
+        admin.footer.description = document.getElementById('footer-description').value;
+        
+        // Save footer links
+        admin.footer.links = [];
+        document.querySelectorAll('[data-link-label]').forEach((input, index) => {
+            const label = input.value;
+            const url = document.querySelector(`[data-link-url="${index}"]`).value;
+            admin.footer.links.push({ label, url });
+        });
+        
+        // Save social links
+        admin.footer.socialLinks = [];
+        document.querySelectorAll('[data-social-platform]').forEach((input, index) => {
+            const platform = input.value;
+            const url = document.querySelector(`[data-social-url="${index}"]`).value;
+            admin.footer.socialLinks.push({ platform, url });
+        });
+        
+        // Save to Firebase if available
+        if (window.cmsFirebaseAdapter) {
+            await window.cmsFirebaseAdapter.saveAdminData(admin);
+            console.log('✅ Footer saved to Firebase');
+        }
+        
+        // Also save to localStorage as backup
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        
+        console.log('✅ Footer saved:', admin.footer);
+        showNotification('Footer saved successfully! Changes will appear on the website.', 'success');
+    } catch (error) {
+        console.error('❌ Error saving footer:', error);
+        showNotification('Error saving footer: ' + error.message, 'error');
+    }
 }
 
 // Preview and Reset Functions
