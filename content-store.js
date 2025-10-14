@@ -89,11 +89,11 @@ class ContentStore {
      */
     async loadFromFirebase() {
         try {
-            // Wait for Firebase to be ready (max 5 seconds)
+            // Wait for Firebase to be ready (max 2 seconds for faster loading)
             await Promise.race([
                 window.firebaseReadyPromise,
                 new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Firebase timeout')), 5000)
+                    setTimeout(() => reject(new Error('Firebase timeout')), 2000)
                 )
             ]);
             

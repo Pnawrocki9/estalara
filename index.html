@@ -62,21 +62,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://app.estalara.com">
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Fonts - Optimized loading with display=swap -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS - Keep synchronous to prevent FOUC -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Animation Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
-    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <!-- Animation Libraries - Deferred for faster loading -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js" defer></script>
     
     <style>
         :root {
@@ -134,7 +133,8 @@
         }
         
         .card-hover {
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
         }
         
         .card-hover:hover {
@@ -146,7 +146,7 @@
             background: var(--white);
             color: var(--black);
             border: 2px solid var(--white);
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         
         .btn-primary:hover {
@@ -158,7 +158,7 @@
             background: var(--black);
             color: var(--white);
             border: 2px solid var(--white);
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         
         .btn-secondary:hover {
@@ -181,7 +181,8 @@
             background: var(--white);
             color: var(--black);
             border-radius: 0;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
         }
         
         .property-card:hover {
@@ -354,7 +355,7 @@
         <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-3">
             <!-- Logo -->
             <a href="index.html" class="block">
-                <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-8 md:h-10">
+                <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-8 md:h-10" loading="eager">
             </a>
 
             <!-- Hamburger (mobile only) -->
@@ -513,7 +514,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Company Info -->
                 <div>
-                    <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-10 mb-4">
+                    <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-10 mb-4" loading="lazy">
                     <h3 class="footer-company-name text-lg font-bold mb-2">Estalara</h3>
                     <p class="footer-tagline text-gray-400 text-sm mb-2">Go LIVE. Go GLOBAL.</p>
                     <p class="footer-description text-gray-400 text-sm mb-4">
@@ -550,18 +551,18 @@
         </div>
     </footer>
     
-    <!-- Firebase SDK (for loading CMS data) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="firebase-init.js"></script>
+    <!-- Firebase SDK (for loading CMS data) - Deferred -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+    <script src="firebase-init.js" defer></script>
     
-    <!-- CMS System (Refactored) - Load in order -->
-    <script src="main.js"></script>
-    <script src="content-store.js"></script>
-    <script src="cms-integration-refactored.js"></script>
+    <!-- CMS System (Refactored) - Load in order with defer -->
+    <script src="main.js" defer></script>
+    <script src="content-store.js" defer></script>
+    <script src="cms-integration-refactored.js" defer></script>
     
     <!-- Quick sync button: script contains guard to hide on public site -->
-    <script src="quick-sync-button.js"></script>
+    <script src="quick-sync-button.js" defer></script>
 </body>
 </html>
