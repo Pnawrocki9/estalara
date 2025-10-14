@@ -30,7 +30,13 @@ class EstalaraAdmin {
         console.log('   - User Agent:', navigator.userAgent);
         console.log('   - Viewport:', window.innerWidth + 'x' + window.innerHeight);
         
-        this.content = this.loadContent();
+        // Initialize asynchronously to load from Firebase
+        this.initAsync();
+    }
+
+    async initAsync() {
+        // Load content from Firebase first
+        this.content = await this.loadContent();
         this.init();
     }
 
@@ -53,7 +59,7 @@ class EstalaraAdmin {
     }
 
     // Load content from Firebase or localStorage
-    loadContent() {
+    async loadContent() {
         const defaultContent = {
             siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
             siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.",
@@ -433,32 +439,42 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             }
         };
 
-        // Load from localStorage or fall back to defaults. Include versioning to
-        // ensure that breaking changes or major updates to the default content
-        // automatically override old stored data. If the stored content lacks a
-        // version or has an older version than the default, we discard it.
+        // Load from Firebase first, then fall back to localStorage, then defaults.
+        // Include versioning to ensure that breaking changes or major updates to
+        // the default content automatically override old stored data.
         
-        // First try Firebase if available
-        if (window.cmsFirebaseAdapter && window.cmsFirebaseAdapter.cache) {
-            const firebaseData = window.cmsFirebaseAdapter.cache;
-            // Check if Firebase data is complete (has navigation and liveProperties)
-            if (firebaseData && Object.keys(firebaseData).length > 0 && 
-                firebaseData.navigation && Array.isArray(firebaseData.navigation) && firebaseData.navigation.length > 0 &&
-                (firebaseData.liveProperties || firebaseData.properties)) {
-                console.log('📥 Using cached Firebase data');
-                console.log('🔍 [Debug] Firebase data has navigation:', firebaseData.navigation.length, 'items');
-                console.log('🔍 [Debug] Firebase data has liveProperties:', Array.isArray(firebaseData.liveProperties), 'count:', firebaseData.liveProperties?.length);
-                return firebaseData;
-            } else if (firebaseData && Object.keys(firebaseData).length > 0) {
-                console.warn('⚠️ [Debug] Firebase data incomplete (missing navigation or properties), falling back to localStorage/defaults');
-                console.warn('   - Has navigation:', !!firebaseData.navigation, 'count:', firebaseData.navigation?.length);
-                console.warn('   - Has liveProperties:', !!firebaseData.liveProperties, 'count:', firebaseData.liveProperties?.length);
-                console.warn('   - Has properties:', !!firebaseData.properties, 'count:', firebaseData.properties?.length);
-            } else {
-                console.warn('⚠️ [Debug] Firebase cache exists but is empty');
+        console.log('📦 [Debug] Loading content - checking Firebase first...');
+        
+        // First try loading from Firebase using the async helper
+        if (window.loadAdminDataAsync) {
+            try {
+                console.log('🔄 Attempting to load data from Firebase...');
+                const firebaseData = await window.loadAdminDataAsync();
+                
+                // Check if Firebase data is complete (has navigation and liveProperties)
+                if (firebaseData && Object.keys(firebaseData).length > 0 && 
+                    firebaseData.navigation && Array.isArray(firebaseData.navigation) && firebaseData.navigation.length > 0 &&
+                    (firebaseData.liveProperties || firebaseData.properties)) {
+                    console.log('✅ Successfully loaded data from Firebase');
+                    console.log('🔍 [Debug] Firebase data has navigation:', firebaseData.navigation.length, 'items');
+                    console.log('🔍 [Debug] Firebase data has liveProperties:', Array.isArray(firebaseData.liveProperties), 'count:', firebaseData.liveProperties?.length);
+                    
+                    // Merge with defaults to ensure all required fields exist
+                    const merged = { ...defaultContent, ...firebaseData };
+                    return merged;
+                } else if (firebaseData && Object.keys(firebaseData).length > 0) {
+                    console.warn('⚠️ [Debug] Firebase data incomplete (missing navigation or properties), falling back to localStorage/defaults');
+                    console.warn('   - Has navigation:', !!firebaseData.navigation, 'count:', firebaseData.navigation?.length);
+                    console.warn('   - Has liveProperties:', !!firebaseData.liveProperties, 'count:', firebaseData.liveProperties?.length);
+                    console.warn('   - Has properties:', !!firebaseData.properties, 'count:', firebaseData.properties?.length);
+                } else {
+                    console.warn('⚠️ [Debug] Firebase returned empty data');
+                }
+            } catch (error) {
+                console.error('❌ Failed to load from Firebase:', error);
             }
         } else {
-            console.warn('⚠️ [Debug] Firebase adapter not available or cache not initialized');
+            console.warn('⚠️ [Debug] Firebase adapter not available yet (scripts may not be loaded)');
         }
         
         // FIX 4: Safe localStorage access with fallback for mobile devices
