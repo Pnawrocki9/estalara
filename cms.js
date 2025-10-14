@@ -54,12 +54,41 @@ function updateLivePreview() {
     const price = document.getElementById('live-property-price')?.value || '0';
     const description = document.getElementById('live-property-description')?.value || 'Opis nieruchomości pojawi się tutaj...';
     const image = document.getElementById('live-property-image')?.value || 'https://via.placeholder.com/400x300?text=Dodaj+Zdjęcie';
+    const beds = document.getElementById('live-property-beds')?.value || '';
+    const baths = document.getElementById('live-property-baths')?.value || '';
+    const area = document.getElementById('live-property-area')?.value || '';
     
     document.getElementById('preview-title').textContent = title;
     document.getElementById('preview-location').textContent = location;
     document.getElementById('preview-price').textContent = `€${parseInt(price || 0).toLocaleString()}`;
     document.getElementById('preview-description').textContent = description;
     document.getElementById('preview-image').src = image;
+    
+    // Update property details (beds, baths, area)
+    const bedsContainer = document.getElementById('preview-beds-container');
+    const bathsContainer = document.getElementById('preview-baths-container');
+    const areaContainer = document.getElementById('preview-area-container');
+    
+    if (beds && beds > 0) {
+        bedsContainer.style.display = 'flex';
+        document.getElementById('preview-beds').textContent = beds;
+    } else {
+        bedsContainer.style.display = 'none';
+    }
+    
+    if (baths && baths > 0) {
+        bathsContainer.style.display = 'flex';
+        document.getElementById('preview-baths').textContent = baths;
+    } else {
+        bathsContainer.style.display = 'none';
+    }
+    
+    if (area && area > 0) {
+        areaContainer.style.display = 'flex';
+        document.getElementById('preview-area').textContent = area;
+    } else {
+        areaContainer.style.display = 'none';
+    }
 }
 
 function editLiveProperty(id) {
@@ -80,6 +109,9 @@ function editLiveProperty(id) {
     document.getElementById('live-property-description').value = property.description || '';
     document.getElementById('live-property-image').value = property.image || '';
     document.getElementById('live-property-link').value = property.link || '';
+    document.getElementById('live-property-beds').value = property.beds || '';
+    document.getElementById('live-property-baths').value = property.baths || '';
+    document.getElementById('live-property-area').value = property.area || '';
     
     updateLivePreview();
     
@@ -407,7 +439,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (livePropertyForm) {
         // Add live preview updates on input
         ['live-property-title', 'live-property-location', 'live-property-price', 
-         'live-property-description', 'live-property-image'].forEach(id => {
+         'live-property-description', 'live-property-image', 'live-property-beds',
+         'live-property-baths', 'live-property-area'].forEach(id => {
             const element = document.getElementById(id);
             if (element) {
                 element.addEventListener('input', updateLivePreview);
@@ -432,7 +465,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                     price: parseInt(document.getElementById('live-property-price').value),
                     description: document.getElementById('live-property-description').value,
                     image: document.getElementById('live-property-image').value,
-                    link: document.getElementById('live-property-link').value || 'https://app.estalara.com'
+                    link: document.getElementById('live-property-link').value || 'https://app.estalara.com',
+                    beds: document.getElementById('live-property-beds').value ? parseInt(document.getElementById('live-property-beds').value) : null,
+                    baths: document.getElementById('live-property-baths').value ? parseFloat(document.getElementById('live-property-baths').value) : null,
+                    area: document.getElementById('live-property-area').value ? parseInt(document.getElementById('live-property-area').value) : null
                 };
                 
                 if (currentLivePropertyId) {

@@ -507,6 +507,20 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Cena (€) *</label>
                             <input type="number" id="live-property-price" class="admin-input w-full" placeholder="450000" required>
                         </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Sypialnie</label>
+                                <input type="number" id="live-property-beds" class="admin-input w-full" placeholder="3" min="0">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Łazienki</label>
+                                <input type="number" id="live-property-baths" class="admin-input w-full" placeholder="2" min="0" step="0.5">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Powierzchnia (m²)</label>
+                                <input type="number" id="live-property-area" class="admin-input w-full" placeholder="120" min="0">
+                            </div>
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Opis *</label>
                             <textarea id="live-property-description" class="admin-input w-full" rows="4" placeholder="Opis nieruchomości..." required></textarea>
@@ -541,6 +555,26 @@
                                 </div>
                                 <p id="preview-location" class="text-sm text-gray-500 mb-3">Lokalizacja</p>
                                 <p id="preview-description" class="text-gray-600 text-sm mb-4">Opis nieruchomości pojawi się tutaj...</p>
+                                <div id="preview-details" class="flex gap-4 mb-4 text-sm text-gray-600">
+                                    <div id="preview-beds-container" class="flex items-center gap-1" style="display: none;">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                        </svg>
+                                        <span id="preview-beds">-</span>
+                                    </div>
+                                    <div id="preview-baths-container" class="flex items-center gap-1" style="display: none;">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                                        </svg>
+                                        <span id="preview-baths">-</span>
+                                    </div>
+                                    <div id="preview-area-container" class="flex items-center gap-1" style="display: none;">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                                        </svg>
+                                        <span id="preview-area">-</span> m²
+                                    </div>
+                                </div>
                                 <div class="flex justify-between items-center">
                                     <span id="preview-price" class="font-bold text-lg text-blue-600">€0</span>
                                     <button class="bg-black text-white px-4 py-2 rounded text-sm hover:bg-gray-800 transition-colors">
