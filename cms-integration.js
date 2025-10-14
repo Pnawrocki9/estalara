@@ -450,26 +450,20 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             try {
                 console.log('🔄 Attempting to load data from Firebase...');
                 const firebaseData = await window.loadAdminDataAsync();
-                
-                // Check if Firebase data is complete (has navigation and liveProperties)
-                if (firebaseData && Object.keys(firebaseData).length > 0 && 
-                    firebaseData.navigation && Array.isArray(firebaseData.navigation) && firebaseData.navigation.length > 0 &&
-                    (firebaseData.liveProperties || firebaseData.properties)) {
+
+                // Accept any non-empty Firebase payload and merge with defaults.
+                // Previously this required both navigation and properties, which
+                // caused valid liveProperties to be ignored when navigation was
+                // empty – resulting in missing LIVE tiles on the frontend.
+                if (firebaseData && Object.keys(firebaseData).length > 0) {
                     console.log('✅ Successfully loaded data from Firebase');
-                    console.log('🔍 [Debug] Firebase data has navigation:', firebaseData.navigation.length, 'items');
-                    console.log('🔍 [Debug] Firebase data has liveProperties:', Array.isArray(firebaseData.liveProperties), 'count:', firebaseData.liveProperties?.length);
-                    
-                    // Merge with defaults to ensure all required fields exist
+                    console.log('🔍 [Debug] Firebase navigation count:', firebaseData.navigation?.length || 0);
+                    console.log('🔍 [Debug] Firebase liveProperties count:', firebaseData.liveProperties?.length || 0);
                     const merged = { ...defaultContent, ...firebaseData };
                     return merged;
-                } else if (firebaseData && Object.keys(firebaseData).length > 0) {
-                    console.warn('⚠️ [Debug] Firebase data incomplete (missing navigation or properties), falling back to localStorage/defaults');
-                    console.warn('   - Has navigation:', !!firebaseData.navigation, 'count:', firebaseData.navigation?.length);
-                    console.warn('   - Has liveProperties:', !!firebaseData.liveProperties, 'count:', firebaseData.liveProperties?.length);
-                    console.warn('   - Has properties:', !!firebaseData.properties, 'count:', firebaseData.properties?.length);
-                } else {
-                    console.warn('⚠️ [Debug] Firebase returned empty data');
                 }
+                
+                console.warn('⚠️ [Debug] Firebase returned empty data');
             } catch (error) {
                 console.error('❌ Failed to load from Firebase:', error);
             }
@@ -871,7 +865,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             <p class="text-gray-600 mb-4">${property.description}</p>
             <div class="flex justify-between items-center">
                 <span class="font-bold text-lg">€${property.price.toLocaleString()}</span>
-                <a href="https://app.estalara.com/"
+                <a href="${property.link || 'https://app.estalara.com'}"
                    target="_blank"
                    class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors">
                     View Property →
