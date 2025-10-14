@@ -1941,7 +1941,7 @@ function deleteHowItWorksStep(index) {
     }
 }
 
-function saveHowItWorks() {
+async function saveHowItWorks() {
     const admin = loadAdminData();
     
     if (!admin.howItWorks) {
@@ -1969,7 +1969,19 @@ function saveHowItWorks() {
         }
     }
     
+    // Save to localStorage (this will auto-sync to Firebase via cms-firebase-adapter.js)
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    // Also explicitly sync to Firebase using ContentStore if available
+    if (window.contentStore) {
+        try {
+            await window.contentStore.saveContent(admin);
+            console.log('✅ How It Works synced to Firebase via ContentStore');
+        } catch (error) {
+            console.warn('⚠️ ContentStore sync failed, relying on auto-sync:', error);
+        }
+    }
+    
     showNotification('How It Works section saved successfully!', 'success');
 }
 
