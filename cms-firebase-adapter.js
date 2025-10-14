@@ -14,26 +14,54 @@ class CMSFirebaseAdapter {
     }
     
     // Initialize Firebase references after Firebase is ready
-    async initializeFirebaseRefs() {
+    async initializeFirebaseRefs(retryCount = 0, maxRetries = 3) {
         try {
             // Wait for Firebase to be ready using the Promise from firebase-config.js
-            await window.firebaseReadyPromise;
+            // FIX: Add timeout to prevent infinite waiting
+            const timeout = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Firebase initialization timeout')), 10000)
+            );
+            
+            await Promise.race([
+                window.firebaseReadyPromise,
+                timeout
+            ]);
             
             this.db = firebase.database();
             this.adminDataRef = this.db.ref('adminData');
             console.log('✅ Firebase adapter references initialized');
         } catch (error) {
-            console.error('❌ Failed to initialize Firebase adapter references:', error);
+            console.error(`❌ Failed to initialize Firebase adapter references (attempt ${retryCount + 1}/${maxRetries + 1}):`, error);
+            
+            // FIX: Retry logic with exponential backoff
+            if (retryCount < maxRetries) {
+                const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+                console.log(`🔄 Retrying Firebase initialization in ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return this.initializeFirebaseRefs(retryCount + 1, maxRetries);
+            } else {
+                console.error('❌ Firebase initialization failed after all retries, continuing without Firebase');
+            }
         }
     }
 
     // Initialize and load data from Firebase
-    async init() {
+    async init(retryCount = 0, maxRetries = 3) {
         if (this.initialized) return this.cache;
         
-        // Wait for Firebase refs to be initialized
-        while (!this.adminDataRef) {
+        // FIX: Add timeout to prevent infinite waiting
+        let waitTime = 0;
+        const maxWaitTime = 5000; // 5 seconds max wait
+        while (!this.adminDataRef && waitTime < maxWaitTime) {
             await new Promise(resolve => setTimeout(resolve, 100));
+            waitTime += 100;
+        }
+        
+        if (!this.adminDataRef) {
+            console.error('❌ Firebase refs not initialized after timeout, using empty cache');
+            this.cache = {};
+            this.initialized = true;
+            return this.cache;
         }
         
         try {
@@ -43,9 +71,20 @@ class CMSFirebaseAdapter {
             console.log('✅ CMS Firebase Adapter initialized');
             return this.cache;
         } catch (error) {
-            console.error('❌ Failed to initialize Firebase adapter:', error);
-            this.cache = {};
-            return this.cache;
+            console.error(`❌ Failed to initialize Firebase adapter (attempt ${retryCount + 1}/${maxRetries + 1}):`, error);
+            
+            // FIX: Retry logic with exponential backoff
+            if (retryCount < maxRetries) {
+                const delay = Math.pow(2, retryCount) * 500; // 500ms, 1s, 2s
+                console.log(`🔄 Retrying Firebase data load in ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return this.init(retryCount + 1, maxRetries);
+            } else {
+                console.error('❌ Firebase data load failed after all retries, using empty cache');
+                this.cache = {};
+                this.initialized = true;
+                return this.cache;
+            }
         }
     }
 
