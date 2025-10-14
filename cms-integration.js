@@ -1911,6 +1911,118 @@ hideEmptyPlaceholders();
     }
 })();
 
+// =============================================================================
+// UTILITY FUNCTIONS FOR MANUAL SYNC AND CACHE MANAGEMENT
+// =============================================================================
+
+/**
+ * Force refresh content from Firebase and reload the page
+ * Use this when you want to ensure the latest CMS changes are loaded
+ */
+window.forceRefreshFromCMS = async function() {
+    console.log('🔄 Force refreshing from Firebase...');
+    
+    try {
+        // Wait for Firebase to be ready
+        await window.firebaseReadyPromise;
+        
+        // Load fresh data from Firebase
+        const snapshot = await firebase.database().ref('adminData').once('value');
+        const data = snapshot.val();
+        
+        if (data) {
+            // Update localStorage with fresh data
+            localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+            console.log('✅ Fresh data loaded from Firebase and saved to cache');
+            
+            // Reload the page to apply changes
+            console.log('🔄 Reloading page to apply changes...');
+            window.location.reload();
+        } else {
+            console.warn('⚠️ No data found in Firebase');
+            return { success: false, error: 'No data in Firebase' };
+        }
+    } catch (error) {
+        console.error('❌ Failed to refresh from Firebase:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+/**
+ * Clear local cache and reload from Firebase
+ * Use this when local cache might be corrupted
+ */
+window.clearCMSCache = function() {
+    console.log('🗑️ Clearing CMS cache...');
+    
+    try {
+        localStorage.removeItem('estalaraAdminData');
+        console.log('✅ Cache cleared');
+        console.log('🔄 Reloading page to fetch fresh data...');
+        window.location.reload();
+    } catch (error) {
+        console.error('❌ Failed to clear cache:', error);
+        return { success: false, error: error.message };
+    }
+};
+
+/**
+ * Check sync status between Firebase and local cache
+ * Returns information about current data state
+ */
+window.checkCMSSync = async function() {
+    console.log('🔍 Checking CMS sync status...');
+    
+    const status = {
+        firebase: { connected: false, hasData: false, lastUpdated: null },
+        localStorage: { hasData: false, lastUpdated: null },
+        synced: false
+    };
+    
+    try {
+        // Check Firebase
+        await window.firebaseReadyPromise;
+        status.firebase.connected = true;
+        
+        const snapshot = await firebase.database().ref('adminData').once('value');
+        const firebaseData = snapshot.val();
+        
+        if (firebaseData) {
+            status.firebase.hasData = true;
+            status.firebase.lastUpdated = firebaseData.lastUpdated || null;
+            status.firebase.buttonText = firebaseData.pageButtons?.headerCta?.text || 'Not set';
+        }
+        
+        // Check localStorage
+        const localData = localStorage.getItem('estalaraAdminData');
+        if (localData) {
+            const parsed = JSON.parse(localData);
+            status.localStorage.hasData = true;
+            status.localStorage.lastUpdated = parsed.lastUpdated || null;
+            status.localStorage.buttonText = parsed.pageButtons?.headerCta?.text || 'Not set';
+        }
+        
+        // Compare timestamps
+        if (status.firebase.lastUpdated && status.localStorage.lastUpdated) {
+            status.synced = status.firebase.lastUpdated === status.localStorage.lastUpdated;
+        }
+        
+        console.log('📊 Sync Status:', status);
+        return status;
+        
+    } catch (error) {
+        console.error('❌ Failed to check sync:', error);
+        status.error = error.message;
+        return status;
+    }
+};
+
+// Log available utility functions
+console.log('🛠️ CMS Sync Utilities Available:');
+console.log('  - window.forceRefreshFromCMS() - Force reload from Firebase');
+console.log('  - window.clearCMSCache() - Clear local cache and reload');
+console.log('  - window.checkCMSSync() - Check sync status');
+
 // Export for use in other scripts
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = EstalaraAdmin;
