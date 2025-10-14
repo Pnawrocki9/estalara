@@ -554,15 +554,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="firebase-auth.js"></script>
-    <script src="cms-firebase-adapter.js"></script>
+    <script src="firebase-init.js"></script>
     
-    <!-- Load scripts synchronously to ensure proper initialization on mobile devices.
-         main.js must load first to set up IntersectionObserver helpers (window.observeReveals, window.revealObserver). -->
+    <!-- CMS System (Refactored) - Load in order -->
     <script src="main.js"></script>
-    <!-- Load cms-integration.js after main.js so it can use the IntersectionObserver helpers for dynamic content. -->
-    <script src="cms-integration.js"></script>
+    <script src="content-store.js"></script>
+    <script src="cms-integration-refactored.js"></script>
+    
     <!-- Quick sync button: script contains guard to hide on public site -->
     <script src="quick-sync-button.js"></script>
 </body>
