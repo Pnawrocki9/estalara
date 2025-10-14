@@ -13,6 +13,15 @@ function showSection(sectionId) {
     if (sectionId === 'settings') {
         loadSettingsForm();
     }
+    
+    // Load appropriate data when sections are shown
+    if (sectionId === 'live-properties') {
+        loadLivePropertiesGrid();
+    } else if (sectionId === 'frontend-editor') {
+        loadFrontendEditor();
+    } else if (sectionId === 'page-structure') {
+        loadPageStructureEditor();
+    }
 }
 
 // Global variable to track current property being edited
@@ -1145,6 +1154,10 @@ function showFrontendTab(tabName) {
         loadFooterEditor();
     } else if (tabName === 'howitworks') {
         loadHowItWorksEditor();
+    } else if (tabName === 'agentsfeatures') {
+        loadAgentsFeatures();
+    } else if (tabName === 'aboutcontent') {
+        loadAboutContent();
     }
 }
 

@@ -38,6 +38,11 @@ class EstalaraAdmin {
         this.loadHero();
         this.loadLiveProperties();
         this.loadButtons();
+        this.loadHowItWorks();
+        this.loadHomeFeatures();
+        this.loadAgentsFeatures();
+        this.loadAboutContent();
+        this.loadSectionHeadings();
     }
 
     /**
@@ -199,6 +204,167 @@ class EstalaraAdmin {
             headerBtn.textContent = this.content.pages.home.hero.ctaText || 'Estalara Marketplace';
             headerBtn.href = this.content.pages.home.hero.ctaUrl || 'https://app.estalara.com';
         }
+    }
+
+    /**
+     * Load "How It Works" section
+     */
+    loadHowItWorks() {
+        const section = document.querySelector('#how-it-works');
+        if (!section || !this.content.howItWorks) return;
+
+        // Update section heading
+        const heading = section.querySelector('.section-text, h2');
+        if (heading && this.content.howItWorks.heading) {
+            heading.textContent = this.content.howItWorks.heading;
+        }
+
+        // Update section subtitle
+        const subtitle = section.querySelector('.body-text, p');
+        if (subtitle && this.content.howItWorks.subtitle) {
+            subtitle.textContent = this.content.howItWorks.subtitle;
+        }
+
+        // Update steps
+        const stepsContainer = section.querySelector('.grid');
+        if (stepsContainer && this.content.howItWorks.steps) {
+            stepsContainer.innerHTML = this.content.howItWorks.steps.map(step => `
+                <div class="text-center reveal card-hover p-8">
+                    <div class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">${step.number}</div>
+                    <h3 class="text-2xl font-bold mb-4">${step.title}</h3>
+                    <p class="text-gray-300">${step.description}</p>
+                </div>
+            `).join('');
+        }
+    }
+
+    /**
+     * Load homepage features
+     */
+    loadHomeFeatures() {
+        // Only load on homepage
+        if (window.location.pathname.includes('agents.html') || 
+            window.location.pathname.includes('agencies.html') ||
+            window.location.pathname.includes('investors.html') ||
+            window.location.pathname.includes('about.html')) {
+            return;
+        }
+
+        const section = document.querySelector('#features');
+        if (!section || !this.content.features) return;
+
+        const featuresGrid = section.querySelector('.features-grid, .grid');
+        if (featuresGrid && this.content.features?.home) {
+            featuresGrid.innerHTML = this.content.features.home.map(feature => `
+                <div class="card-hover p-8 bg-white/5 rounded-lg reveal">
+                    <div class="text-4xl mb-4">${feature.icon || '⭐'}</div>
+                    <h3 class="text-2xl font-bold mb-4">${feature.title}</h3>
+                    <p class="text-gray-300">${feature.description}</p>
+                </div>
+            `).join('');
+        }
+    }
+
+    /**
+     * Load Agents page features
+     */
+    loadAgentsFeatures() {
+        const section = document.querySelector('#features');
+        if (!section || !this.content.agentsFeatures) return;
+
+        // Only load on agents.html
+        if (!window.location.pathname.includes('agents.html')) return;
+
+        const featuresGrid = section.querySelector('.grid');
+        if (featuresGrid && this.content.agentsFeatures) {
+            featuresGrid.innerHTML = this.content.agentsFeatures.map(feature => `
+                <div class="feature-card p-8">
+                    <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">${feature.icon}</div>
+                    <h3 class="text-2xl font-bold mb-4">${feature.title}</h3>
+                    <p class="text-gray-600 mb-6">${feature.description}</p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        ${feature.bullets.map(bullet => `<li>• ${bullet}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+    }
+
+    /**
+     * Load About page content
+     */
+    loadAboutContent() {
+        if (!window.location.pathname.includes('about.html')) return;
+        if (!this.content.aboutContent) return;
+
+        // Mission section
+        const missionP1 = document.querySelector('#mission-p1');
+        const missionP2 = document.querySelector('#mission-p2');
+        if (missionP1 && this.content.aboutContent.mission) {
+            missionP1.textContent = this.content.aboutContent.mission.p1;
+        }
+        if (missionP2 && this.content.aboutContent.mission) {
+            missionP2.textContent = this.content.aboutContent.mission.p2;
+        }
+
+        // Vision section
+        const visionP1 = document.querySelector('#vision-p1');
+        const visionP2 = document.querySelector('#vision-p2');
+        if (visionP1 && this.content.aboutContent.vision) {
+            visionP1.textContent = this.content.aboutContent.vision.p1;
+        }
+        if (visionP2 && this.content.aboutContent.vision) {
+            visionP2.textContent = this.content.aboutContent.vision.p2;
+        }
+
+        // What is Estalara section
+        const whatIsContent = document.querySelector('#what-is-estalara-content');
+        if (whatIsContent && this.content.aboutContent.whatIs) {
+            whatIsContent.textContent = this.content.aboutContent.whatIs;
+        }
+    }
+
+    /**
+     * Load section headings across all pages
+     */
+    loadSectionHeadings() {
+        if (!this.content.sectionHeadings) return;
+
+        // Get current page
+        const page = this.getCurrentPage();
+        const pageHeadings = this.content.sectionHeadings?.[page];
+        
+        if (!pageHeadings) return;
+
+        // Load section headings for current page
+        Object.keys(pageHeadings).forEach(sectionId => {
+            const section = pageHeadings[sectionId];
+            
+            // Update heading
+            if (section.heading) {
+                const headingEl = document.querySelector(`#${sectionId} .section-text, #${sectionId} h2`);
+                if (headingEl) headingEl.textContent = section.heading;
+            }
+            
+            // Update subtitle
+            if (section.subtitle) {
+                const subtitleEl = document.querySelector(`#${sectionId} .body-text, #${sectionId} p`);
+                if (subtitleEl) subtitleEl.textContent = section.subtitle;
+            }
+        });
+    }
+
+    /**
+     * Get current page identifier
+     */
+    getCurrentPage() {
+        const path = window.location.pathname;
+        if (path.includes('agents.html')) return 'agents';
+        if (path.includes('agencies.html')) return 'agencies';
+        if (path.includes('investors.html')) return 'investors';
+        if (path.includes('about.html')) return 'about';
+        if (path.includes('faq.html')) return 'faq';
+        return 'home';
     }
 
     /**
