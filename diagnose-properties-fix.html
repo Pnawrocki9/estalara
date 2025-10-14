@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostyka Naprawy Property Tiles</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #000;
+            padding: 30px;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+        }
+        h1 {
+            color: #00ff00;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #00dd00;
+            margin-top: 30px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #00ff00;
+            background: #0a0a0a;
+        }
+        .error {
+            border-left-color: #ff0000;
+            color: #ff6666;
+        }
+        .warning {
+            border-left-color: #ffaa00;
+            color: #ffcc66;
+        }
+        .success {
+            border-left-color: #00ff00;
+            color: #66ff66;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #00dd00;
+        }
+        pre {
+            background: #0a0a0a;
+            padding: 15px;
+            overflow-x: auto;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+        .test-result {
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #0a0a0a;
+        }
+        .code {
+            background: #0a0a0a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Diagnostyka Naprawy Property Tiles</h1>
+        <p>Ta strona przeprowadza kompleksową diagnostykę naprawy problemu z wyświetlaniem kafelków nieruchomości.</p>
+
+        <div class="status success">
+            ✅ Strona diagnostyczna załadowana poprawnie
+        </div>
+
+        <h2>🎯 Wykryte i Naprawione Problemy</h2>
+        <div class="test-result">
+            <h3>1. Problem z inicjalizacją this.content</h3>
+            <div class="status success">
+                ✅ NAPRAWIONO: Dodano walidację i fallback do getDefaultContent()<br>
+                ✅ NAPRAWIONO: Dodano defensive checks w loadDynamicContent()<br>
+                ✅ NAPRAWIONO: Dodano automatic reinicjalizację przy undefined content
+            </div>
+        </div>
+
+        <div class="test-result">
+            <h3>2. Problem z this.content.pages undefined</h3>
+            <div class="status success">
+                ✅ NAPRAWIONO: Dodano walidację pages object w initAsync()<br>
+                ✅ NAPRAWIONO: Automatyczne mergowanie z domyślną strukturą<br>
+                ✅ NAPRAWIONO: Logowanie szczegółowe dla debugging
+            </div>
+        </div>
+
+        <div class="test-result">
+            <h3>3. Problem z main.js timing (IntersectionObserver)</h3>
+            <div class="status success">
+                ✅ NAPRAWIONO: Zwiększono maxRetries z 20 do 100 (5 sekund)<br>
+                ✅ NAPRAWIONO: Dodano fallback functions dla observeReveals<br>
+                ✅ NAPRAWIONO: Dodano fallback revealObserver object<br>
+                ✅ NAPRAWIONO: Lepsze logowanie tylko co 20 prób
+            </div>
+        </div>
+
+        <div class="test-result">
+            <h3>4. Problem z brakującymi liveProperties</h3>
+            <div class="status success">
+                ✅ NAPRAWIONO: Triple-fallback system (liveProperties → properties → defaults)<br>
+                ✅ NAPRAWIONO: Automatyczna migracja z properties do liveProperties<br>
+                ✅ NAPRAWIONO: Defensive checks w loadProperties()<br>
+                ✅ NAPRAWIONO: Backup retry mechanism po 1 sekundzie
+            </div>
+        </div>
+
+        <h2>🧪 Testy Automatyczne</h2>
+        <div id="test-results"></div>
+
+        <h2>🛠️ Narzędzia Diagnostyczne</h2>
+        <button onclick="runDiagnostic()">🔍 Uruchom Pełną Diagnostykę</button>
+        <button onclick="testLoadProperties()">📋 Test Ładowania Properties</button>
+        <button onclick="testMainJsIntegration()">🔗 Test Integracji main.js</button>
+        <button onclick="window.forceRefreshFromCMS()">🔄 Force Refresh z Firebase</button>
+        <button onclick="window.clearCMSCache()">🗑️ Wyczyść Cache</button>
+
+        <h2>📊 Wyniki Diagnostyki</h2>
+        <div id="diagnostic-output">
+            <p>Kliknij "Uruchom Pełną Diagnostykę" aby rozpocząć...</p>
+        </div>
+
+        <h2>💡 Instrukcje</h2>
+        <div class="status">
+            <strong>Jeśli kafelki nadal nie są widoczne:</strong><br><br>
+            1. Otwórz konsolę przeglądarki (F12)<br>
+            2. Wpisz: <span class="code">diagnoseCMS()</span><br>
+            3. Sprawdź wyniki diagnostyki<br>
+            4. Jeśli liveProperties count = 0, spróbuj: <span class="code">window.forceRefreshFromCMS()</span><br>
+            5. Jeśli container children = 0, spróbuj: <span class="code">window.estalaraAdmin.loadProperties()</span><br>
+            6. W razie potrzeby, wyczyść cache: <span class="code">window.clearCMSCache()</span>
+        </div>
+
+        <h2>🔗 Linki</h2>
+        <div class="status">
+            <a href="index.html" style="color: #00ff00;">← Powrót do strony głównej</a><br>
+            <a href="cms.html" style="color: #00ff00;">Przejdź do CMS</a><br>
+            <a href="#" onclick="location.reload(); return false;" style="color: #00ff00;">🔄 Odśwież stronę diagnostyczną</a>
+        </div>
+    </div>
+
+    <!-- Load all required scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-auth.js"></script>
+    <script src="cms-firebase-adapter.js"></script>
+    <script src="main.js"></script>
+    <script src="cms-integration.js"></script>
+
+    <script>
+        function addTestResult(title, status, message) {
+            const resultsDiv = document.getElementById('test-results');
+            const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : 'warning';
+            const icon = status === 'success' ? '✅' : status === 'error' ? '❌' : '⚠️';
+            
+            resultsDiv.innerHTML += `
+                <div class="test-result">
+                    <div class="status ${statusClass}">
+                        ${icon} <strong>${title}</strong><br>
+                        ${message}
+                    </div>
+                </div>
+            `;
+        }
+
+        function runDiagnostic() {
+            const output = document.getElementById('diagnostic-output');
+            output.innerHTML = '<pre>Uruchamianie diagnostyki...\n\n</pre>';
+            
+            setTimeout(() => {
+                if (typeof window.diagnoseCMS === 'function') {
+                    const result = window.diagnoseCMS();
+                    output.innerHTML += '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                } else {
+                    output.innerHTML += '<div class="status error">❌ Funkcja diagnoseCMS nie jest dostępna!</div>';
+                }
+            }, 500);
+        }
+
+        function testLoadProperties() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            
+            addTestResult('Test 1: EstalaraAdmin Instance', 
+                window.estalaraAdmin ? 'success' : 'error',
+                window.estalaraAdmin ? 'Instance exists' : 'Instance NOT found');
+            
+            if (window.estalaraAdmin) {
+                addTestResult('Test 2: Content Object',
+                    window.estalaraAdmin.content ? 'success' : 'error',
+                    window.estalaraAdmin.content ? 'Content object exists' : 'Content object is undefined');
+                
+                if (window.estalaraAdmin.content) {
+                    const count = window.estalaraAdmin.content.liveProperties?.length || 0;
+                    addTestResult('Test 3: LiveProperties Array',
+                        count > 0 ? 'success' : 'error',
+                        `Found ${count} properties`);
+                    
+                    const container = document.querySelector('#live-properties .grid');
+                    addTestResult('Test 4: DOM Container',
+                        container ? 'success' : 'error',
+                        container ? `Container found with ${container.children.length} children` : 'Container NOT found');
+                    
+                    if (container && count > 0 && container.children.length === 0) {
+                        addTestResult('Test 5: Auto-Fix Attempt',
+                            'warning',
+                            'Próba automatycznego załadowania properties...');
+                        setTimeout(() => {
+                            window.estalaraAdmin.loadProperties();
+                            setTimeout(() => {
+                                const newCount = container.children.length;
+                                addTestResult('Test 6: Auto-Fix Result',
+                                    newCount > 0 ? 'success' : 'error',
+                                    `Container now has ${newCount} children`);
+                            }, 1000);
+                        }, 500);
+                    }
+                }
+            }
+        }
+
+        function testMainJsIntegration() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            
+            addTestResult('Test: observeReveals Function',
+                typeof window.observeReveals === 'function' ? 'success' : 'error',
+                typeof window.observeReveals === 'function' ? 'Function exists' : 'Function NOT found');
+            
+            addTestResult('Test: revealObserver Object',
+                typeof window.revealObserver !== 'undefined' ? 'success' : 'error',
+                typeof window.revealObserver !== 'undefined' ? 'Observer exists' : 'Observer NOT found');
+            
+            addTestResult('Test: IntersectionObserver API',
+                typeof IntersectionObserver !== 'undefined' ? 'success' : 'error',
+                typeof IntersectionObserver !== 'undefined' ? 'API available' : 'API NOT available');
+        }
+
+        // Auto-run tests after page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('🔍 Auto-running diagnostic tests...');
+                testLoadProperties();
+                runDiagnostic();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
