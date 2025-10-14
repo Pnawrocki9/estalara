@@ -3,7 +3,16 @@
 
 (function() {
     'use strict';
-    
+    // Only show this button for authenticated CMS users or on explicit sync pages
+    try {
+        const isForcedSyncPage = /force-sync-now\.html|verify-cms-sync\.html/i.test(window.location.pathname);
+        const isAuthenticated = typeof window.isAuthenticated === 'function' ? !!window.isAuthenticated() : false;
+        if (!isAuthenticated && !isForcedSyncPage) {
+            // Do not render the button on public pages
+            return;
+        }
+    } catch (_) { /* noop: safest default is to hide */ return; }
+
     // Only add button if not already present
     if (document.getElementById('quick-sync-btn')) return;
     
