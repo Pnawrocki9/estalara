@@ -796,26 +796,53 @@ async function loadAdminDataAsync() {
 // ===== PAGE STRUCTURE EDITOR FUNCTIONS =====
 
 let currentPageId = 'home';
+let pageStructureRetryCount = 0;
+const MAX_PAGE_STRUCTURE_RETRIES = 50; // 5 seconds max (50 * 100ms)
 
 // Load page structure editor
 function loadPageStructureEditor() {
     currentPageId = document.getElementById('page-selector').value;
+    pageStructureRetryCount = 0; // Reset retry count when loading new page
     renderPageStructure();
 }
 
 // Render page structure
 function renderPageStructure() {
+    const container = document.getElementById('sections-list');
     const admin = window.estalaraAdmin || window.opener?.estalaraAdmin || parent.estalaraAdmin;
+    
     if (!admin) {
-        console.error('EstalaraAdmin not available');
-        return;
+        if (pageStructureRetryCount < MAX_PAGE_STRUCTURE_RETRIES) {
+            console.warn(`⏳ EstalaraAdmin not yet available, retrying (${pageStructureRetryCount + 1}/${MAX_PAGE_STRUCTURE_RETRIES})...`);
+            container.innerHTML = '<p class="text-gray-500 text-center py-8">⏳ Loading page structure...</p>';
+            pageStructureRetryCount++;
+            // Retry after a short delay to allow admin to initialize
+            setTimeout(renderPageStructure, 100);
+            return;
+        } else {
+            console.error('❌ EstalaraAdmin not available after maximum retries');
+            container.innerHTML = `
+                <div class="bg-red-50 border border-red-200 p-4 rounded">
+                    <p class="text-red-800 font-semibold mb-2">❌ Error: CMS Admin not initialized</p>
+                    <p class="text-red-700 text-sm mb-3">The page structure editor could not connect to the CMS system.</p>
+                    <button onclick="location.reload()" class="cms-btn cms-btn-primary text-sm">🔄 Reload Page</button>
+                </div>
+            `;
+            return;
+        }
     }
 
     const structure = admin.getPageStructure(currentPageId);
-    const container = document.getElementById('sections-list');
     
-    if (structure.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center py-8">No sections found for this page.</p>';
+    if (!structure || structure.length === 0) {
+        console.warn(`⚠️ No page structure found for: ${currentPageId}`);
+        container.innerHTML = `
+            <div class="bg-yellow-50 border border-yellow-200 p-4 rounded">
+                <p class="text-yellow-800 font-semibold mb-2">⚠️ No sections found for this page</p>
+                <p class="text-yellow-700 text-sm mb-3">The page structure is empty or not configured.</p>
+                <button onclick="resetPageStructure()" class="cms-btn cms-btn-primary text-sm">🔄 Reset to Default Structure</button>
+            </div>
+        `;
         return;
     }
 
