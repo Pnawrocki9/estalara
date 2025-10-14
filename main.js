@@ -129,15 +129,20 @@ function windowResized() {
 
 function initializeMain() {
     console.log('📋 [Main] Initializing main.js features...');
-    const typed = new Typed('#typed-text', {
-        strings: ['Go LIVE.', 'Go GLOBAL.'],
-        typeSpeed: 100,
-        backSpeed: 50,
-        backDelay: 2000,
-        loop: true,
-        showCursor: true,
-        cursorChar: '|'
-    });
+    
+    // Only initialize Typed.js if the target element exists
+    const typedElement = document.querySelector('#typed-text');
+    if (typedElement && typeof Typed !== 'undefined') {
+        const typed = new Typed('#typed-text', {
+            strings: ['Go LIVE.', 'Go GLOBAL.'],
+            typeSpeed: 100,
+            backSpeed: 50,
+            backDelay: 2000,
+            loop: true,
+            showCursor: true,
+            cursorChar: '|'
+        });
+    }
     
     // Scroll Reveal Animation
     const observerOptions = {
