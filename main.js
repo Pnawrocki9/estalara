@@ -5,6 +5,53 @@ let lastFrameTime = 0;
 const targetFPS = 30; // Limit to 30 FPS instead of 60
 const frameInterval = 1000 / targetFPS;
 
+// Utility functions - defined early so they can be used throughout the file
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    }
+}
+
+// Counter animation for stats
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 100;
+    const timer = setInterval(() => {
+        current += increment;
+        element.textContent = Math.floor(current);
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        }
+    }, 20);
+}
+
+// Export functions for use in other files - defined early
+window.EstalaraUtils = {
+    debounce,
+    throttle,
+    animateCounter
+};
+
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent('particle-bg');
@@ -296,54 +343,7 @@ function initializeMain() {
     }
 }
 
-// Utility functions
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    }
-}
-
-// Counter animation for stats
-function animateCounter(element, target) {
-    let current = 0;
-    const increment = target / 100;
-    const timer = setInterval(() => {
-        current += increment;
-        element.textContent = Math.floor(current);
-        if (current >= target) {
-            element.textContent = target;
-            clearInterval(timer);
-        }
-    }, 20);
-}
-
-// Export functions for use in other files
-window.EstalaraUtils = {
-    debounce,
-    throttle,
-    animateCounter
-};
-
-    // Mobile hamburger toggle (comprehensive, with focus trap and scroll lock)
+// Mobile hamburger toggle (comprehensive, with focus trap and scroll lock)
 (function () {
     /**
      * Comprehensive mobile menu implementation with:
