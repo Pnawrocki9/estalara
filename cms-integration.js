@@ -35,9 +35,29 @@ class EstalaraAdmin {
     }
 
     async initAsync() {
-        // Load content from Firebase first
-        this.content = await this.loadContent();
-        this.init();
+        try {
+            // Load content from Firebase first
+            this.content = await this.loadContent();
+            
+            // FIX: Ensure content is properly loaded before proceeding
+            if (!this.content) {
+                console.error('❌ [CMS] Failed to load content, using defaults');
+                this.content = this.getDefaultContent();
+            }
+            
+            // Additional validation: ensure critical properties exist
+            if (!this.content.pages) {
+                console.error('❌ [CMS] Content missing pages object, reinitializing');
+                this.content = this.getDefaultContent();
+            }
+            
+            this.init();
+        } catch (error) {
+            console.error('❌ [CMS] Critical error in initAsync:', error);
+            // Use defaults and continue
+            this.content = this.getDefaultContent();
+            this.init();
+        }
     }
 
     init() {
@@ -58,9 +78,9 @@ class EstalaraAdmin {
         this.loadAboutContent();
     }
 
-    // Load content from Firebase or localStorage
-    async loadContent() {
-        const defaultContent = {
+    // Get default content structure
+    getDefaultContent() {
+        return {
             siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
             siteDescription: "Estalara connects real estate agents and international investors through AI and live experiences. Simplify global property transactions with confidence.",
             contactEmail: "estalara@estalara.com",
@@ -438,6 +458,11 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 ]
             }
         };
+    }
+
+    // Load content from Firebase or localStorage
+    async loadContent() {
+        const defaultContent = this.getDefaultContent();
 
         // Load from Firebase first, then fall back to localStorage, then defaults.
         // Include versioning to ensure that breaking changes or major updates to
@@ -450,6 +475,12 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             try {
                 console.log('🔄 Attempting to load data from Firebase...');
                 const firebaseData = await window.loadAdminDataAsync();
+                
+                // FIX: Validate Firebase data before using it
+                if (!firebaseData) {
+                    console.warn('⚠️ [CMS] Firebase returned null/undefined data');
+                    throw new Error('Firebase data is null or undefined');
+                }
 
                 // Accept any non-empty Firebase payload and merge with defaults.
                 // Previously this required both navigation and properties, which
@@ -621,6 +652,13 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             console.warn('⚠️ [Mobile Fix] Skipping localStorage save (not available)');
         }
         
+        // FIX: Final validation - ensure loaded content is valid before returning
+        if (!loaded || !loaded.pages || typeof loaded.pages !== 'object') {
+            console.error('❌ [CMS] Loaded content is invalid, falling back to defaults');
+            return { ...defaultContent };
+        }
+        
+        console.log('✅ [CMS] Content loaded successfully');
         return loaded;
     }
 
@@ -640,18 +678,26 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
     // Load dynamic content into the website
     loadDynamicContent() {
+        // FIX: Defensive check - ensure content exists
+        if (!this.content) {
+            console.error('❌ [CMS] loadDynamicContent called but this.content is undefined');
+            return;
+        }
+        
         // Update site title
-        document.title = this.content.siteTitle;
+        if (this.content.siteTitle) {
+            document.title = this.content.siteTitle;
+        }
         
         // Update meta description
         const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
+        if (metaDesc && this.content.siteDescription) {
             metaDesc.setAttribute('content', this.content.siteDescription);
         }
 
         // Update contact email
         const contactEmail = document.getElementById('contact-email');
-        if (contactEmail) {
+        if (contactEmail && this.content.contactEmail) {
             contactEmail.textContent = this.content.contactEmail;
         }
 
@@ -919,6 +965,17 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
     // Load page-specific content
     loadPageContent() {
+        // FIX: Defensive check - ensure content and pages exist
+        if (!this.content) {
+            console.error('❌ [CMS] loadPageContent called but this.content is undefined');
+            return;
+        }
+        
+        if (!this.content.pages) {
+            console.error('❌ [CMS] loadPageContent called but this.content.pages is undefined');
+            return;
+        }
+        
         const path = window.location.pathname;
         let pageKey = 'home';
 
@@ -939,7 +996,10 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
         }
 
         const page = this.content.pages[pageKey];
-        if (!page) return;
+        if (!page) {
+            console.warn(`⚠️ [CMS] No page configuration found for pageKey: ${pageKey}`);
+            return;
+        }
 
         // Update hero title and subtitle. Each page can override these via the
         // pages configuration. Fallback to the global heroTitle and heroSubtitle
@@ -1478,7 +1538,18 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
     // Apply page structure (hide/show sections based on visibility)
     applyPageStructure(pageId) {
+        // FIX: Defensive check - ensure content exists
+        if (!this.content) {
+            console.error('❌ [CMS] applyPageStructure called but this.content is undefined');
+            return;
+        }
+        
         const structure = this.getPageStructure(pageId);
+        if (!structure || !Array.isArray(structure)) {
+            console.warn(`⚠️ [CMS] No structure found for pageId: ${pageId}`);
+            return;
+        }
+        
         structure.forEach(section => {
             const element = document.getElementById(section.id);
             if (element) {
