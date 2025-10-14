@@ -404,23 +404,28 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             buttons: {
                 global: {
                     primary: { text: "Get Started", url: "https://app.estalara.com" },
-                    secondary: { text: "Learn More", url: "#features" }
+                    secondary: { text: "Learn More", url: "#features" },
+                    headerCta: { text: "Launch App", url: "https://app.estalara.com" }
                 },
                 home: {
                     primary: { text: "Get Started", url: "https://app.estalara.com" },
-                    secondary: { text: "See How It Works", url: "#how-it-works" }
+                    secondary: { text: "See How It Works", url: "#how-it-works" },
+                    headerCta: { text: "Launch App", url: "https://app.estalara.com" }
                 },
                 agents: {
                     primary: { text: "Join as Agent", url: "https://app.estalara.com/signup/agent" },
-                    secondary: { text: "Watch Demo", url: "#demo" }
+                    secondary: { text: "Watch Demo", url: "#demo" },
+                    headerCta: { text: "Launch App", url: "https://app.estalara.com" }
                 },
                 agencies: {
                     primary: { text: "Enterprise Contact", url: "mailto:peter@estalara.com" },
-                    secondary: { text: "View Features", url: "#enterprise-features" }
+                    secondary: { text: "View Features", url: "#enterprise-features" },
+                    headerCta: { text: "Launch App", url: "https://app.estalara.com" }
                 },
                 investors: {
                     primary: { text: "Browse Properties", url: "https://app.estalara.com/properties" },
-                    secondary: { text: "Learn More", url: "#investing-without-borders" }
+                    secondary: { text: "Learn More", url: "#investing-without-borders" },
+                    headerCta: { text: "Launch App", url: "https://app.estalara.com" }
                 }
             },
             // Page structures defining blocks/sections for each page
@@ -1843,6 +1848,20 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             });
         }
 
+        // Update header CTA button (the "Launch App" / "Estalara Marketplace" button in header)
+        if (pageButtons.headerCta) {
+            const headerCtaButtons = document.querySelectorAll('.cta-button');
+            headerCtaButtons.forEach(btn => {
+                if (pageButtons.headerCta.text) {
+                    btn.textContent = pageButtons.headerCta.text;
+                }
+                if (pageButtons.headerCta.url) {
+                    btn.href = pageButtons.headerCta.url;
+                }
+            });
+            console.log('🔄 [CMS] Updated header CTA button:', pageButtons.headerCta.text);
+        }
+
         console.log('✅ [CMS] Buttons loaded for', pageKey);
     }
 
@@ -2201,7 +2220,7 @@ window.checkCMSSync = async function() {
         if (firebaseData) {
             status.firebase.hasData = true;
             status.firebase.lastUpdated = firebaseData.lastUpdated || null;
-            status.firebase.buttonText = firebaseData.pageButtons?.headerCta?.text || 'Not set';
+            status.firebase.buttonText = firebaseData.buttons?.global?.headerCta?.text || firebaseData.buttons?.home?.headerCta?.text || 'Not set';
         }
         
         // Check localStorage
@@ -2210,7 +2229,7 @@ window.checkCMSSync = async function() {
             const parsed = JSON.parse(localData);
             status.localStorage.hasData = true;
             status.localStorage.lastUpdated = parsed.lastUpdated || null;
-            status.localStorage.buttonText = parsed.pageButtons?.headerCta?.text || 'Not set';
+            status.localStorage.buttonText = parsed.buttons?.global?.headerCta?.text || parsed.buttons?.home?.headerCta?.text || 'Not set';
         }
         
         // Compare timestamps
