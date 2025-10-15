@@ -260,6 +260,61 @@
                         </div>
                     </div>
 
+                    <!-- White Label Content (Agencies Page) -->
+                    <div class="admin-card p-6">
+                        <h3 class="text-lg font-semibold mb-4">White Label Offer (Agencies Page)</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                <input type="text" id="whiteLabelTitle" class="admin-input w-full" placeholder="Idol Brands — White label for real estate agencies">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                                <textarea id="whiteLabelSubtitle" class="admin-input w-full" rows="3" placeholder="We offer dedicated white label implementations..."></textarea>
+                            </div>
+                            
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="font-medium text-gray-900 mb-3">Benefits Section</h4>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Benefits Title</label>
+                                    <input type="text" id="whiteLabelBenefitsTitle" class="admin-input w-full" placeholder="What you get">
+                                </div>
+                                <div class="mt-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Benefits (one per line)</label>
+                                    <textarea id="whiteLabelBenefits" class="admin-input w-full font-mono text-sm" rows="4" placeholder="Your own branding: logo, colors, domain/subdomain&#10;Branded livestreams and short‑videos — without exposure of our brand&#10;Agent and manager panels with permissions&#10;CRM/MLS integrations and Single Sign‑On (SSO)"></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Enter each benefit on a new line</p>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="font-medium text-gray-900 mb-3">"Why It Works" Section</h4>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Why Title</label>
+                                    <input type="text" id="whiteLabelWhyTitle" class="admin-input w-full" placeholder="Why it works">
+                                </div>
+                                <div class="mt-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Why Reasons (one per line)</label>
+                                    <textarea id="whiteLabelWhyReasons" class="admin-input w-full font-mono text-sm" rows="4" placeholder="Greater customer trust through consistent branding&#10;Faster implementations and feature roadmap tailored to your needs&#10;SLA, training and Enterprise support&#10;Security and compliance (GDPR), scalable infrastructure"></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Enter each reason on a new line</p>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="font-medium text-gray-900 mb-3">Contact Section</h4>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Contact Label</label>
+                                    <input type="text" id="whiteLabelContactLabel" class="admin-input w-full" placeholder="Enterprise Cooperation">
+                                </div>
+                                <div class="mt-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                                    <input type="email" id="whiteLabelContactEmail" class="admin-input w-full" placeholder="peter@estalara.com">
+                                </div>
+                            </div>
+                            
+                            <button class="admin-btn admin-btn-primary" onclick="updateWhiteLabelContent()">Update White Label Content</button>
+                        </div>
+                    </div>
+
                     <!-- Footer Editing -->
                     <div class="admin-card p-6">
                         <h3 class="text-lg font-semibold mb-4">Footer</h3>
@@ -1050,6 +1105,59 @@
             alert('Footer updated successfully!');
         }
 
+        // Update white label content
+        function updateWhiteLabelContent() {
+            if (!adminData.content.whiteLabel) {
+                adminData.content.whiteLabel = {};
+            }
+            
+            // Get values from form
+            adminData.content.whiteLabel.title = document.getElementById('whiteLabelTitle').value;
+            adminData.content.whiteLabel.subtitle = document.getElementById('whiteLabelSubtitle').value;
+            adminData.content.whiteLabel.benefitsTitle = document.getElementById('whiteLabelBenefitsTitle').value;
+            adminData.content.whiteLabel.whyTitle = document.getElementById('whiteLabelWhyTitle').value;
+            adminData.content.whiteLabel.contactLabel = document.getElementById('whiteLabelContactLabel').value;
+            adminData.content.whiteLabel.contactEmail = document.getElementById('whiteLabelContactEmail').value;
+            
+            // Parse benefits and reasons (split by newlines, filter empty lines)
+            const benefitsText = document.getElementById('whiteLabelBenefits').value;
+            adminData.content.whiteLabel.benefits = benefitsText
+                .split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+            
+            const whyReasonsText = document.getElementById('whiteLabelWhyReasons').value;
+            adminData.content.whiteLabel.whyReasons = whyReasonsText
+                .split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+            
+            saveData();
+            alert('White Label content updated successfully!');
+        }
+
+        // Load white label content into form
+        function loadWhiteLabelContent() {
+            if (!adminData.content.whiteLabel) return;
+            
+            const wl = adminData.content.whiteLabel;
+            
+            if (wl.title) document.getElementById('whiteLabelTitle').value = wl.title;
+            if (wl.subtitle) document.getElementById('whiteLabelSubtitle').value = wl.subtitle;
+            if (wl.benefitsTitle) document.getElementById('whiteLabelBenefitsTitle').value = wl.benefitsTitle;
+            if (wl.whyTitle) document.getElementById('whiteLabelWhyTitle').value = wl.whyTitle;
+            if (wl.contactLabel) document.getElementById('whiteLabelContactLabel').value = wl.contactLabel;
+            if (wl.contactEmail) document.getElementById('whiteLabelContactEmail').value = wl.contactEmail;
+            
+            if (wl.benefits && Array.isArray(wl.benefits)) {
+                document.getElementById('whiteLabelBenefits').value = wl.benefits.join('\n');
+            }
+            
+            if (wl.whyReasons && Array.isArray(wl.whyReasons)) {
+                document.getElementById('whiteLabelWhyReasons').value = wl.whyReasons.join('\n');
+            }
+        }
+
         function exportData() {
             const dataStr = JSON.stringify(adminData, null, 2);
             const dataBlob = new Blob([dataStr], {type: 'application/json'});
@@ -1437,6 +1545,9 @@
             if (footerInput) {
                 footerInput.value = (adminData.content && adminData.content.footerText) || '';
             }
+            
+            // Load white label content
+            loadWhiteLabelContent();
             
             // General settings form handler
             const generalSettingsForm = document.getElementById('general-settings-form');
