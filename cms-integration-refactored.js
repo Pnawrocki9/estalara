@@ -323,6 +323,25 @@ class EstalaraAdmin {
                     <p class="text-gray-300">${step.description}</p>
                 </div>
             `).join('');
+
+            // Re-register reveal animations for newly injected elements
+            try {
+                const newReveals = stepsContainer.querySelectorAll('.reveal');
+                if (typeof window.observeReveals === 'function') {
+                    window.observeReveals(newReveals);
+                } else {
+                    // Fallback: ensure visibility if observer isn't ready
+                    newReveals.forEach(el => el.classList.add('active'));
+                }
+
+                // Re-init hover animations if helper exists
+                if (typeof window.initPropertyCards === 'function') {
+                    window.initPropertyCards(Array.from(stepsContainer.querySelectorAll('.card-hover')));
+                }
+            } catch (e) {
+                console.warn('⚠️ How It Works: Failed to register animations for steps:', e);
+            }
+
             console.log(`✅ How It Works: Loaded ${this.content.howItWorks.steps.length} steps`);
         } else {
             console.error('❌ How It Works: Steps container not found or no steps data');
