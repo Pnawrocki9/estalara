@@ -352,6 +352,28 @@ class ContentStore {
                     { platform: "Instagram", url: "https://instagram.com/estalara", icon: "instagram" },
                     { platform: "Facebook", url: "https://facebook.com/estalara", icon: "facebook" }
                 ]
+            },
+            
+            howItWorks: {
+                heading: "How It Works",
+                subtitle: "Three simple steps to revolutionize your real estate experience",
+                steps: [
+                    {
+                        number: "1",
+                        title: "Go Live",
+                        description: "Stream your properties to global investors in real-time with our advanced livestreaming technology."
+                    },
+                    {
+                        number: "2",
+                        title: "Connect",
+                        description: "Engage with verified investors through AI-powered matching and instant translation capabilities."
+                    },
+                    {
+                        number: "3",
+                        title: "Close Fast",
+                        description: "Complete transactions efficiently with our trusted network and streamlined processes."
+                    }
+                ]
             }
         };
     }
