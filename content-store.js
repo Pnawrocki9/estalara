@@ -68,20 +68,40 @@ class ContentStore {
         const firebaseData = await this.loadFromFirebase();
         if (firebaseData && this.validateContent(firebaseData)) {
             console.log('📥 ContentStore: Loaded from Firebase');
-            this.saveToLocalStorage(firebaseData); // Backup to localStorage
-            return firebaseData;
+            const normalized = this.normalizeData(firebaseData);
+            this.saveToLocalStorage(normalized); // Backup to localStorage
+            return normalized;
         }
         
         // Try localStorage
         const localData = this.loadFromLocalStorage();
         if (localData && this.validateContent(localData)) {
             console.log('📥 ContentStore: Loaded from localStorage');
-            return localData;
+            return this.normalizeData(localData);
         }
         
         // Use defaults
         console.log('📥 ContentStore: Using defaults');
         return this.defaults;
+    }
+    
+    /**
+     * Normalize data structure (handle admin.html vs frontend structure)
+     */
+    normalizeData(data) {
+        // If data has .content wrapper (admin.html format), unwrap it
+        if (data.content && typeof data.content === 'object') {
+            const normalized = { ...data.content };
+            
+            // Keep properties array from top level if it exists
+            if (Array.isArray(data.properties)) {
+                normalized.properties = data.properties;
+            }
+            
+            return normalized;
+        }
+        
+        return data;
     }
     
     /**
@@ -145,18 +165,24 @@ class ContentStore {
             return false;
         }
         
-        // Must have navigation
-        if (!Array.isArray(data.navigation) || data.navigation.length === 0) {
+        // Handle admin.html data structure (wrapped in .content)
+        const actualData = data.content || data;
+        
+        // Must have navigation (can be in root or in content)
+        if (!Array.isArray(actualData.navigation) || actualData.navigation.length === 0) {
             return false;
         }
         
-        // Must have liveProperties OR properties
-        if (!Array.isArray(data.liveProperties) && !Array.isArray(data.properties)) {
+        // Must have liveProperties OR properties (can be in root or in data.properties)
+        const hasProperties = Array.isArray(actualData.liveProperties) || 
+                             Array.isArray(actualData.properties) ||
+                             Array.isArray(data.properties);
+        if (!hasProperties) {
             return false;
         }
         
         // Must have pages structure
-        if (!data.pages || typeof data.pages !== 'object') {
+        if (!actualData.pages || typeof actualData.pages !== 'object') {
             return false;
         }
         

@@ -114,22 +114,44 @@ class EstalaraAdmin {
      * Load hero section
      */
     loadHero() {
-        const hero = this.content.pages?.home?.hero;
-        if (!hero) return;
+        // Support both old and new data structures
+        const hero = this.content.pages?.home?.hero || {};
+        const heroTitle = hero.title || this.content.heroTitle;
+        const heroSubtitle = hero.subtitle || this.content.heroSubtitle;
+        const ctaText = hero.ctaText;
+        const ctaUrl = hero.ctaUrl;
 
-        // Title
-        const title = document.querySelector('.hero h1, .hero-title');
-        if (title) title.textContent = hero.title;
+        // Title - Update Typed.js strings if it exists
+        const typedElement = document.querySelector('#typed-text');
+        if (typedElement && typeof Typed !== 'undefined' && heroTitle) {
+            // Destroy existing typed instance if it exists
+            if (window.typed && typeof window.typed.destroy === 'function') {
+                window.typed.destroy();
+            }
+            
+            // Create new typed instance with CMS content
+            window.typed = new Typed('#typed-text', {
+                strings: [heroTitle],
+                typeSpeed: 100,
+                backSpeed: 50,
+                backDelay: 2000,
+                loop: true,
+                showCursor: true,
+                cursorChar: '|'
+            });
+        }
 
-        // Subtitle
-        const subtitle = document.querySelector('.hero p, .hero-subtitle');
-        if (subtitle) subtitle.textContent = hero.subtitle;
+        // Subtitle - the paragraph in #home section
+        const subtitle = document.querySelector('#home .body-text');
+        if (subtitle && heroSubtitle) {
+            subtitle.textContent = heroSubtitle;
+        }
 
-        // CTA Button
-        const cta = document.querySelector('.hero .cta-button, .hero-cta');
-        if (cta) {
-            cta.textContent = hero.ctaText;
-            cta.href = hero.ctaUrl;
+        // Primary CTA Button
+        const primaryBtn = document.querySelector('#home .btn-primary a');
+        if (primaryBtn && ctaText && ctaUrl) {
+            primaryBtn.textContent = ctaText;
+            primaryBtn.href = ctaUrl;
         }
     }
 

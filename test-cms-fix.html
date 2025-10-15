@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .warning { color: #ffc107; font-weight: bold; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 CMS Integration Test</h1>
+    
+    <div class="test-section">
+        <h2>1️⃣ localStorage Status</h2>
+        <div id="storage-status"></div>
+        <button onclick="viewStoredData()">View Stored Data</button>
+        <button onclick="clearStoredData()">Clear Data</button>
+    </div>
+
+    <div class="test-section">
+        <h2>2️⃣ Simulate Admin Panel Save</h2>
+        <label>Hero Title:</label>
+        <input type="text" id="test-hero-title" value="NOWY TYTUŁ Z CMS!" placeholder="Enter hero title">
+        
+        <label>Hero Subtitle:</label>
+        <textarea id="test-hero-subtitle" rows="3" placeholder="Enter hero subtitle">To jest nowy opis z CMS - test integracji!</textarea>
+        
+        <button onclick="saveTestData()">Save Test Data to CMS</button>
+    </div>
+
+    <div class="test-section">
+        <h2>3️⃣ ContentStore Status</h2>
+        <div id="contentstore-status"></div>
+        <button onclick="checkContentStore()">Check ContentStore</button>
+    </div>
+
+    <div class="test-section">
+        <h2>4️⃣ Data Structure</h2>
+        <pre id="data-structure"></pre>
+    </div>
+
+    <div class="test-section">
+        <h2>5️⃣ Actions</h2>
+        <button onclick="window.location.href='index.html'">Go to Homepage (Test Frontend)</button>
+        <button onclick="window.location.href='admin.html'">Go to Admin Panel</button>
+        <button onclick="location.reload()">Reload Page</button>
+    </div>
+
+    <script>
+        function viewStoredData() {
+            const data = localStorage.getItem('estalaraAdminData');
+            const status = document.getElementById('storage-status');
+            
+            if (data) {
+                try {
+                    const parsed = JSON.parse(data);
+                    status.innerHTML = `
+                        <p class="success">✅ Data found in localStorage</p>
+                        <pre>${JSON.stringify(parsed, null, 2)}</pre>
+                    `;
+                } catch (e) {
+                    status.innerHTML = `<p class="error">❌ Invalid JSON in localStorage: ${e.message}</p>`;
+                }
+            } else {
+                status.innerHTML = `<p class="warning">⚠️ No data in localStorage</p>`;
+            }
+        }
+
+        function clearStoredData() {
+            if (confirm('Are you sure you want to clear CMS data?')) {
+                localStorage.removeItem('estalaraAdminData');
+                alert('Data cleared!');
+                viewStoredData();
+            }
+        }
+
+        function saveTestData() {
+            const title = document.getElementById('test-hero-title').value;
+            const subtitle = document.getElementById('test-hero-subtitle').value;
+
+            // Create data structure matching admin.html format
+            const adminData = {
+                version: 4,
+                properties: [],
+                content: {
+                    siteTitle: "Estalara - Go LIVE. Go GLOBAL.",
+                    siteDescription: "Test CMS Integration",
+                    contactEmail: "test@estalara.com",
+                    heroTitle: title,
+                    heroSubtitle: subtitle,
+                    currency: "EUR",
+                    language: "en",
+                    footerText: "© 2024 Estalara. All rights reserved.",
+                    pages: {
+                        home: {},
+                        agencies: {},
+                        investors: {}
+                    }
+                }
+            };
+
+            // Add navigation to match validation
+            adminData.content.navigation = [
+                { label: "Home", url: "index.html" },
+                { label: "For Agents", url: "agents.html" },
+                { label: "For Agencies", url: "agencies.html" },
+                { label: "For Investors", url: "investors.html" },
+                { label: "About", url: "about.html" },
+                { label: "FAQ", url: "faq.html" }
+            ];
+
+            // Add some sample properties
+            adminData.content.liveProperties = [
+                {
+                    id: "1",
+                    title: "Test Property",
+                    location: "Test Location",
+                    price: "€500,000",
+                    image: "https://via.placeholder.com/400x300",
+                    beds: "3",
+                    baths: "2",
+                    area: "150m²",
+                    link: "https://app.estalara.com"
+                }
+            ];
+
+            localStorage.setItem('estalaraAdminData', JSON.stringify(adminData));
+            
+            alert('✅ Test data saved to CMS!\n\nNow go to index.html to see the changes.');
+            viewStoredData();
+        }
+
+        function checkContentStore() {
+            const status = document.getElementById('contentstore-status');
+            
+            if (window.contentStore) {
+                status.innerHTML = `
+                    <p class="success">✅ ContentStore loaded</p>
+                    <p>State: ${window.contentStore.state}</p>
+                    <p>Has content: ${window.contentStore.content ? 'Yes' : 'No'}</p>
+                `;
+            } else {
+                status.innerHTML = `<p class="warning">⚠️ ContentStore not loaded (normal on this test page)</p>`;
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            viewStoredData();
+            checkContentStore();
+        });
+    </script>
+</body>
+</html>

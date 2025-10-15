@@ -133,7 +133,8 @@ function initializeMain() {
     // Only initialize Typed.js if the target element exists
     const typedElement = document.querySelector('#typed-text');
     if (typedElement && typeof Typed !== 'undefined') {
-        const typed = new Typed('#typed-text', {
+        // Store typed instance globally so CMS can update it
+        window.typed = new Typed('#typed-text', {
             strings: ['Go LIVE.', 'Go GLOBAL.'],
             typeSpeed: 100,
             backSpeed: 50,
