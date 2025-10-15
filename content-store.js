@@ -368,6 +368,38 @@ class ContentStore {
                         ctaText: "Estalara Marketplace",
                         ctaUrl: "https://app.estalara.com"
                     }
+                },
+                agents: {
+                    hero: {
+                        title: "Agents Go <span class=\"text-white\">GLOBAL</span>",
+                        subtitle: "Attract and convert high-value global investors effortlessly. Livestream your listings and engage verified buyers in real time with AI-powered lead generation and automatic landing pages.",
+                        ctaText: "Start Livestreaming →",
+                        ctaUrl: "https://app.estalara.com"
+                    }
+                },
+                agencies: {
+                    hero: {
+                        title: "Agencies Go <span class=\"text-white\">ENTERPRISE</span>",
+                        subtitle: "Transform your real estate agency into a global powerhouse. Scale operations, manage multiple agents, and expand internationally with Estalara's enterprise solutions designed for growing agencies.",
+                        ctaText: "Scale Your Agency →",
+                        ctaUrl: "https://app.estalara.com"
+                    }
+                },
+                investors: {
+                    hero: {
+                        title: "Invest <span class=\"text-white\">WORLDWIDE</span>",
+                        subtitle: "Discover, evaluate, and purchase properties worldwide with confidence. Attend live property tours with real agents and understand legal, cost, and location details in your own language through EstalaraAI.",
+                        ctaText: "Explore Properties →",
+                        ctaUrl: "https://app.estalara.com"
+                    }
+                },
+                about: {
+                    hero: {
+                        title: "Revolutionizing <span class=\"text-white\">GLOBAL REAL ESTATE</span>",
+                        subtitle: "Estalara connects real estate agents and international investors through AI and live experiences. Our mission is to simplify global property transactions and make international real estate accessible to everyone.",
+                        ctaText: "Join Our Platform →",
+                        ctaUrl: "https://app.estalara.com"
+                    }
                 }
             },
             
