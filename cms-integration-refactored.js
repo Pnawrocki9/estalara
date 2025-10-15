@@ -352,19 +352,40 @@ class EstalaraAdmin {
      * Load homepage features
      */
     loadHomeFeatures() {
+        console.log('🎯 [Features] loadHomeFeatures() called');
+        console.log('📍 [Features] Current pathname:', window.location.pathname);
+        
         // Only load on homepage
         if (window.location.pathname.includes('agents.html') || 
             window.location.pathname.includes('agencies.html') ||
             window.location.pathname.includes('investors.html') ||
             window.location.pathname.includes('about.html')) {
+            console.log('⏭️ [Features] Skipping - not on homepage');
             return;
         }
 
         const section = document.querySelector('#features');
-        if (!section || !this.content.features) return;
+        console.log('🔍 [Features] Section found:', !!section);
+        console.log('🔍 [Features] this.content.features:', this.content.features);
+        console.log('🔍 [Features] this.content.features?.home:', this.content.features?.home);
+        
+        if (!section) {
+            console.error('❌ [Features] #features section not found in DOM');
+            return;
+        }
+        
+        if (!this.content.features) {
+            console.error('❌ [Features] this.content.features is missing');
+            return;
+        }
 
         const featuresGrid = section.querySelector('.features-grid, .grid');
+        console.log('🔍 [Features] Grid found:', !!featuresGrid);
+        console.log('🔍 [Features] Is features.home an array?', Array.isArray(this.content.features?.home));
+        console.log('🔍 [Features] features.home length:', this.content.features?.home?.length);
+        
         if (featuresGrid && Array.isArray(this.content.features?.home)) {
+            console.log('✅ [Features] Loading', this.content.features.home.length, 'feature cards');
             featuresGrid.innerHTML = this.content.features.home.map(feature => `
                 <div class="card-hover p-8 bg-white/5 rounded-lg reveal feature-card">
                     <div class="text-4xl mb-4">${feature.icon || '⭐'}</div>
@@ -382,9 +403,12 @@ class EstalaraAdmin {
                     // Fallback: make them visible
                     Array.from(newCards).forEach(el => el.classList.add('active'));
                 }
+                console.log('✅ [Features] Animations initialized for', newCards.length, 'cards');
             } catch (e) {
                 console.warn('⚠️ Features: Failed to initialize animations', e);
             }
+        } else {
+            console.error('❌ [Features] Failed to load - Grid:', !!featuresGrid, 'IsArray:', Array.isArray(this.content.features?.home));
         }
     }
 

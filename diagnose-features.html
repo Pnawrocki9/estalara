@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnose Features Loading</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .section {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .ok { color: #4ade80; }
+        .warn { color: #fbbf24; }
+        .error { color: #f87171; }
+        pre {
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Features Loading Diagnostic Tool</h1>
+    <p>Diagnozowanie problemu z ładowaniem kafelków w sekcji Features</p>
+
+    <button onclick="runDiagnostics()">🔄 Uruchom Diagnostykę</button>
+    <button onclick="fixFeaturesStructure()">🔧 Napraw Strukturę Features</button>
+    <button onclick="location.reload()">↻ Odśwież Stronę</button>
+
+    <div id="results"></div>
+
+    <script src="content-store.js"></script>
+    <script src="cms-integration-refactored.js"></script>
+    <script>
+        async function runDiagnostics() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>🔍 Uruchamianie diagnostyki...</h2>';
+            
+            let html = '';
+            
+            // 1. Check localStorage
+            html += '<div class="section">';
+            html += '<h3>1️⃣ Dane w localStorage</h3>';
+            const localData = localStorage.getItem('estalaraAdminData');
+            if (localData) {
+                try {
+                    const parsed = JSON.parse(localData);
+                    html += `<p class="ok">✅ localStorage zawiera dane</p>`;
+                    html += `<p>Struktura features:</p>`;
+                    html += `<pre>${JSON.stringify(parsed.features, null, 2)}</pre>`;
+                    
+                    if (parsed.features && parsed.features.home) {
+                        html += `<p class="ok">✅ features.home istnieje (${parsed.features.home.length} elementów)</p>`;
+                    } else {
+                        html += `<p class="error">❌ features.home NIE istnieje lub jest puste</p>`;
+                    }
+                } catch (e) {
+                    html += `<p class="error">❌ Błąd parsowania: ${e.message}</p>`;
+                }
+            } else {
+                html += `<p class="warn">⚠️ Brak danych w localStorage</p>`;
+            }
+            html += '</div>';
+            
+            // 2. Check ContentStore
+            html += '<div class="section">';
+            html += '<h3>2️⃣ ContentStore</h3>';
+            if (window.contentStore) {
+                const content = await window.contentStore.getContent();
+                html += `<p class="ok">✅ ContentStore załadowany</p>`;
+                html += `<p>Status: ${window.contentStore.state}</p>`;
+                html += `<p>Struktura features:</p>`;
+                html += `<pre>${JSON.stringify(content.features, null, 2)}</pre>`;
+                
+                if (content.features && Array.isArray(content.features.home) && content.features.home.length > 0) {
+                    html += `<p class="ok">✅ content.features.home jest tablicą z ${content.features.home.length} elementami</p>`;
+                } else {
+                    html += `<p class="error">❌ content.features.home nie jest poprawną tablicą lub jest pusta</p>`;
+                    html += `<p class="warn">Typ: ${typeof content.features?.home}, IsArray: ${Array.isArray(content.features?.home)}</p>`;
+                }
+            } else {
+                html += `<p class="error">❌ ContentStore nie załadowany</p>`;
+            }
+            html += '</div>';
+            
+            // 3. Check DOM
+            html += '<div class="section">';
+            html += '<h3>3️⃣ Struktura DOM</h3>';
+            const section = document.querySelector('#features');
+            const grid = document.querySelector('#features .features-grid, #features .grid');
+            
+            if (section) {
+                html += `<p class="ok">✅ Sekcja #features istnieje w DOM</p>`;
+            } else {
+                html += `<p class="error">❌ Sekcja #features NIE ISTNIEJE w DOM</p>`;
+            }
+            
+            if (grid) {
+                html += `<p class="ok">✅ Grid (.features-grid lub .grid) istnieje</p>`;
+                html += `<p>Zawartość gridu: ${grid.innerHTML.length} znaków</p>`;
+                const cards = grid.querySelectorAll('.feature-card');
+                html += `<p>Liczba kart: ${cards.length}</p>`;
+            } else {
+                html += `<p class="error">❌ Grid NIE ISTNIEJE</p>`;
+            }
+            html += '</div>';
+            
+            // 4. Check EstalaraAdmin
+            html += '<div class="section">';
+            html += '<h3>4️⃣ EstalaraAdmin</h3>';
+            if (window.estalaraAdmin) {
+                html += `<p class="ok">✅ EstalaraAdmin załadowany</p>`;
+                const adminContent = window.estalaraAdmin.content;
+                if (adminContent && adminContent.features) {
+                    html += `<p class="ok">✅ estalaraAdmin.content.features istnieje</p>`;
+                    html += `<pre>${JSON.stringify(adminContent.features, null, 2)}</pre>`;
+                } else {
+                    html += `<p class="error">❌ estalaraAdmin.content.features nie istnieje</p>`;
+                }
+            } else {
+                html += `<p class="error">❌ EstalaraAdmin nie załadowany</p>`;
+            }
+            html += '</div>';
+            
+            // 5. Recommendations
+            html += '<div class="section">';
+            html += '<h3>💡 Rekomendacje</h3>';
+            html += '<ul>';
+            
+            const localDataParsed = localData ? JSON.parse(localData) : null;
+            if (!localDataParsed || !localDataParsed.features || !localDataParsed.features.home || localDataParsed.features.home.length === 0) {
+                html += '<li class="warn">⚠️ Brak danych features.home w localStorage - kliknij "Napraw Strukturę Features"</li>';
+            }
+            
+            if (!section) {
+                html += '<li class="error">❌ Ta strona nie zawiera sekcji #features - otwórz index.html</li>';
+            }
+            
+            if (!window.estalaraAdmin) {
+                html += '<li class="error">❌ EstalaraAdmin nie został zainicjalizowany - sprawdź konsolę</li>';
+            }
+            
+            html += '</ul>';
+            html += '</div>';
+            
+            results.innerHTML = html;
+        }
+        
+        async function fixFeaturesStructure() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>🔧 Naprawianie struktury...</h2>';
+            
+            let html = '';
+            
+            // Get current data
+            let adminData = localStorage.getItem('estalaraAdminData');
+            let data = adminData ? JSON.parse(adminData) : {};
+            
+            // Ensure features.home exists with default data
+            if (!data.features) {
+                data.features = {};
+            }
+            
+            if (!data.features.home || !Array.isArray(data.features.home) || data.features.home.length === 0) {
+                html += '<p class="warn">⚠️ features.home jest pusty lub nie istnieje - dodaję domyślne dane...</p>';
+                
+                data.features.home = [
+                    {
+                        icon: "🎥",
+                        title: "Live Property Tours",
+                        description: "Showcase properties through immersive livestreams to global investors in real-time."
+                    },
+                    {
+                        icon: "🤖",
+                        title: "EstalaraAI Assistant",
+                        description: "AI-powered natural language search and property recommendations in 25+ languages."
+                    },
+                    {
+                        icon: "🌍",
+                        title: "Global Network",
+                        description: "Connect with verified investors and agents across 50+ countries worldwide."
+                    },
+                    {
+                        icon: "⚡",
+                        title: "Instant Matching",
+                        description: "AI-powered lead generation automatically matches properties with interested investors."
+                    },
+                    {
+                        icon: "🔒",
+                        title: "Secure Transactions",
+                        description: "Trusted network of notaries, title insurance, and legal support for safe deals."
+                    },
+                    {
+                        icon: "📊",
+                        title: "Analytics Dashboard",
+                        description: "Track viewer engagement, lead quality, and conversion metrics in real-time."
+                    }
+                ];
+                
+                // Save to localStorage
+                localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+                html += '<p class="ok">✅ Dodano 6 domyślnych kafelków do features.home</p>';
+                html += '<p class="ok">✅ Zapisano w localStorage</p>';
+            } else {
+                html += `<p class="ok">✅ features.home już zawiera ${data.features.home.length} elementów</p>`;
+            }
+            
+            html += '<p class="warn">🔄 Odśwież stronę, aby zobaczyć zmiany</p>';
+            html += '<button onclick="location.href=\'index.html\'">Przejdź do index.html</button>';
+            
+            results.innerHTML = html;
+        }
+        
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(runDiagnostics, 1000);
+        });
+    </script>
+</body>
+</html>
