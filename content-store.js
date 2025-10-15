@@ -249,9 +249,15 @@ class ContentStore {
             if (!result.howItWorks || typeof result.howItWorks !== 'object') {
                 result.howItWorks = this.defaults.howItWorks;
             }
-            // Ensure features exist
+            // Ensure features exist (deep-merge to guarantee homepage tiles)
             if (!result.features || typeof result.features !== 'object') {
                 result.features = this.defaults.features;
+            } else {
+                // If .home list missing or empty, fall back to defaults so UI always renders
+                const hasValidHomeFeatures = Array.isArray(result.features.home) && result.features.home.length > 0;
+                if (!hasValidHomeFeatures) {
+                    result.features.home = this.defaults.features.home;
+                }
             }
         }
         

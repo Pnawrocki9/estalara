@@ -364,14 +364,27 @@ class EstalaraAdmin {
         if (!section || !this.content.features) return;
 
         const featuresGrid = section.querySelector('.features-grid, .grid');
-        if (featuresGrid && this.content.features?.home) {
+        if (featuresGrid && Array.isArray(this.content.features?.home)) {
             featuresGrid.innerHTML = this.content.features.home.map(feature => `
-                <div class="card-hover p-8 bg-white/5 rounded-lg reveal">
+                <div class="card-hover p-8 bg-white/5 rounded-lg reveal feature-card">
                     <div class="text-4xl mb-4">${feature.icon || '⭐'}</div>
                     <h3 class="text-2xl font-bold mb-4">${feature.title}</h3>
                     <p class="text-gray-300">${feature.description}</p>
                 </div>
             `).join('');
+
+            // Re-register reveal animations and hover interactions for injected cards
+            try {
+                const newCards = featuresGrid.querySelectorAll('.feature-card.reveal, .card-hover.reveal');
+                if (typeof window.observeReveals === 'function') {
+                    window.observeReveals(Array.from(newCards));
+                } else {
+                    // Fallback: make them visible
+                    Array.from(newCards).forEach(el => el.classList.add('active'));
+                }
+            } catch (e) {
+                console.warn('⚠️ Features: Failed to initialize animations', e);
+            }
         }
     }
 
