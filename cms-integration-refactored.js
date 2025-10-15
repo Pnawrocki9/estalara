@@ -114,24 +114,27 @@ class EstalaraAdmin {
      * Load hero section
      */
     loadHero() {
-        // Support both old and new data structures
-        const hero = this.content.pages?.home?.hero || {};
+        const currentPage = this.getCurrentPage();
+        
+        // Get hero data for current page
+        const hero = this.content.pages?.[currentPage]?.hero || {};
         const heroTitle = hero.title || this.content.heroTitle;
         const heroSubtitle = hero.subtitle || this.content.heroSubtitle;
         const ctaText = hero.ctaText;
         const ctaUrl = hero.ctaUrl;
 
-        // Title - Update Typed.js strings if it exists
+        // Title - Update Typed.js strings if it exists (HOME page only)
         const typedElement = document.querySelector('#typed-text');
-        if (typedElement && typeof Typed !== 'undefined' && heroTitle) {
+        if (typedElement && typeof Typed !== 'undefined') {
             // Destroy existing typed instance if it exists
             if (window.typed && typeof window.typed.destroy === 'function') {
                 window.typed.destroy();
             }
             
-            // Create new typed instance with CMS content
+            // Create new typed instance with CMS content or default animation
+            const animationStrings = heroTitle ? [heroTitle] : ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'];
             window.typed = new Typed('#typed-text', {
-                strings: [heroTitle],
+                strings: animationStrings,
                 typeSpeed: 100,
                 backSpeed: 50,
                 backDelay: 2000,
@@ -141,17 +144,37 @@ class EstalaraAdmin {
             });
         }
 
-        // Subtitle - the paragraph in #home section
-        const subtitle = document.querySelector('#home .body-text');
-        if (subtitle && heroSubtitle) {
-            subtitle.textContent = heroSubtitle;
+        // For non-home pages, update static hero title
+        if (!typedElement && heroTitle) {
+            const heroHeading = document.querySelector('section .hero-text');
+            if (heroHeading) {
+                heroHeading.innerHTML = heroTitle;
+            }
         }
 
-        // Primary CTA Button
-        const primaryBtn = document.querySelector('#home .btn-primary a');
+        // Subtitle - find in any hero section (paragraph after hero title)
+        const heroSection = document.querySelector('section .hero-text');
+        if (heroSection) {
+            const subtitle = heroSection.parentElement.querySelector('.body-text');
+            if (subtitle && heroSubtitle) {
+                subtitle.textContent = heroSubtitle;
+                subtitle.style.opacity = '1'; // Make visible after CMS loads
+            }
+        }
+
+        // Primary CTA Button - find in any hero section
+        const primaryBtn = document.querySelector('section .btn-primary a, section .btn-primary');
         if (primaryBtn && ctaText && ctaUrl) {
-            primaryBtn.textContent = ctaText;
-            primaryBtn.href = ctaUrl;
+            if (primaryBtn.tagName === 'A') {
+                primaryBtn.textContent = ctaText;
+                primaryBtn.href = ctaUrl;
+            } else {
+                const link = primaryBtn.querySelector('a');
+                if (link) {
+                    link.textContent = ctaText;
+                    link.href = ctaUrl;
+                }
+            }
         }
     }
 

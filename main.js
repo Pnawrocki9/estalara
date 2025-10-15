@@ -135,7 +135,7 @@ function initializeMain() {
     if (typedElement && typeof Typed !== 'undefined') {
         // Store typed instance globally so CMS can update it
         window.typed = new Typed('#typed-text', {
-            strings: ['Go LIVE.', 'Go GLOBAL.'],
+            strings: ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'],
             typeSpeed: 100,
             backSpeed: 50,
             backDelay: 2000,
