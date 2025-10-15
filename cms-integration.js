@@ -404,9 +404,36 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             // Feature cards per page
             features: {
                 home: [
-                    { icon: "🌍", title: "Global Reach", description: "Connect with investors and agents worldwide through our platform." },
-                    { icon: "🎥", title: "Live Tours", description: "Stream property tours in real-time to engage buyers instantly." },
-                    { icon: "🤖", title: "AI-Powered", description: "Leverage AI for lead generation and property matching." }
+                    {
+                        icon: "🎥",
+                        title: "Live Property Tours",
+                        description: "Showcase properties through immersive livestreams to global investors in real-time."
+                    },
+                    {
+                        icon: "🤖",
+                        title: "EstalaraAI Assistant",
+                        description: "AI-powered natural language search and property recommendations in 25+ languages."
+                    },
+                    {
+                        icon: "🌍",
+                        title: "Global Network",
+                        description: "Connect with verified investors and agents across 50+ countries worldwide."
+                    },
+                    {
+                        icon: "⚡",
+                        title: "Instant Matching",
+                        description: "AI-powered lead generation automatically matches properties with interested investors."
+                    },
+                    {
+                        icon: "🔒",
+                        title: "Secure Transactions",
+                        description: "Trusted network of notaries, title insurance, and legal support for safe deals."
+                    },
+                    {
+                        icon: "📊",
+                        title: "Analytics Dashboard",
+                        description: "Track viewer engagement, lead quality, and conversion metrics in real-time."
+                    }
                 ],
                 agents: [
                     { icon: "📈", title: "Grow Your Business", description: "Reach international buyers and close deals faster." },
