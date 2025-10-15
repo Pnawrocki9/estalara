@@ -34,16 +34,23 @@ class ContentStore {
             // Try sources in order: Firebase -> localStorage -> defaults
             this.content = await this.loadFromSources();
             
+            // Always merge with defaults to ensure all fields exist
+            this.content = this.mergeWithDefaults(this.content);
+            
             // Validate content is complete
             if (!this.validateContent(this.content)) {
-                console.warn('⚠️ ContentStore: Loaded content is incomplete, merging with defaults');
-                this.content = this.mergeWithDefaults(this.content);
+                console.warn('⚠️ ContentStore: Loaded content is incomplete, using full defaults');
+                this.content = this.defaults;
             }
             
             this.state = 'ready';
             console.log('✅ ContentStore: Ready');
             console.log(`   - Navigation: ${this.content.navigation?.length || 0} items`);
             console.log(`   - Live Properties: ${this.content.liveProperties?.length || 0} items`);
+            console.log(`   - How It Works: ${this.content.howItWorks ? '✅ Available' : '❌ Missing'}`);
+            if (this.content.howItWorks) {
+                console.log(`     Steps: ${this.content.howItWorks.steps?.length || 0}`);
+            }
             
             return this.content;
             
@@ -73,14 +80,15 @@ class ContentStore {
             this.loadFromFirebase().then(firebaseData => {
                 if (firebaseData && this.validateContent(firebaseData)) {
                     const normalized = this.normalizeData(firebaseData);
+                    const merged = this.mergeWithDefaults(normalized);
                     // Only update if data changed
-                    if (JSON.stringify(normalized) !== JSON.stringify(localData)) {
+                    if (JSON.stringify(merged) !== JSON.stringify(this.content)) {
                         console.log('🔄 ContentStore: Firebase data updated, reloading...');
-                        this.content = normalized;
-                        this.saveToLocalStorage(normalized);
+                        this.content = merged;
+                        this.saveToLocalStorage(merged);
                         // Trigger UI reload if EstalaraAdmin exists
                         if (window.estalaraAdmin) {
-                            window.estalaraAdmin.content = normalized;
+                            window.estalaraAdmin.content = merged;
                             window.estalaraAdmin.loadUI();
                         }
                     }
@@ -89,7 +97,9 @@ class ContentStore {
                 // Firebase failed, but we already have localStorage data
             });
             
-            return this.normalizeData(localData);
+            // Also merge localStorage data with defaults to ensure all fields exist
+            const normalized = this.normalizeData(localData);
+            return this.mergeWithDefaults(normalized);
         }
         
         // Try Firebase (first time or localStorage unavailable)
@@ -97,8 +107,9 @@ class ContentStore {
         if (firebaseData && this.validateContent(firebaseData)) {
             console.log('📥 ContentStore: Loaded from Firebase');
             const normalized = this.normalizeData(firebaseData);
-            this.saveToLocalStorage(normalized); // Backup to localStorage
-            return normalized;
+            const merged = this.mergeWithDefaults(normalized);
+            this.saveToLocalStorage(merged); // Backup to localStorage
+            return merged;
         }
         
         // Use defaults
@@ -233,6 +244,14 @@ class ContentStore {
             }
             if (!result.pages || typeof result.pages !== 'object') {
                 result.pages = this.defaults.pages;
+            }
+            // Ensure howItWorks exists
+            if (!result.howItWorks || typeof result.howItWorks !== 'object') {
+                result.howItWorks = this.defaults.howItWorks;
+            }
+            // Ensure features exist
+            if (!result.features || typeof result.features !== 'object') {
+                result.features = this.defaults.features;
             }
         }
         
@@ -471,6 +490,41 @@ class ContentStore {
                         number: "3",
                         title: "Close Fast",
                         description: "Complete transactions efficiently with our trusted network and streamlined processes."
+                    }
+                ]
+            },
+            
+            features: {
+                home: [
+                    {
+                        icon: "🎥",
+                        title: "Live Property Tours",
+                        description: "Showcase properties through immersive livestreams to global investors in real-time."
+                    },
+                    {
+                        icon: "🤖",
+                        title: "EstalaraAI Assistant",
+                        description: "AI-powered natural language search and property recommendations in 25+ languages."
+                    },
+                    {
+                        icon: "🌍",
+                        title: "Global Network",
+                        description: "Connect with verified investors and agents across 50+ countries worldwide."
+                    },
+                    {
+                        icon: "⚡",
+                        title: "Instant Matching",
+                        description: "AI-powered lead generation automatically matches properties with interested investors."
+                    },
+                    {
+                        icon: "🔒",
+                        title: "Secure Transactions",
+                        description: "Trusted network of notaries, title insurance, and legal support for safe deals."
+                    },
+                    {
+                        icon: "📊",
+                        title: "Analytics Dashboard",
+                        description: "Track viewer engagement, lead quality, and conversion metrics in real-time."
                     }
                 ]
             }

@@ -285,7 +285,21 @@ class EstalaraAdmin {
      */
     loadHowItWorks() {
         const section = document.querySelector('#how-it-works');
-        if (!section || !this.content.howItWorks) return;
+        if (!section) {
+            console.warn('⚠️ How It Works: Section not found in DOM');
+            return;
+        }
+        
+        if (!this.content.howItWorks) {
+            console.error('❌ How It Works: No data in content!');
+            console.log('Content keys:', Object.keys(this.content));
+            return;
+        }
+
+        console.log('✅ How It Works: Loading data...', {
+            heading: this.content.howItWorks.heading,
+            stepsCount: this.content.howItWorks.steps?.length || 0
+        });
 
         // Update section heading
         const heading = section.querySelector('.section-text, h2');
@@ -309,6 +323,9 @@ class EstalaraAdmin {
                     <p class="text-gray-300">${step.description}</p>
                 </div>
             `).join('');
+            console.log(`✅ How It Works: Loaded ${this.content.howItWorks.steps.length} steps`);
+        } else {
+            console.error('❌ How It Works: Steps container not found or no steps data');
         }
     }
 
