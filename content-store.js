@@ -61,23 +61,44 @@ class ContentStore {
     }
     
     /**
-     * Load content from available sources
+     * Load content from available sources - optimized for speed
      */
     async loadFromSources() {
-        // Try Firebase first
+        // Try localStorage first for instant loading on repeat visits
+        const localData = this.loadFromLocalStorage();
+        if (localData && this.validateContent(localData)) {
+            console.log('📥 ContentStore: Loaded from localStorage (fast path)');
+            
+            // Load from Firebase in background to check for updates
+            this.loadFromFirebase().then(firebaseData => {
+                if (firebaseData && this.validateContent(firebaseData)) {
+                    const normalized = this.normalizeData(firebaseData);
+                    // Only update if data changed
+                    if (JSON.stringify(normalized) !== JSON.stringify(localData)) {
+                        console.log('🔄 ContentStore: Firebase data updated, reloading...');
+                        this.content = normalized;
+                        this.saveToLocalStorage(normalized);
+                        // Trigger UI reload if EstalaraAdmin exists
+                        if (window.estalaraAdmin) {
+                            window.estalaraAdmin.content = normalized;
+                            window.estalaraAdmin.loadUI();
+                        }
+                    }
+                }
+            }).catch(() => {
+                // Firebase failed, but we already have localStorage data
+            });
+            
+            return this.normalizeData(localData);
+        }
+        
+        // Try Firebase (first time or localStorage unavailable)
         const firebaseData = await this.loadFromFirebase();
         if (firebaseData && this.validateContent(firebaseData)) {
             console.log('📥 ContentStore: Loaded from Firebase');
             const normalized = this.normalizeData(firebaseData);
             this.saveToLocalStorage(normalized); // Backup to localStorage
             return normalized;
-        }
-        
-        // Try localStorage
-        const localData = this.loadFromLocalStorage();
-        if (localData && this.validateContent(localData)) {
-            console.log('📥 ContentStore: Loaded from localStorage');
-            return this.normalizeData(localData);
         }
         
         // Use defaults
@@ -109,11 +130,11 @@ class ContentStore {
      */
     async loadFromFirebase() {
         try {
-            // Wait for Firebase to be ready (max 2 seconds for faster loading)
+            // Wait for Firebase to be ready (max 1 second for faster loading)
             await Promise.race([
                 window.firebaseReadyPromise,
                 new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Firebase timeout')), 2000)
+                    setTimeout(() => reject(new Error('Firebase timeout')), 1000)
                 )
             ]);
             

@@ -125,6 +125,37 @@
             transition: all 0.6s ease;
         }
         
+        /* Hero section optimization - show subtitle and buttons immediately */
+        .hero-content-visible {
+            opacity: 1;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        
+        .hero-title-container {
+            opacity: 0;
+            animation: fadeInTitle 0.4s ease-out 0.3s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInTitle {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
         .btn-primary {
             background: var(--white);
             color: var(--black);
@@ -259,11 +290,14 @@
     <!-- Hero Section -->
     <section class="min-h-screen flex items-center justify-center relative pt-20">
         <div class="max-w-7xl mx-auto px-6 text-center">
-            <!-- Make the hero visible immediately on page load by adding the 'active' class -->
-            <div class="reveal active">
+            <!-- Title container - will animate separately -->
+            <div class="hero-title-container">
                 <h1 class="hero-text font-display mb-8">
                     Invest <span class="text-white">WORLDWIDE</span>
                 </h1>
+            </div>
+            <!-- Subtitle and buttons - show immediately, no reveal animation -->
+            <div class="hero-content-visible">
                 <p class="body-text max-w-3xl mx-auto mb-12 text-gray-300">
                     <!-- Subtitle will be loaded from CMS -->
                 </p>

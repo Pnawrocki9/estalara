@@ -46,15 +46,26 @@ class EstalaraAdmin {
     }
 
     /**
-     * Load navigation menu
+     * Load navigation menu - optimized for fast display
      */
     loadNavigation() {
-        const nav = document.querySelector('nav ul, .nav-links');
-        if (!nav || !this.content.navigation) return;
+        if (!this.content.navigation) return;
 
-        nav.innerHTML = this.content.navigation.map(item => `
-            <li><a href="${item.url}">${item.label}</a></li>
-        `).join('');
+        // Load desktop navigation
+        const desktopNav = document.querySelector('header nav:not(#mobile-menu) ul');
+        if (desktopNav) {
+            desktopNav.innerHTML = this.content.navigation.map(item => `
+                <li><a href="${item.url}" class="text-white hover:text-gray-300 transition-colors">${item.label}</a></li>
+            `).join('');
+        }
+
+        // Load mobile navigation
+        const mobileNav = document.querySelector('#mobile-menu ul.mobile-nav');
+        if (mobileNav) {
+            mobileNav.innerHTML = this.content.navigation.map(item => `
+                <li><a href="${item.url}" class="text-white hover:text-gray-300 transition-colors block py-2">${item.label}</a></li>
+            `).join('');
+        }
     }
 
     /**
@@ -111,7 +122,7 @@ class EstalaraAdmin {
     }
 
     /**
-     * Load hero section
+     * Load hero section - optimized for smooth sequential display
      */
     loadHero() {
         const currentPage = this.getCurrentPage();
@@ -129,47 +140,16 @@ class EstalaraAdmin {
         const cta2Text = pageData.heroCta2Text;
         const cta2Url = pageData.heroCta2Link;
 
-        // Title - Update Typed.js strings if it exists (HOME page only)
-        const typedElement = document.querySelector('#typed-text');
-        if (typedElement && typeof Typed !== 'undefined') {
-            // Destroy existing typed instance if it exists
-            if (window.typed && typeof window.typed.destroy === 'function') {
-                window.typed.destroy();
-            }
-            
-            // Create new typed instance with CMS content or default animation
-            const animationStrings = heroTitle ? [heroTitle] : ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'];
-            window.typed = new Typed('#typed-text', {
-                strings: animationStrings,
-                typeSpeed: 100,
-                backSpeed: 50,
-                backDelay: 2000,
-                loop: true,
-                showCursor: true,
-                cursorChar: '|'
-            });
-        }
-
-        // For non-home pages, update static hero title
-        if (!typedElement && heroTitle) {
-            const heroHeading = document.querySelector('section .hero-text');
-            if (heroHeading) {
-                heroHeading.innerHTML = heroTitle;
-            }
-        }
-
-        // Subtitle - find in any hero section (paragraph after hero title)
-        const heroSection = document.querySelector('section .hero-text');
-        if (heroSection) {
-            const subtitle = heroSection.parentElement.querySelector('.body-text');
+        // Subtitle - load immediately (shows first in the optimized sequence)
+        const heroContainerSection = document.querySelector('section[class*="min-h-screen"]');
+        if (heroContainerSection) {
+            const subtitle = heroContainerSection.querySelector('.body-text');
             if (subtitle && heroSubtitle) {
                 subtitle.textContent = heroSubtitle;
-                // No need to set opacity - already fixed in HTML
             }
         }
 
-        // CTA Buttons - find both primary and secondary buttons in hero section
-        const heroContainerSection = document.querySelector('section[class*="min-h-screen"]');
+        // CTA Buttons - load immediately (show with subtitle)
         if (heroContainerSection) {
             const ctaButtons = heroContainerSection.querySelectorAll('.btn-primary a, .btn-secondary a');
             
@@ -183,6 +163,45 @@ class EstalaraAdmin {
             if (ctaButtons.length >= 2 && cta2Text && cta2Url) {
                 ctaButtons[1].textContent = cta2Text;
                 ctaButtons[1].href = cta2Url;
+            }
+        }
+
+        // Title - Update Typed.js strings if it exists (HOME page only)
+        // This loads after subtitle/buttons due to the delay in main.js
+        const typedElement = document.querySelector('#typed-text');
+        if (typedElement && typeof Typed !== 'undefined') {
+            // Destroy existing typed instance if it exists
+            if (window.typed && typeof window.typed.destroy === 'function') {
+                window.typed.destroy();
+            }
+            
+            // Create new typed instance with CMS content or default animation
+            // Delayed initialization happens in main.js (400ms delay)
+            const animationStrings = heroTitle ? [heroTitle] : ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'];
+            
+            // Wait for main.js to initialize typed.js with delay
+            setTimeout(() => {
+                if (window.typed && typeof window.typed.destroy === 'function') {
+                    window.typed.destroy();
+                }
+                window.typed = new Typed('#typed-text', {
+                    strings: animationStrings,
+                    typeSpeed: 80,
+                    backSpeed: 40,
+                    backDelay: 2000,
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|',
+                    startDelay: 0
+                });
+            }, 450);
+        }
+
+        // For non-home pages, update static hero title
+        if (!typedElement && heroTitle) {
+            const heroHeading = document.querySelector('section .hero-text');
+            if (heroHeading) {
+                heroHeading.innerHTML = heroTitle;
             }
         }
     }
@@ -485,12 +504,8 @@ async function initEstalaraAdmin() {
             });
         }
 
-        // Wait a bit for main.js to initialize (if it exists)
-        if (window.observeReveals === undefined) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
-
-        // Create global instance
+        // Initialize immediately without waiting for main.js
+        // This ensures navigation and content load as fast as possible
         window.estalaraAdmin = new EstalaraAdmin();
 
     } catch (error) {

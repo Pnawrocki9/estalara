@@ -130,19 +130,24 @@ function windowResized() {
 function initializeMain() {
     console.log('📋 [Main] Initializing main.js features...');
     
-    // Only initialize Typed.js if the target element exists
+    // Delay Typed.js initialization to let subtitle and buttons appear first
+    // This ensures smooth sequential display: subtitle/buttons -> then title animation
     const typedElement = document.querySelector('#typed-text');
     if (typedElement && typeof Typed !== 'undefined') {
-        // Store typed instance globally so CMS can update it
-        window.typed = new Typed('#typed-text', {
-            strings: ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'],
-            typeSpeed: 100,
-            backSpeed: 50,
-            backDelay: 2000,
-            loop: true,
-            showCursor: true,
-            cursorChar: '|'
-        });
+        // Wait 400ms (matching the hero-content-visible animation duration)
+        setTimeout(() => {
+            // Store typed instance globally so CMS can update it
+            window.typed = new Typed('#typed-text', {
+                strings: ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'],
+                typeSpeed: 80,
+                backSpeed: 40,
+                backDelay: 2000,
+                loop: true,
+                showCursor: true,
+                cursorChar: '|',
+                startDelay: 0
+            });
+        }, 400);
     }
     
     // Scroll Reveal Animation
@@ -621,13 +626,11 @@ function initializeMain() {
     }
 
     // Run immediately if the document is ready; otherwise attach to DOMContentLoaded
-    // Add 50ms delay to ensure all DOM elements and styles are fully loaded
+    // Initialize immediately for faster menu display
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initMobileMenu, 50);
-        });
+        document.addEventListener('DOMContentLoaded', initMobileMenu);
     } else {
-        // Use setTimeout to execute after current call stack, giving Tailwind CSS time to apply
-        setTimeout(initMobileMenu, 50);
+        // Execute immediately without delay
+        initMobileMenu();
     }
 })();
