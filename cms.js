@@ -1350,14 +1350,34 @@ function loadHeroEditor() {
             <p class="text-xs text-gray-500 mt-1">Supporting text below the hero title</p>
         </div>
         
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Hero CTA Text</label>
-            <input type="text" id="hero-cta-text" class="cms-input" value="${page.heroCtaText || 'Get Started'}" placeholder="Button text">
+        <div class="border-t pt-4 mt-4">
+            <h4 class="text-sm font-medium text-gray-700 mb-3">Primary CTA Button</h4>
+            <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
+                    <input type="text" id="hero-cta1-text" class="cms-input" value="${page.heroCta1Text || ''}" placeholder="e.g., Get Started →">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Button Link</label>
+                    <input type="text" id="hero-cta1-link" class="cms-input" value="${page.heroCta1Link || ''}" placeholder="e.g., https://app.estalara.com">
+                </div>
+            </div>
         </div>
         
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Hero CTA Link</label>
-            <input type="text" id="hero-cta-link" class="cms-input" value="${page.heroCtaLink || 'https://app.estalara.com'}" placeholder="Button URL">
+        <div class="border-t pt-4 mt-4">
+            <h4 class="text-sm font-medium text-gray-700 mb-3">Secondary CTA Button</h4>
+            <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
+                    <input type="text" id="hero-cta2-text" class="cms-input" value="${page.heroCta2Text || ''}" placeholder="e.g., Learn More">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Button Link</label>
+                    <input type="text" id="hero-cta2-link" class="cms-input" value="${page.heroCta2Link || ''}" placeholder="e.g., #about">
+                </div>
+            </div>
         </div>
     `;
 }
@@ -1371,8 +1391,10 @@ function saveFrontendHero() {
     
     admin.pages[pageId].heroTitle = document.getElementById('hero-title').value;
     admin.pages[pageId].heroSubtitle = document.getElementById('hero-subtitle').value;
-    admin.pages[pageId].heroCtaText = document.getElementById('hero-cta-text').value;
-    admin.pages[pageId].heroCtaLink = document.getElementById('hero-cta-link').value;
+    admin.pages[pageId].heroCta1Text = document.getElementById('hero-cta1-text').value;
+    admin.pages[pageId].heroCta1Link = document.getElementById('hero-cta1-link').value;
+    admin.pages[pageId].heroCta2Text = document.getElementById('hero-cta2-text').value;
+    admin.pages[pageId].heroCta2Link = document.getElementById('hero-cta2-link').value;
     
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     showNotification('Hero section saved successfully!', 'success');

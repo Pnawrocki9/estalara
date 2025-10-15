@@ -236,6 +236,11 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 home: {
                     heroTitle: "Go LIVE. Go GLOBAL.",
                     heroSubtitle: "Estalara connects real estate agents and global investors through AI and live experiences. Go LIVE. Go GLOBAL. Close deals faster than ever before.",
+                    // Hero CTA Buttons
+                    heroCta1Text: "Explore Estalara App →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "How It Works",
+                    heroCta2Link: "#how-it-works",
                     // How It Works section
                     howItWorksTitle: "How It Works",
                     howItWorksSubtitle: "Three simple steps to revolutionize your real estate experience",
@@ -248,11 +253,21 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 },
                 agents: {
                     heroTitle: "Agents Go <span class=\"text-white\">GLOBAL</span>",
-                    heroSubtitle: "Attract and convert high‑value global investors effortlessly. Livestream your listings and engage verified buyers in real time with AI‑powered lead generation and automatic landing pages."
+                    heroSubtitle: "Attract and convert high‑value global investors effortlessly. Livestream your listings and engage verified buyers in real time with AI‑powered lead generation and automatic landing pages.",
+                    // Hero CTA Buttons
+                    heroCta1Text: "Start Livestreaming →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Explore Features",
+                    heroCta2Link: "#features"
                 },
                 investors: {
                     heroTitle: "Invest <span class=\"text-white\">WORLDWIDE</span>",
                     heroSubtitle: "Discover and fund exceptional real estate opportunities across borders. Access exclusive properties streamed live and make informed decisions with real‑time data.",
+                    // Hero CTA Buttons
+                    heroCta1Text: "Explore Properties →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Learn Benefits",
+                    heroCta2Link: "#benefits",
                     // Section 1 – investing without borders
                     section1Title: "Investing without borders",
                     section1Content: "The world is your marketplace. Estalara lets you browse, evaluate and purchase properties around the globe from wherever you are. Live tours and remote closings make you feel like you’re there and build trust through authentic video. Our network of verified agents and local experts ensures safety and transparency in every transaction.",
@@ -273,11 +288,21 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 // would fallback to the default hero and subtitle defined on the home page.
                 about: {
                     heroTitle: "About <span class=\"text-white\">ESTALARA</span>",
-                    heroSubtitle: "We're revolutionizing global real estate by connecting agents and investors through AI and live experiences. Our mission is to make international property transactions simple, transparent, and accessible to everyone."
+                    heroSubtitle: "We're revolutionizing global real estate by connecting agents and investors through AI and live experiences. Our mission is to make international property transactions simple, transparent, and accessible to everyone.",
+                    // Hero CTA Buttons
+                    heroCta1Text: "Join Our Platform →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Our Story",
+                    heroCta2Link: "#story"
                 },
                 agencies: {
                     heroTitle: "Agencies Go <span class=\"text-white\">ENTERPRISE</span>",
                     heroSubtitle: "Grow your agency through live selling and social media. Manage multiple agents, broadcast tours and expand internationally with our enterprise solutions.",
+                    // Hero CTA Buttons
+                    heroCta1Text: "Scale Your Agency →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Explore Solutions",
+                    heroCta2Link: "#enterprise-features",
                     // Section 1 – benefits of live commerce and authentic video
                     section1Title: "Live selling meets social media",
                     section1Content: "Live tours and real‑time interaction build trust. Modern buyers spend hours researching homes online, and authentic livestreams let them ask questions and feel the space before they visit. Short vertical clips on TikTok, Instagram and YouTube are becoming the new search engine for property discovery. When you broadcast real tours and behind‑the‑scenes insights, you attract clients who are ready to buy.",
@@ -1139,6 +1164,24 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 if (tPage[contentKey]) page[contentKey] = tPage[contentKey];
                 if (tPage[iconKey]) page[iconKey] = tPage[iconKey];
                 if (tPage[imageKey]) page[imageKey] = tPage[imageKey];
+            }
+        }
+
+        // Update hero CTA buttons if they exist in the page configuration
+        const heroSection = document.querySelector('section[class*="min-h-screen"]');
+        if (heroSection) {
+            const ctaButtons = heroSection.querySelectorAll('.btn-primary a, .btn-secondary a');
+            if (ctaButtons.length >= 1 && page.heroCta1Text) {
+                ctaButtons[0].textContent = page.heroCta1Text;
+            }
+            if (ctaButtons.length >= 1 && page.heroCta1Link) {
+                ctaButtons[0].href = page.heroCta1Link;
+            }
+            if (ctaButtons.length >= 2 && page.heroCta2Text) {
+                ctaButtons[1].textContent = page.heroCta2Text;
+            }
+            if (ctaButtons.length >= 2 && page.heroCta2Link) {
+                ctaButtons[1].href = page.heroCta2Link;
             }
         }
 

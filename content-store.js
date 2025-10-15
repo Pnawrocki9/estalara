@@ -365,9 +365,13 @@ class ContentStore {
                     hero: {
                         title: "Go LIVE. Go GLOBAL.",
                         subtitle: "Connect real estate agents with international investors through AI-powered live experiences.",
-                        ctaText: "Estalara Marketplace",
+                        ctaText: "Explore Estalara App →",
                         ctaUrl: "https://app.estalara.com"
-                    }
+                    },
+                    heroCta1Text: "Explore Estalara App →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "How It Works",
+                    heroCta2Link: "#how-it-works"
                 },
                 agents: {
                     hero: {
@@ -375,7 +379,11 @@ class ContentStore {
                         subtitle: "Attract and convert high-value global investors effortlessly. Livestream your listings and engage verified buyers in real time with AI-powered lead generation and automatic landing pages.",
                         ctaText: "Start Livestreaming →",
                         ctaUrl: "https://app.estalara.com"
-                    }
+                    },
+                    heroCta1Text: "Start Livestreaming →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Explore Features",
+                    heroCta2Link: "#features"
                 },
                 agencies: {
                     hero: {
@@ -383,7 +391,11 @@ class ContentStore {
                         subtitle: "Transform your real estate agency into a global powerhouse. Scale operations, manage multiple agents, and expand internationally with Estalara's enterprise solutions designed for growing agencies.",
                         ctaText: "Scale Your Agency →",
                         ctaUrl: "https://app.estalara.com"
-                    }
+                    },
+                    heroCta1Text: "Scale Your Agency →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Explore Solutions",
+                    heroCta2Link: "#enterprise-features"
                 },
                 investors: {
                     hero: {
@@ -391,7 +403,11 @@ class ContentStore {
                         subtitle: "Discover, evaluate, and purchase properties worldwide with confidence. Attend live property tours with real agents and understand legal, cost, and location details in your own language through EstalaraAI.",
                         ctaText: "Explore Properties →",
                         ctaUrl: "https://app.estalara.com"
-                    }
+                    },
+                    heroCta1Text: "Explore Properties →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Learn Benefits",
+                    heroCta2Link: "#benefits"
                 },
                 about: {
                     hero: {
@@ -399,7 +415,11 @@ class ContentStore {
                         subtitle: "Estalara connects real estate agents and international investors through AI and live experiences. Our mission is to simplify global property transactions and make international real estate accessible to everyone.",
                         ctaText: "Join Our Platform →",
                         ctaUrl: "https://app.estalara.com"
-                    }
+                    },
+                    heroCta1Text: "Join Our Platform →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "Our Story",
+                    heroCta2Link: "#story"
                 }
             },
             
