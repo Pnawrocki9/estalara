@@ -116,12 +116,18 @@ class EstalaraAdmin {
     loadHero() {
         const currentPage = this.getCurrentPage();
         
-        // Get hero data for current page
-        const hero = this.content.pages?.[currentPage]?.hero || {};
-        const heroTitle = hero.title || this.content.heroTitle;
-        const heroSubtitle = hero.subtitle || this.content.heroSubtitle;
-        const ctaText = hero.ctaText;
-        const ctaUrl = hero.ctaUrl;
+        // Get hero data for current page - support both old and new structure
+        const pageData = this.content.pages?.[currentPage] || {};
+        const hero = pageData.hero || {};
+        
+        const heroTitle = hero.title || pageData.heroTitle || this.content.heroTitle;
+        const heroSubtitle = hero.subtitle || pageData.heroSubtitle || this.content.heroSubtitle;
+        
+        // CTA buttons - support both old single-button and new two-button structure
+        const cta1Text = pageData.heroCta1Text || hero.ctaText;
+        const cta1Url = pageData.heroCta1Link || hero.ctaUrl;
+        const cta2Text = pageData.heroCta2Text;
+        const cta2Url = pageData.heroCta2Link;
 
         // Title - Update Typed.js strings if it exists (HOME page only)
         const typedElement = document.querySelector('#typed-text');
@@ -158,22 +164,25 @@ class EstalaraAdmin {
             const subtitle = heroSection.parentElement.querySelector('.body-text');
             if (subtitle && heroSubtitle) {
                 subtitle.textContent = heroSubtitle;
-                subtitle.style.opacity = '1'; // Make visible after CMS loads
+                // No need to set opacity - already fixed in HTML
             }
         }
 
-        // Primary CTA Button - find in any hero section
-        const primaryBtn = document.querySelector('section .btn-primary a, section .btn-primary');
-        if (primaryBtn && ctaText && ctaUrl) {
-            if (primaryBtn.tagName === 'A') {
-                primaryBtn.textContent = ctaText;
-                primaryBtn.href = ctaUrl;
-            } else {
-                const link = primaryBtn.querySelector('a');
-                if (link) {
-                    link.textContent = ctaText;
-                    link.href = ctaUrl;
-                }
+        // CTA Buttons - find both primary and secondary buttons in hero section
+        const heroContainerSection = document.querySelector('section[class*="min-h-screen"]');
+        if (heroContainerSection) {
+            const ctaButtons = heroContainerSection.querySelectorAll('.btn-primary a, .btn-secondary a');
+            
+            // Primary CTA Button (first button)
+            if (ctaButtons.length >= 1 && cta1Text && cta1Url) {
+                ctaButtons[0].textContent = cta1Text;
+                ctaButtons[0].href = cta1Url;
+            }
+            
+            // Secondary CTA Button (second button)
+            if (ctaButtons.length >= 2 && cta2Text && cta2Url) {
+                ctaButtons[1].textContent = cta2Text;
+                ctaButtons[1].href = cta2Url;
             }
         }
     }
