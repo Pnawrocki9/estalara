@@ -130,24 +130,47 @@ function windowResized() {
 function initializeMain() {
     console.log('📋 [Main] Initializing main.js features...');
     
-    // Delay Typed.js initialization to let subtitle and buttons appear first
-    // This ensures smooth sequential display: subtitle/buttons -> then title animation
+    // Initialize Typed.js AFTER the hero title container animation completes
+    // This prevents stutter by ensuring the container is fully visible before typing starts
     const typedElement = document.querySelector('#typed-text');
-    if (typedElement && typeof Typed !== 'undefined') {
-        // Wait 400ms (matching the hero-content-visible animation duration)
+    const heroTitleContainer = document.querySelector('.hero-title-container');
+    
+    if (typedElement && heroTitleContainer) {
+        // Wait for the container fade-in animation to complete
+        heroTitleContainer.addEventListener('animationend', function initTyped() {
+            // Only initialize if Typed is loaded and instance doesn't exist yet
+            if (typeof Typed !== 'undefined' && !window.typed) {
+                // Store typed instance globally so CMS can update it
+                window.typed = new Typed('#typed-text', {
+                    strings: ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'],
+                    typeSpeed: 80,
+                    backSpeed: 40,
+                    backDelay: 2000,
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|',
+                    startDelay: 0
+                });
+                console.log('✅ Typed.js initialized after container animation');
+            }
+        }, { once: true });
+        
+        // Fallback: If animation doesn't fire (already completed), initialize after delay
         setTimeout(() => {
-            // Store typed instance globally so CMS can update it
-            window.typed = new Typed('#typed-text', {
-                strings: ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'],
-                typeSpeed: 80,
-                backSpeed: 40,
-                backDelay: 2000,
-                loop: true,
-                showCursor: true,
-                cursorChar: '|',
-                startDelay: 0
-            });
-        }, 400);
+            if (typeof Typed !== 'undefined' && !window.typed) {
+                window.typed = new Typed('#typed-text', {
+                    strings: ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'],
+                    typeSpeed: 80,
+                    backSpeed: 40,
+                    backDelay: 2000,
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|',
+                    startDelay: 0
+                });
+                console.log('✅ Typed.js initialized via fallback');
+            }
+        }, 800); // 300ms delay + 400ms animation + 100ms buffer
     }
     
     // Scroll Reveal Animation

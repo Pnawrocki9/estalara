@@ -167,34 +167,35 @@ class EstalaraAdmin {
         }
 
         // Title - Update Typed.js strings if it exists (HOME page only)
-        // This loads after subtitle/buttons due to the delay in main.js
+        // Wait for main.js to initialize typed.js first to avoid race conditions
         const typedElement = document.querySelector('#typed-text');
-        if (typedElement && typeof Typed !== 'undefined') {
-            // Destroy existing typed instance if it exists
-            if (window.typed && typeof window.typed.destroy === 'function') {
-                window.typed.destroy();
-            }
+        if (typedElement && heroTitle) {
+            // Update the typed.js strings from CMS content
+            const animationStrings = [heroTitle];
             
-            // Create new typed instance with CMS content or default animation
-            // Delayed initialization happens in main.js (400ms delay)
-            const animationStrings = heroTitle ? [heroTitle] : ['Go LIVE.', 'Go GLOBAL.', 'Go LIVE. Go GLOBAL.'];
-            
-            // Wait for main.js to initialize typed.js with delay
-            setTimeout(() => {
+            // Wait for main.js to create the typed instance
+            const updateTypedStrings = () => {
                 if (window.typed && typeof window.typed.destroy === 'function') {
+                    console.log('📝 CMS: Updating Typed.js strings from CMS');
                     window.typed.destroy();
+                    window.typed = new Typed('#typed-text', {
+                        strings: animationStrings,
+                        typeSpeed: 80,
+                        backSpeed: 40,
+                        backDelay: 2000,
+                        loop: true,
+                        showCursor: true,
+                        cursorChar: '|',
+                        startDelay: 0
+                    });
+                } else {
+                    // Retry if typed instance not ready yet
+                    setTimeout(updateTypedStrings, 100);
                 }
-                window.typed = new Typed('#typed-text', {
-                    strings: animationStrings,
-                    typeSpeed: 80,
-                    backSpeed: 40,
-                    backDelay: 2000,
-                    loop: true,
-                    showCursor: true,
-                    cursorChar: '|',
-                    startDelay: 0
-                });
-            }, 450);
+            };
+            
+            // Wait a bit longer to ensure main.js has initialized
+            setTimeout(updateTypedStrings, 1000);
         }
 
         // For non-home pages, update static hero title
