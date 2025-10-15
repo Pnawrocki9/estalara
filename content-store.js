@@ -259,6 +259,10 @@ class ContentStore {
                     result.features.home = this.defaults.features.home;
                 }
             }
+            // Ensure whiteLabel exists
+            if (!result.whiteLabel || typeof result.whiteLabel !== 'object') {
+                result.whiteLabel = this.defaults.whiteLabel;
+            }
         }
         
         return result;
@@ -533,6 +537,27 @@ class ContentStore {
                         description: "Track viewer engagement, lead quality, and conversion metrics in real-time."
                     }
                 ]
+            },
+            
+            whiteLabel: {
+                title: "Idol Brands — White label for real estate agencies",
+                subtitle: "We offer dedicated white label implementations — your brand, our technology. Launch a complete live commerce and social video platform under your agency's branding: on your own domain, with custom visual identity and configuration tailored to your sales processes.",
+                benefitsTitle: "What you get",
+                benefits: [
+                    "Your own branding: logo, colors, domain/subdomain",
+                    "Branded livestreams and short‑videos — without exposure of our brand",
+                    "Agent and manager panels with permissions",
+                    "CRM/MLS integrations and Single Sign‑On (SSO)"
+                ],
+                whyTitle: "Why it works",
+                whyReasons: [
+                    "Greater customer trust through consistent branding",
+                    "Faster implementations and feature roadmap tailored to your needs",
+                    "SLA, training and Enterprise support",
+                    "Security and compliance (GDPR), scalable infrastructure"
+                ],
+                contactLabel: "Enterprise Cooperation",
+                contactEmail: "peter@estalara.com"
             }
         };
     }

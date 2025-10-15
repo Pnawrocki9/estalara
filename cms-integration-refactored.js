@@ -41,6 +41,7 @@ class EstalaraAdmin {
         this.loadHowItWorks();
         this.loadHomeFeatures();
         this.loadAgentsFeatures();
+        this.loadWhiteLabel();
         this.loadAboutContent();
         this.loadSectionHeadings();
     }
@@ -435,6 +436,68 @@ class EstalaraAdmin {
                 </div>
             `).join('');
         }
+    }
+
+    /**
+     * Load White Label section (Agencies page)
+     */
+    loadWhiteLabel() {
+        // Only load on agencies.html
+        if (!window.location.pathname.includes('agencies.html')) return;
+        if (!this.content.whiteLabel) return;
+
+        console.log('✅ White Label: Loading content...');
+
+        // Update title
+        const titleEl = document.querySelector('#agency-white-label-title');
+        if (titleEl && this.content.whiteLabel.title) {
+            titleEl.textContent = this.content.whiteLabel.title;
+        }
+
+        // Update subtitle
+        const subtitleEl = document.querySelector('#agency-white-label-subtitle');
+        if (subtitleEl && this.content.whiteLabel.subtitle) {
+            subtitleEl.textContent = this.content.whiteLabel.subtitle;
+        }
+
+        // Update benefits section
+        const benefitsTitleEl = document.querySelector('#agency-white-label-benefits-title');
+        if (benefitsTitleEl && this.content.whiteLabel.benefitsTitle) {
+            benefitsTitleEl.textContent = this.content.whiteLabel.benefitsTitle;
+        }
+
+        const benefitsListEl = document.querySelector('#agency-white-label-benefits-list');
+        if (benefitsListEl && this.content.whiteLabel.benefits) {
+            benefitsListEl.innerHTML = this.content.whiteLabel.benefits
+                .map(benefit => `<li>${benefit}</li>`)
+                .join('');
+        }
+
+        // Update why section
+        const whyTitleEl = document.querySelector('#agency-white-label-why-title');
+        if (whyTitleEl && this.content.whiteLabel.whyTitle) {
+            whyTitleEl.textContent = this.content.whiteLabel.whyTitle;
+        }
+
+        const whyListEl = document.querySelector('#agency-white-label-why-list');
+        if (whyListEl && this.content.whiteLabel.whyReasons) {
+            whyListEl.innerHTML = this.content.whiteLabel.whyReasons
+                .map(reason => `<li>${reason}</li>`)
+                .join('');
+        }
+
+        // Update contact section
+        const contactLabelEl = document.querySelector('#agency-white-label-contact-label');
+        if (contactLabelEl && this.content.whiteLabel.contactLabel) {
+            contactLabelEl.textContent = this.content.whiteLabel.contactLabel;
+        }
+
+        const contactEmailEl = document.querySelector('#agency-white-label-contact-email');
+        if (contactEmailEl && this.content.whiteLabel.contactEmail) {
+            contactEmailEl.innerHTML = `<a href="mailto:${this.content.whiteLabel.contactEmail}" class="hover:underline">${this.content.whiteLabel.contactEmail}</a>`;
+        }
+
+        console.log('✅ White Label: Content loaded successfully');
     }
 
     /**
