@@ -288,7 +288,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
                 // would fallback to the default hero and subtitle defined on the home page.
                 about: {
                     heroTitle: "About <span class=\"text-white\">ESTALARA</span>",
-                    heroSubtitle: "We're revolutionizing global real estate by connecting agents and investors through AI and live experiences. Our mission is to make international property transactions simple, transparent, and accessible to everyone.",
+                    heroSubtitle: "Estalara brings the world's real estate to your fingertips — powered by AI, livestreams, and verified global partners.<br><br>Discover hidden opportunities, explore properties in real time, and make confident investment decisions without leaving home.",
                     // Hero CTA Buttons
                     heroCta1Text: "Join Our Platform →",
                     heroCta1Link: "https://app.estalara.com",
@@ -1221,7 +1221,8 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             }
             if (subtitleEls.length > 0 && heroSubtitle) {
                 // Update only the first body-text, which corresponds to the hero subtitle
-                subtitleEls[0].textContent = heroSubtitle;
+                // Use innerHTML to support line breaks and basic formatting
+                subtitleEls[0].innerHTML = heroSubtitle;
             }
         } else {
             // For home page, update the additional sections
