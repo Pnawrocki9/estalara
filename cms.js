@@ -169,7 +169,7 @@ async function loadLivePropertiesGrid() {
             <p class="text-sm text-gray-500 mb-2">${property.location}</p>
             <p class="text-sm text-gray-600 mb-3 line-clamp-2">${property.description}</p>
             <div class="flex justify-between items-center mb-3">
-                <span class="font-bold text-lg text-blue-600">${typeof property.price === 'number' ? '$' + property.price.toLocaleString() : (typeof property.price === 'string' && property.price.startsWith('$') ? property.price : '$' + (property.price || '0'))}</span>
+                <span class="font-bold text-lg text-blue-600">${typeof property.price === 'number' ? '$' + property.price.toLocaleString() : property.price || '$0'}</span>
             </div>
             <div class="flex gap-2">
                 <button class="cms-btn cms-btn-primary text-sm flex-1" onclick="editLiveProperty(${property.id})">Edytuj</button>

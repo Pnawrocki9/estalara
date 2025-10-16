@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Currency Symbols - Estalara</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-item {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        .log-info { color: #0066cc; }
+        .log-success { color: #28a745; }
+        .log-warning { color: #ffc107; }
+        .log-error { color: #dc3545; }
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #333;
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        button.secondary:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Fix Currency Symbols</h1>
+        <p>This tool will fix double currency symbols in your property prices (e.g., "$CHF 4,500,000" → "CHF 4,500,000")</p>
+        
+        <div>
+            <button onclick="checkData()">Check Data</button>
+            <button onclick="fixData()">Fix Data</button>
+            <button onclick="clearData()" class="secondary">Clear localStorage</button>
+        </div>
+        
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const logItem = document.createElement('div');
+            logItem.className = `log-item log-${type}`;
+            logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(logItem);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function checkData() {
+            document.getElementById('log').innerHTML = '';
+            log('🔍 Checking localStorage data...', 'info');
+            
+            const stored = localStorage.getItem('estalaraAdminData');
+            if (!stored) {
+                log('❌ No data found in localStorage', 'error');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(stored);
+                log('✅ Data loaded successfully', 'success');
+                
+                // Check for liveProperties
+                const properties = data.liveProperties || data.content?.liveProperties || [];
+                log(`📊 Found ${properties.length} properties`, 'info');
+                
+                let issuesFound = 0;
+                properties.forEach(prop => {
+                    const price = prop.price;
+                    if (typeof price === 'string') {
+                        // Check for double currency symbols
+                        if (price.match(/^\$[A-Z£€]/)) {
+                            log(`⚠️ Issue found in "${prop.title}": "${price}"`, 'warning');
+                            issuesFound++;
+                        } else {
+                            log(`✓ OK: "${prop.title}": "${price}"`, 'info');
+                        }
+                    }
+                });
+                
+                if (issuesFound === 0) {
+                    log('✅ No issues found! All prices are correctly formatted.', 'success');
+                } else {
+                    log(`⚠️ Found ${issuesFound} price(s) with double currency symbols`, 'warning');
+                    log('💡 Click "Fix Data" to correct them', 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ Error parsing data: ${error.message}`, 'error');
+            }
+        }
+
+        function fixData() {
+            document.getElementById('log').innerHTML = '';
+            log('🔧 Fixing currency symbols...', 'info');
+            
+            const stored = localStorage.getItem('estalaraAdminData');
+            if (!stored) {
+                log('❌ No data found in localStorage', 'error');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(stored);
+                let fixed = 0;
+                
+                // Fix liveProperties
+                const properties = data.liveProperties || data.content?.liveProperties || [];
+                
+                properties.forEach(prop => {
+                    const price = prop.price;
+                    if (typeof price === 'string') {
+                        // Fix double currency symbols: $CHF -> CHF, $£ -> £, $€ -> €
+                        const fixedPrice = price.replace(/^\$([A-Z£€])/, '$1');
+                        if (fixedPrice !== price) {
+                            log(`✓ Fixed "${prop.title}": "${price}" → "${fixedPrice}"`, 'success');
+                            prop.price = fixedPrice;
+                            fixed++;
+                        }
+                    }
+                });
+                
+                if (fixed > 0) {
+                    // Save fixed data back to localStorage
+                    localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+                    log(`✅ Fixed ${fixed} price(s) and saved to localStorage`, 'success');
+                    log('💡 Refresh the page to see the changes', 'info');
+                } else {
+                    log('✅ No issues found to fix!', 'success');
+                }
+                
+            } catch (error) {
+                log(`❌ Error fixing data: ${error.message}`, 'error');
+            }
+        }
+
+        function clearData() {
+            if (confirm('Are you sure you want to clear all localStorage data? This will reload default data.')) {
+                localStorage.removeItem('estalaraAdminData');
+                log('✅ localStorage cleared', 'success');
+                log('💡 Refresh the page to load default data', 'info');
+            }
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            log('Ready! Click "Check Data" to scan for issues.', 'info');
+        });
+    </script>
+</body>
+</html>
