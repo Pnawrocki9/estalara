@@ -45,6 +45,7 @@ class EstalaraAdmin {
         this.loadAboutContent();
         this.loadSectionHeadings();
         this.loadStatistics();
+        this.loadLegalPages();
     }
 
     /**
@@ -526,6 +527,72 @@ class EstalaraAdmin {
             }
         } catch (e) {
             console.warn('⚠️ Statistics: Failed to register animations:', e);
+        }
+    }
+
+    /**
+     * Load legal pages content (Terms, GDPR, Cookies)
+     */
+    loadLegalPages() {
+        // Load admin data
+        const admin = JSON.parse(localStorage.getItem('estalaraAdminData') || '{}');
+        if (!admin.legalPages) return;
+
+        // Determine which legal page we're on
+        let pageType = null;
+        const pathname = window.location.pathname;
+        
+        if (pathname.includes('terms-conditions.html')) {
+            pageType = 'terms';
+        } else if (pathname.includes('gdpr.html')) {
+            pageType = 'gdpr';
+        } else if (pathname.includes('cookies-policy.html')) {
+            pageType = 'cookies';
+        }
+
+        if (!pageType || !admin.legalPages[pageType]) return;
+
+        const pageData = admin.legalPages[pageType];
+
+        // Apply main title
+        const mainTitle = document.getElementById(`${pageType}-main-title`);
+        if (mainTitle && pageData.mainTitle) {
+            mainTitle.textContent = pageData.mainTitle.text;
+            mainTitle.style.color = pageData.mainTitle.color;
+            mainTitle.style.fontWeight = pageData.mainTitle.weight;
+        }
+
+        // Apply dates
+        const effectiveDate = document.getElementById(`${pageType}-effective-date`);
+        if (effectiveDate && pageData.effectiveDate) {
+            effectiveDate.textContent = pageData.effectiveDate.text;
+            effectiveDate.style.color = pageData.effectiveDate.color;
+        }
+
+        const lastUpdated = document.getElementById(`${pageType}-last-updated`);
+        if (lastUpdated && pageData.lastUpdated) {
+            lastUpdated.textContent = pageData.lastUpdated.text;
+            lastUpdated.style.color = pageData.lastUpdated.color;
+        }
+
+        // Apply sections
+        if (pageData.sections) {
+            pageData.sections.forEach((section, index) => {
+                const sectionNum = index + 1;
+                
+                const sectionTitle = document.getElementById(`${pageType}-section${sectionNum}-title`);
+                if (sectionTitle && section.title) {
+                    sectionTitle.textContent = section.title.text;
+                    sectionTitle.style.color = section.title.color;
+                    sectionTitle.style.fontWeight = section.title.weight;
+                }
+
+                const sectionContent = document.getElementById(`${pageType}-section${sectionNum}-content`);
+                if (sectionContent && section.content) {
+                    sectionContent.innerHTML = section.content.text.replace(/\n/g, '<br>');
+                    sectionContent.style.color = section.content.color;
+                }
+            });
         }
     }
 
