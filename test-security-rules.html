@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reguł Zabezpieczeń Firebase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .result.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .auth-section {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status.logged-in {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.logged-out {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .legend {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .legend h3 {
+            margin-top: 0;
+            color: #004085;
+        }
+        
+        .legend ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .legend li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Test Reguł Zabezpieczeń Firebase</h1>
+        
+        <div class="legend">
+            <h3>📋 O tym narzędziu</h3>
+            <p>To narzędzie testuje, czy nowe reguły zabezpieczeń działają prawidłowo:</p>
+            <ul>
+                <li>✅ <strong>Zielone</strong> = Test przeszedł pomyślnie (oczekiwane zachowanie)</li>
+                <li>❌ <strong>Czerwone</strong> = Test nie powiódł się (nieoczekiwane zachowanie)</li>
+                <li>ℹ️ <strong>Niebieskie</strong> = Informacje o stanie</li>
+            </ul>
+        </div>
+        
+        <!-- Status Połączenia -->
+        <div class="test-section">
+            <h2>1. Status Połączenia Firebase</h2>
+            <button onclick="testConnection()">Sprawdź Połączenie</button>
+            <div id="connection-result"></div>
+        </div>
+        
+        <!-- Logowanie -->
+        <div class="auth-section">
+            <h2>2. Autoryzacja 
+                <span id="auth-status" class="status logged-out">Wylogowany</span>
+            </h2>
+            
+            <div id="login-form">
+                <input type="email" id="email" placeholder="Email (np. admin@estalara.com)">
+                <input type="password" id="password" placeholder="Hasło">
+                <button onclick="login()">Zaloguj się</button>
+            </div>
+            
+            <div id="logout-form" style="display: none;">
+                <p>Zalogowany jako: <strong id="user-email"></strong></p>
+                <button onclick="logout()">Wyloguj się</button>
+            </div>
+            
+            <div id="auth-result"></div>
+        </div>
+        
+        <!-- Test Odczytu Publicznego -->
+        <div class="test-section">
+            <h2>3. Test Odczytu Publicznego (bez logowania)</h2>
+            <p><small>Oczekiwany rezultat: ✅ Sukces - dane publiczne powinny być dostępne</small></p>
+            <button onclick="testPublicRead()">Testuj Odczyt Publiczny</button>
+            <div id="public-read-result"></div>
+        </div>
+        
+        <!-- Test Zapisu bez Autoryzacji -->
+        <div class="test-section">
+            <h2>4. Test Zapisu bez Autoryzacji</h2>
+            <p><small>Oczekiwany rezultat: ❌ PERMISSION_DENIED - zapis bez logowania powinien być zablokowany</small></p>
+            <button onclick="testUnauthorizedWrite()">Testuj Zapis bez Autoryzacji</button>
+            <div id="unauthorized-write-result"></div>
+        </div>
+        
+        <!-- Test Zapisu z Autoryzacją -->
+        <div class="test-section">
+            <h2>5. Test Zapisu z Autoryzacją (po zalogowaniu)</h2>
+            <p><small>Oczekiwany rezultat: ✅ Sukces - zalogowany admin powinien móc zapisywać</small></p>
+            <button onclick="testAuthorizedWrite()" id="auth-write-btn" disabled>Testuj Zapis z Autoryzacją</button>
+            <div id="authorized-write-result"></div>
+        </div>
+        
+        <!-- Test Custom Claims -->
+        <div class="test-section">
+            <h2>6. Sprawdź Custom Claims</h2>
+            <p><small>Sprawdza, czy użytkownik ma claim "admin"</small></p>
+            <button onclick="checkCustomClaims()" id="claims-btn" disabled>Sprawdź Claims</button>
+            <div id="claims-result"></div>
+        </div>
+        
+        <!-- Podsumowanie -->
+        <div class="test-section" style="background: #e7f3ff; border-left-color: #004085;">
+            <h2>📊 Podsumowanie Testów</h2>
+            <div id="summary">
+                <p>Uruchom testy, aby zobaczyć podsumowanie.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <script>
+        // Konfiguracja Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjsYOYP5IvNKo5KkN7AxN2br0oC4Mbs0w",
+            authDomain: "estalara-8e22a.firebaseapp.com",
+            databaseURL: "https://estalara-8e22a-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "estalara-8e22a",
+            storageBucket: "estalara-8e22a.appspot.com",
+            messagingSenderId: "296468410777",
+            appId: "1:296468410777:web:7171b74908b747dadfa308"
+        };
+        
+        // Inicjalizacja Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+        
+        let testResults = {
+            connection: null,
+            publicRead: null,
+            unauthorizedWrite: null,
+            authorizedWrite: null,
+            customClaims: null
+        };
+        
+        // Monitoruj stan autoryzacji
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('auth-status').textContent = 'Zalogowany';
+                document.getElementById('auth-status').className = 'status logged-in';
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('logout-form').style.display = 'block';
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('auth-write-btn').disabled = false;
+                document.getElementById('claims-btn').disabled = false;
+            } else {
+                document.getElementById('auth-status').textContent = 'Wylogowany';
+                document.getElementById('auth-status').className = 'status logged-out';
+                document.getElementById('login-form').style.display = 'block';
+                document.getElementById('logout-form').style.display = 'none';
+                document.getElementById('auth-write-btn').disabled = true;
+                document.getElementById('claims-btn').disabled = true;
+            }
+        });
+        
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+        
+        async function testConnection() {
+            try {
+                await db.ref('.info/connected').once('value');
+                const message = '✅ Połączenie z Firebase działa!\n\nURL: ' + firebaseConfig.databaseURL;
+                showResult('connection-result', message, 'success');
+                testResults.connection = true;
+                updateSummary();
+            } catch (error) {
+                const message = '❌ Błąd połączenia:\n\n' + error.message;
+                showResult('connection-result', message, 'error');
+                testResults.connection = false;
+                updateSummary();
+            }
+        }
+        
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                showResult('auth-result', '⚠️ Wprowadź email i hasło', 'error');
+                return;
+            }
+            
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showResult('auth-result', '✅ Zalogowano pomyślnie!', 'success');
+            } catch (error) {
+                let errorMessage = '❌ Błąd logowania:\n\n';
+                
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage += 'Użytkownik nie istnieje. Utwórz konto w Firebase Console.';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage += 'Nieprawidłowe hasło.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage += 'Nieprawidłowy format emaila.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showResult('auth-result', errorMessage, 'error');
+            }
+        }
+        
+        async function logout() {
+            try {
+                await auth.signOut();
+                showResult('auth-result', 'Wylogowano pomyślnie.', 'info');
+            } catch (error) {
+                showResult('auth-result', '❌ Błąd wylogowania: ' + error.message, 'error');
+            }
+        }
+        
+        async function testPublicRead() {
+            try {
+                const snapshot = await db.ref('adminData/hero').once('value');
+                const data = snapshot.val();
+                
+                if (data) {
+                    const message = '✅ SUKCES: Odczyt publiczny działa!\n\n' +
+                                  'Pobrano dane:\n' +
+                                  JSON.stringify(data, null, 2).substring(0, 300) + '...';
+                    showResult('public-read-result', message, 'success');
+                    testResults.publicRead = true;
+                } else {
+                    const message = 'ℹ️ Odczyt działa, ale brak danych w bazie.\n\n' +
+                                  'To normalne, jeśli nie dodałeś jeszcze treści przez CMS.';
+                    showResult('public-read-result', message, 'info');
+                    testResults.publicRead = true;
+                }
+                updateSummary();
+            } catch (error) {
+                const message = '❌ BŁĄD: Odczyt publiczny nie działa!\n\n' +
+                              'Kod błędu: ' + error.code + '\n' +
+                              'Wiadomość: ' + error.message + '\n\n' +
+                              'Sprawdź reguły zabezpieczeń w Firebase Console.';
+                showResult('public-read-result', message, 'error');
+                testResults.publicRead = false;
+                updateSummary();
+            }
+        }
+        
+        async function testUnauthorizedWrite() {
+            // Upewnij się, że użytkownik jest wylogowany
+            if (auth.currentUser) {
+                showResult('unauthorized-write-result', 
+                    '⚠️ Najpierw się wyloguj, aby przetestować nieautoryzowany zapis.', 
+                    'error');
+                return;
+            }
+            
+            try {
+                await db.ref('adminData/testData').set({
+                    test: 'unauthorized',
+                    timestamp: Date.now()
+                });
+                
+                // Jeśli dotarliśmy tutaj, to źle - zapis się powiódł!
+                const message = '❌ UWAGA: Zapis bez autoryzacji POWIÓDŁ SIĘ!\n\n' +
+                              'To oznacza, że reguły zabezpieczeń NIE DZIAŁAJĄ prawidłowo.\n' +
+                              'Każdy może zapisywać do bazy!\n\n' +
+                              'NATYCHMIAST zaktualizuj reguły w Firebase Console!';
+                showResult('unauthorized-write-result', message, 'error');
+                testResults.unauthorizedWrite = false;
+                updateSummary();
+            } catch (error) {
+                if (error.code === 'PERMISSION_DENIED') {
+                    const message = '✅ SUKCES: Zapis bez autoryzacji został ZABLOKOWANY!\n\n' +
+                                  'To prawidłowe zachowanie.\n' +
+                                  'Reguły zabezpieczeń działają poprawnie.';
+                    showResult('unauthorized-write-result', message, 'success');
+                    testResults.unauthorizedWrite = true;
+                } else {
+                    const message = '⚠️ Nieoczekiwany błąd:\n\n' + error.message;
+                    showResult('unauthorized-write-result', message, 'error');
+                    testResults.unauthorizedWrite = null;
+                }
+                updateSummary();
+            }
+        }
+        
+        async function testAuthorizedWrite() {
+            if (!auth.currentUser) {
+                showResult('authorized-write-result', 
+                    '⚠️ Najpierw się zaloguj.', 
+                    'error');
+                return;
+            }
+            
+            try {
+                const testData = {
+                    test: 'authorized',
+                    timestamp: Date.now(),
+                    user: auth.currentUser.email
+                };
+                
+                await db.ref('adminData/testData').set(testData);
+                
+                const message = '✅ SUKCES: Zapis z autoryzacją działa!\n\n' +
+                              'Zapisano dane:\n' +
+                              JSON.stringify(testData, null, 2);
+                showResult('authorized-write-result', message, 'success');
+                testResults.authorizedWrite = true;
+                updateSummary();
+            } catch (error) {
+                if (error.code === 'PERMISSION_DENIED') {
+                    const message = '❌ BŁĄD: Zapis został ODRZUCONY!\n\n' +
+                                  'Możliwe przyczyny:\n' +
+                                  '1. Twój email nie pasuje do reguły (np. nie @estalara.com)\n' +
+                                  '2. Nie masz custom claim "admin" (jeśli używasz production rules)\n' +
+                                  '3. Reguły zabezpieczeń są zbyt restrykcyjne\n\n' +
+                                  'Email: ' + auth.currentUser.email;
+                    showResult('authorized-write-result', message, 'error');
+                    testResults.authorizedWrite = false;
+                } else {
+                    const message = '❌ Nieoczekiwany błąd:\n\n' + error.message;
+                    showResult('authorized-write-result', message, 'error');
+                    testResults.authorizedWrite = false;
+                }
+                updateSummary();
+            }
+        }
+        
+        async function checkCustomClaims() {
+            if (!auth.currentUser) {
+                showResult('claims-result', '⚠️ Najpierw się zaloguj.', 'error');
+                return;
+            }
+            
+            try {
+                const idTokenResult = await auth.currentUser.getIdTokenResult();
+                const claims = idTokenResult.claims;
+                
+                let message = 'ℹ️ Custom Claims dla: ' + auth.currentUser.email + '\n\n';
+                message += JSON.stringify(claims, null, 2);
+                
+                if (claims.admin === true) {
+                    message += '\n\n✅ Użytkownik ma claim "admin"';
+                    testResults.customClaims = true;
+                } else {
+                    message += '\n\n⚠️ Użytkownik NIE ma claim "admin"';
+                    message += '\n\nJeśli używasz production rules (custom claims), musisz:\n';
+                    message += '1. Uruchomić skrypt set-admin-custom-claim.js\n';
+                    message += '2. Wylogować się i zalogować ponownie';
+                    testResults.customClaims = false;
+                }
+                
+                showResult('claims-result', message, 'info');
+                updateSummary();
+            } catch (error) {
+                showResult('claims-result', '❌ Błąd: ' + error.message, 'error');
+                testResults.customClaims = null;
+            }
+        }
+        
+        function updateSummary() {
+            let summary = '<h3>Wyniki:</h3><ul>';
+            
+            if (testResults.connection === true) {
+                summary += '<li>✅ Połączenie: OK</li>';
+            } else if (testResults.connection === false) {
+                summary += '<li>❌ Połączenie: BŁĄD</li>';
+            }
+            
+            if (testResults.publicRead === true) {
+                summary += '<li>✅ Odczyt publiczny: OK</li>';
+            } else if (testResults.publicRead === false) {
+                summary += '<li>❌ Odczyt publiczny: BŁĄD</li>';
+            }
+            
+            if (testResults.unauthorizedWrite === true) {
+                summary += '<li>✅ Blokada nieautoryzowanego zapisu: OK</li>';
+            } else if (testResults.unauthorizedWrite === false) {
+                summary += '<li>❌ Blokada nieautoryzowanego zapisu: BŁĄD (NIEBEZPIECZNE!)</li>';
+            }
+            
+            if (testResults.authorizedWrite === true) {
+                summary += '<li>✅ Zapis autoryzowany: OK</li>';
+            } else if (testResults.authorizedWrite === false) {
+                summary += '<li>❌ Zapis autoryzowany: BŁĄD</li>';
+            }
+            
+            if (testResults.customClaims === true) {
+                summary += '<li>✅ Custom Claims: Admin</li>';
+            } else if (testResults.customClaims === false) {
+                summary += '<li>⚠️ Custom Claims: Brak admin claim</li>';
+            }
+            
+            summary += '</ul>';
+            
+            // Ogólna ocena
+            const allPassed = testResults.connection && 
+                            testResults.publicRead && 
+                            testResults.unauthorizedWrite;
+            
+            if (allPassed) {
+                summary += '<h3 style="color: green;">🎉 Wszystkie podstawowe testy przeszły pomyślnie!</h3>';
+                summary += '<p>Twoje reguły zabezpieczeń działają prawidłowo.</p>';
+            } else if (testResults.unauthorizedWrite === false) {
+                summary += '<h3 style="color: red;">🚨 KRYTYCZNY PROBLEM BEZPIECZEŃSTWA!</h3>';
+                summary += '<p>Nieautoryzowany zapis nie jest blokowany. NATYCHMIAST zaktualizuj reguły!</p>';
+            }
+            
+            document.getElementById('summary').innerHTML = summary;
+        }
+        
+        // Auto-test połączenia przy załadowaniu
+        window.addEventListener('load', () => {
+            setTimeout(testConnection, 1000);
+        });
+    </script>
+</body>
+</html>

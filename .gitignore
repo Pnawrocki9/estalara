@@ -1,0 +1,43 @@
+# Firebase Service Account Keys (wrażliwe dane!)
+service-account-key.json
+*-service-account-key.json
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Firebase cache
+.firebase/
+firebase-debug.log*
+
+# Backupy i tymczasowe pliki
+*.backup
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archiwum
+*.zip
+*.tar.gz
+*.rar
+
+# Logi
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local

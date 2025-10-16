@@ -1,0 +1,70 @@
+{
+  "rules": {
+    "adminData": {
+      // Publiczny odczyt tylko dla wybranych danych potrzebnych na stronie
+      ".read": true,
+      
+      // Zapis TYLKO dla zautoryzowanych adminów
+      ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)",
+      
+      // Walidacja struktury danych
+      ".validate": "newData.hasChildren(['lastUpdated'])",
+      
+      "lastUpdated": {
+        ".validate": "newData.isNumber()"
+      },
+      
+      // Sekcje publiczne (tylko odczyt)
+      "hero": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "features": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "howItWorks": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "properties": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "agencies": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "investors": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "faq": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "footer": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
+      "settings": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      }
+    },
+    
+    // Blokuj dostęp do wszystkich innych ścieżek
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

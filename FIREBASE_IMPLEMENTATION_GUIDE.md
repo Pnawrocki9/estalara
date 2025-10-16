@@ -86,24 +86,32 @@ const firebaseConfig = {
 
 ### Step 6: Update Security Rules
 
-1. Go back to **"Realtime Database"**
-2. Click the **"Rules"** tab
-3. Replace the rules with this:
+⚠️ **UWAGA BEZPIECZEŃSTWA:** Poniższe reguły są przestarzałe i niebezpieczne!
 
-```json
+**NIE UŻYWAJ tych starych reguł:**
+~~```json
 {
   "rules": {
     ".read": true,
     ".write": "auth != null"
   }
 }
-```
+```~~
 
-This means:
-- Anyone can READ (view website)
-- Only authenticated users can WRITE (edit CMS)
+**❌ Problem:** Każdy zalogowany użytkownik może zapisywać do całej bazy!
 
-4. Click **"Publish"**
+**✅ UŻYJ BEZPIECZNYCH REGUŁ:**
+Zobacz plik: **`FIREBASE_SECURITY_RULES.md`** - kompletny przewodnik
+
+**Szybkie rozwiązanie:**
+1. Go back to **"Realtime Database"**
+2. Click the **"Rules"** tab
+3. Skopiuj zawartość z pliku **`database.rules.email-based.json`**
+4. Wklej do edytora reguł
+5. Click **"Publish"**
+
+**Test reguł:**
+Otwórz `test-security-rules.html` w przeglądarce, aby zweryfikować bezpieczeństwo.
 
 ---
 

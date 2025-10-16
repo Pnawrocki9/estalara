@@ -1,0 +1,138 @@
+{
+  "rules": {
+    "adminData": {
+      // Publiczny odczyt dla danych wyświetlanych na stronie
+      ".read": true,
+      
+      // Zapis TYLKO dla adminów z custom claim
+      // Opcja 1: Użyj tego, gdy skonfigurujesz Custom Claims (zalecane)
+      ".write": "auth != null && auth.token.admin === true",
+      
+      // Walidacja wymaganych pól
+      ".validate": "newData.hasChildren(['lastUpdated'])",
+      
+      "lastUpdated": {
+        ".validate": "newData.isNumber()"
+      },
+      
+      // Szczegółowe reguły dla każdej sekcji
+      "hero": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true",
+        "title": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+        },
+        "subtitle": {
+          ".validate": "newData.isString() && newData.val().length <= 500"
+        },
+        "ctaButton": {
+          ".validate": "newData.isString() && newData.val().length <= 100"
+        }
+      },
+      
+      "features": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true",
+        "$featureId": {
+          "title": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+          },
+          "description": {
+            ".validate": "newData.isString() && newData.val().length <= 1000"
+          },
+          "icon": {
+            ".validate": "newData.isString() && newData.val().length <= 100"
+          }
+        }
+      },
+      
+      "howItWorks": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true",
+        "steps": {
+          "$stepId": {
+            "title": {
+              ".validate": "newData.isString() && newData.val().length <= 200"
+            },
+            "description": {
+              ".validate": "newData.isString() && newData.val().length <= 1000"
+            }
+          }
+        }
+      },
+      
+      "properties": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true",
+        "$propertyId": {
+          "title": {
+            ".validate": "newData.isString() && newData.val().length <= 200"
+          },
+          "location": {
+            ".validate": "newData.isString() && newData.val().length <= 200"
+          },
+          "price": {
+            ".validate": "newData.isString() || newData.isNumber()"
+          },
+          "image": {
+            ".validate": "newData.isString() && newData.val().length <= 500"
+          }
+        }
+      },
+      
+      "agencies": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true"
+      },
+      
+      "investors": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true"
+      },
+      
+      "faq": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true",
+        "$faqId": {
+          "question": {
+            ".validate": "newData.isString() && newData.val().length <= 500"
+          },
+          "answer": {
+            ".validate": "newData.isString() && newData.val().length <= 2000"
+          }
+        }
+      },
+      
+      "footer": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true"
+      },
+      
+      "settings": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin === true",
+        "logo": {
+          ".validate": "newData.isString() && newData.val().length <= 1000"
+        },
+        "companyName": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "contactEmail": {
+          ".validate": "newData.isString() && newData.val().matches(/^[^@]+@[^@]+\\.[^@]+$/)"
+        }
+      }
+    },
+    
+    // Logi systemowe (opcjonalne, tylko admin może czytać i pisać)
+    "systemLogs": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true"
+    },
+    
+    // Blokuj dostęp do wszystkich innych ścieżek
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}
