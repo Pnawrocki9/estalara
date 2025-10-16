@@ -461,9 +461,18 @@ class EstalaraAdmin {
             return;
         }
 
+        // Debug: Log content structure
+        console.log('📊 Statistics: Content check:', {
+            hasStatistics: !!this.content.statistics,
+            isArray: Array.isArray(this.content.statistics),
+            length: this.content.statistics?.length,
+            data: this.content.statistics
+        });
+
         // Only load if statistics exist in CMS
         if (!this.content.statistics || !Array.isArray(this.content.statistics) || this.content.statistics.length === 0) {
             console.log('📊 Statistics: No data in CMS - clearing section');
+            console.log('💡 To add statistics, go to CMS (cms.html) and use the Statistics tab');
             statsSection.innerHTML = '';
             return;
         }
