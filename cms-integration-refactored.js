@@ -168,35 +168,52 @@ class EstalaraAdmin {
             }
         }
 
-        // Title - Update Typed.js strings if it exists (HOME page only)
-        // Wait for main.js to initialize typed.js first to avoid race conditions
+        // Title - Update Typed.js ONLY if CMS explicitly provides typedStrings
+        // This avoids re-initializing the animation on first load, eliminating stutter
         const typedElement = document.querySelector('#typed-text');
-        if (typedElement && heroTitle) {
-            // Update the typed.js strings from CMS content
-            const animationStrings = [heroTitle];
+        const typedStringsFromCMS = (Array.isArray(hero.typedStrings) && hero.typedStrings.length > 0)
+            ? hero.typedStrings
+            : (Array.isArray(pageData.typedStrings) && pageData.typedStrings.length > 0)
+                ? pageData.typedStrings
+                : (Array.isArray(this.content.typedStrings) && this.content.typedStrings.length > 0)
+                    ? this.content.typedStrings
+                    : null;
+        
+        if (typedElement && typedStringsFromCMS) {
+            const animationStrings = typedStringsFromCMS;
+            const arraysEqual = (a, b) => Array.isArray(a) && Array.isArray(b) &&
+                a.length === b.length && a.every((v, i) => v === b[i]);
             
-            // Wait for main.js to create the typed instance
+            // Wait for main.js to create the typed instance, then update only if needed
             const updateTypedStrings = () => {
-                if (window.typed && typeof window.typed.destroy === 'function') {
-                    console.log('📝 CMS: Updating Typed.js strings from CMS');
-                    window.typed.destroy();
-                    window.typed = new Typed('#typed-text', {
-                        strings: animationStrings,
-                        typeSpeed: 80,
-                        backSpeed: 40,
-                        backDelay: 2000,
-                        loop: true,
-                        showCursor: true,
-                        cursorChar: '|',
-                        startDelay: 0
-                    });
-                } else {
-                    // Retry if typed instance not ready yet
-                    setTimeout(updateTypedStrings, 100);
+                if (typeof Typed === 'undefined') {
+                    // Library not ready yet
+                    return setTimeout(updateTypedStrings, 100);
                 }
+                
+                // If instance exists and strings already match desired CMS strings, skip update
+                if (window.typed && arraysEqual(window.typed.options?.strings || [], animationStrings)) {
+                    return;
+                }
+                
+                // Destroy previous instance if present, then create with CMS-provided strings
+                if (window.typed && typeof window.typed.destroy === 'function') {
+                    window.typed.destroy();
+                }
+                console.log('📝 CMS: Initializing Typed.js with CMS-provided strings');
+                window.typed = new Typed('#typed-text', {
+                    strings: animationStrings,
+                    typeSpeed: 80,
+                    backSpeed: 40,
+                    backDelay: 2000,
+                    loop: true,
+                    showCursor: true,
+                    cursorChar: '|',
+                    startDelay: 0
+                });
             };
             
-            // Wait a bit longer to ensure main.js has initialized
+            // Ensure main.js has initialized first to prevent race conditions
             setTimeout(updateTypedStrings, 1000);
         }
 
