@@ -268,10 +268,7 @@ class ContentStore {
             if (!result.whiteLabel || typeof result.whiteLabel !== 'object') {
                 result.whiteLabel = this.defaults.whiteLabel;
             }
-            // Ensure statistics exist
-            if (!Array.isArray(result.statistics) || result.statistics.length === 0) {
-                result.statistics = this.defaults.statistics;
-            }
+            // Statistics: Only use what's in CMS, do not auto-populate defaults
         }
         
         return result;
@@ -569,12 +566,8 @@ class ContentStore {
                 contactEmail: "peter@estalara.com"
             },
 
-            statistics: [
-                { number: '500+', label: 'Active Agents' },
-                { number: '10K+', label: 'Global Investors' },
-                { number: '€2.5B+', label: 'Property Value' },
-                { number: '95%', label: 'Close Rate' }
-            ]
+            // Statistics removed - should only come from CMS data
+            statistics: []
         };
     }
 }

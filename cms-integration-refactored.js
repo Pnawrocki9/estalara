@@ -448,37 +448,45 @@ class EstalaraAdmin {
         const isAboutPage = window.location.pathname.includes('about.html');
         
         if (!isAgentsPage && !isAboutPage) return;
-        if (!this.content.statistics) return;
 
         // Find statistics section - works on both pages
         // agents.html: .py-20.bg-white.text-black
         // about.html: .py-32.bg-white.text-black
         const statsSection = document.querySelector('section.bg-white.text-black .grid.md\\:grid-cols-4');
         
-        if (statsSection && this.content.statistics.length >= 4) {
-            console.log('✅ Statistics: Loading', this.content.statistics.length, 'statistics on', isAgentsPage ? 'agents.html' : 'about.html');
-            
-            statsSection.innerHTML = this.content.statistics.map(stat => `
-                <div class="reveal">
-                    <div class="stat-number font-display text-black text-5xl font-bold mb-4">${stat.number}</div>
-                    <p class="text-gray-600 font-semibold">${stat.label}</p>
-                </div>
-            `).join('');
-            
-            // Re-register reveal animations for newly injected elements
-            try {
-                const newReveals = statsSection.querySelectorAll('.reveal');
-                if (typeof window.observeReveals === 'function') {
-                    window.observeReveals(newReveals);
-                } else {
-                    // Fallback: ensure visibility if observer isn't ready
-                    newReveals.forEach(el => el.classList.add('active'));
-                }
-            } catch (e) {
-                console.warn('⚠️ Statistics: Failed to register animations:', e);
+        if (!statsSection) {
+            console.warn('⚠️ Statistics: Section not found in DOM');
+            return;
+        }
+
+        // Only load if statistics exist in CMS
+        if (!this.content.statistics || !Array.isArray(this.content.statistics) || this.content.statistics.length === 0) {
+            console.log('📊 Statistics: No data in CMS - clearing section');
+            statsSection.innerHTML = '';
+            return;
+        }
+
+        // Load statistics from CMS
+        console.log('✅ Statistics: Loading', this.content.statistics.length, 'statistics on', isAgentsPage ? 'agents.html' : 'about.html');
+        
+        statsSection.innerHTML = this.content.statistics.map(stat => `
+            <div class="reveal">
+                <div class="stat-number font-display text-black text-5xl font-bold mb-4">${stat.number}</div>
+                <p class="text-gray-600 font-semibold">${stat.label}</p>
+            </div>
+        `).join('');
+        
+        // Re-register reveal animations for newly injected elements
+        try {
+            const newReveals = statsSection.querySelectorAll('.reveal');
+            if (typeof window.observeReveals === 'function') {
+                window.observeReveals(newReveals);
+            } else {
+                // Fallback: ensure visibility if observer isn't ready
+                newReveals.forEach(el => el.classList.add('active'));
             }
-        } else {
-            console.warn('⚠️ Statistics: Section not found or insufficient data');
+        } catch (e) {
+            console.warn('⚠️ Statistics: Failed to register animations:', e);
         }
     }
 
