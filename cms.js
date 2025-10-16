@@ -1198,6 +1198,8 @@ function showFrontendTab(tabName) {
         loadStatistics();
     } else if (tabName === 'legalpages') {
         loadLegalPageEditor();
+    } else if (tabName === 'faq') {
+        loadFaqCategoryEditor();
     }
 }
 
@@ -2386,4 +2388,142 @@ async function saveLegalPageContent() {
     }
     
     showNotification('Legal page content saved successfully!', 'success');
+}
+
+// ===== FAQ EDITOR FUNCTIONS =====
+
+function loadFaqCategoryEditor() {
+    const category = document.getElementById('faq-category-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.faq) {
+        admin.faq = {
+            general: [],
+            agents: [],
+            investors: [],
+            technical: []
+        };
+    }
+    
+    if (!admin.faq[category]) {
+        admin.faq[category] = [];
+    }
+    
+    const container = document.getElementById('faq-items-container');
+    const items = admin.faq[category] || [];
+    
+    container.innerHTML = items.map((item, index) => `
+        <div class="bg-gray-50 p-4 rounded-lg" id="faq-item-${index}">
+            <div class="flex justify-between items-start mb-3">
+                <h4 class="font-medium text-gray-900">Question ${index + 1}</h4>
+                <button onclick="removeFaqItem(${index})" class="text-red-600 hover:text-red-800">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
+                    <input type="text" id="faq-question-${index}" class="cms-input" value="${item.question || ''}" placeholder="Enter your question here">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
+                    <textarea id="faq-answer-${index}" class="cms-input" rows="4" placeholder="Enter the answer here">${item.answer || ''}</textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    if (items.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-gray-500">No questions yet. Click "Add Question" to create one.</div>';
+    }
+}
+
+function addFaqItem() {
+    const category = document.getElementById('faq-category-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.faq) {
+        admin.faq = {
+            general: [],
+            agents: [],
+            investors: [],
+            technical: []
+        };
+    }
+    
+    if (!admin.faq[category]) {
+        admin.faq[category] = [];
+    }
+    
+    admin.faq[category].push({
+        question: '',
+        answer: ''
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadFaqCategoryEditor();
+}
+
+function removeFaqItem(index) {
+    if (!confirm('Are you sure you want to delete this question?')) {
+        return;
+    }
+    
+    const category = document.getElementById('faq-category-selector').value;
+    const admin = loadAdminData();
+    
+    if (admin.faq && admin.faq[category]) {
+        admin.faq[category].splice(index, 1);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        loadFaqCategoryEditor();
+        showNotification('Question deleted successfully!', 'success');
+    }
+}
+
+async function saveFaqContent() {
+    const category = document.getElementById('faq-category-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.faq) {
+        admin.faq = {
+            general: [],
+            agents: [],
+            investors: [],
+            technical: []
+        };
+    }
+    
+    // Get all FAQ items from the form
+    const items = [];
+    let index = 0;
+    
+    while (document.getElementById(`faq-question-${index}`)) {
+        const question = document.getElementById(`faq-question-${index}`).value;
+        const answer = document.getElementById(`faq-answer-${index}`).value;
+        
+        if (question.trim() || answer.trim()) {
+            items.push({
+                question: question.trim(),
+                answer: answer.trim()
+            });
+        }
+        
+        index++;
+    }
+    
+    admin.faq[category] = items;
+    
+    // Save to both Firebase and localStorage
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        await window.saveAdminDataToFirebase(admin);
+        console.log('✅ FAQ content saved to Firebase and localStorage');
+    } else {
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        console.log('✅ FAQ content saved to localStorage only');
+    }
+    
+    showNotification(`FAQ content for ${category} saved successfully!`, 'success');
+    loadFaqCategoryEditor();
 }

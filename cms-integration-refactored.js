@@ -46,6 +46,7 @@ class EstalaraAdmin {
         this.loadSectionHeadings();
         this.loadStatistics();
         this.loadLegalPages();
+        this.loadFaq();
     }
 
     /**
@@ -719,6 +720,63 @@ class EstalaraAdmin {
                 const subtitleEl = document.querySelector(`#${sectionId} .body-text, #${sectionId} p`);
                 if (subtitleEl) subtitleEl.textContent = section.subtitle;
             }
+        });
+    }
+
+    /**
+     * Load FAQ section
+     */
+    loadFaq() {
+        // Only load on FAQ page
+        if (!window.location.pathname.includes('faq.html')) return;
+        
+        const admin = JSON.parse(localStorage.getItem('estalaraAdminData') || '{}');
+        if (!admin.faq) return;
+
+        console.log('✅ FAQ: Loading content...');
+
+        // Load each category
+        const categories = {
+            'general': 'general-questions',
+            'agents': 'for-agents',
+            'investors': 'for-investors',
+            'technical': 'technical-support'
+        };
+
+        Object.keys(categories).forEach(categoryKey => {
+            const sectionId = categories[categoryKey];
+            const section = document.querySelector(`#${sectionId}`);
+            
+            if (!section || !admin.faq[categoryKey]) return;
+
+            const items = admin.faq[categoryKey];
+            
+            // Find the container for FAQ items (after the h2)
+            const heading = section.querySelector('h2');
+            if (!heading) return;
+
+            // Remove old FAQ items (everything after h2)
+            let nextElement = heading.nextElementSibling;
+            while (nextElement) {
+                const toRemove = nextElement;
+                nextElement = nextElement.nextElementSibling;
+                toRemove.remove();
+            }
+
+            // Add new FAQ items
+            items.forEach(item => {
+                if (item.question && item.answer) {
+                    const faqItem = document.createElement('div');
+                    faqItem.className = 'faq-item';
+                    faqItem.innerHTML = `
+                        <h3 class="faq-question">${item.question}</h3>
+                        <p class="faq-answer">${item.answer}</p>
+                    `;
+                    section.appendChild(faqItem);
+                }
+            });
+
+            console.log(`✅ FAQ: Loaded ${items.length} items for ${categoryKey}`);
         });
     }
 
