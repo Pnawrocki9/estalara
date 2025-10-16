@@ -280,6 +280,9 @@
                             <button onclick="showFrontendTab('aboutcontent')" id="tab-aboutcontent" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 📖 About Content
                             </button>
+                            <button onclick="showFrontendTab('statistics')" id="tab-statistics" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                📊 Statistics
+                            </button>
                         </nav>
                     </div>
 
@@ -599,6 +602,84 @@
                             </div>
 
                             <button onclick="saveAboutContent()" class="cms-btn cms-btn-success">💾 Save About Content</button>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Tab -->
+                    <div id="frontend-statistics" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Statistics Section</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit the statistics displayed on the Agents page</p>
+                        
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
+                            <p class="text-sm text-blue-900 mb-2">
+                                <strong>📊 Statistics Section:</strong> These numbers appear in the white section on the Agents page, showcasing your platform's key metrics.
+                            </p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Stat 1 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Statistic 1</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Number</label>
+                                        <input type="text" id="stat1-number" class="cms-input" placeholder="500+">
+                                        <p class="text-xs text-gray-500 mt-1">The big number (e.g., 500+, 10K+)</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Label</label>
+                                        <input type="text" id="stat1-label" class="cms-input" placeholder="Active Agents">
+                                        <p class="text-xs text-gray-500 mt-1">Description below the number</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stat 2 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Statistic 2</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Number</label>
+                                        <input type="text" id="stat2-number" class="cms-input" placeholder="10K+">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Label</label>
+                                        <input type="text" id="stat2-label" class="cms-input" placeholder="Global Investors">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stat 3 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Statistic 3</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Number</label>
+                                        <input type="text" id="stat3-number" class="cms-input" placeholder="€2.5B+">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Label</label>
+                                        <input type="text" id="stat3-label" class="cms-input" placeholder="Property Value">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stat 4 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Statistic 4</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Number</label>
+                                        <input type="text" id="stat4-number" class="cms-input" placeholder="95%">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Label</label>
+                                        <input type="text" id="stat4-label" class="cms-input" placeholder="Close Rate">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="saveStatistics()" class="cms-btn cms-btn-success">💾 Save Statistics</button>
                         </div>
                     </div>
                 </div>

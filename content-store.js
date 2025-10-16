@@ -558,7 +558,14 @@ class ContentStore {
                 ],
                 contactLabel: "Enterprise Cooperation",
                 contactEmail: "peter@estalara.com"
-            }
+            },
+
+            statistics: [
+                { number: '500+', label: 'Active Agents' },
+                { number: '10K+', label: 'Global Investors' },
+                { number: '€2.5B+', label: 'Property Value' },
+                { number: '95%', label: 'Close Rate' }
+            ]
         };
     }
 }
