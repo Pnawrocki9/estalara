@@ -443,14 +443,16 @@ class EstalaraAdmin {
      * Load statistics section
      */
     loadStatistics() {
-        // Load on both agents.html and about.html
+        // Load on agents.html, agencies.html, and about.html
         const isAgentsPage = window.location.pathname.includes('agents.html');
+        const isAgenciesPage = window.location.pathname.includes('agencies.html');
         const isAboutPage = window.location.pathname.includes('about.html');
         
-        if (!isAgentsPage && !isAboutPage) return;
+        if (!isAgentsPage && !isAgenciesPage && !isAboutPage) return;
 
-        // Find statistics section - works on both pages
+        // Find statistics section - works on all three pages
         // agents.html: .py-20.bg-white.text-black
+        // agencies.html: .py-20.bg-white.text-black
         // about.html: .py-32.bg-white.text-black
         const statsSection = document.querySelector('section.bg-white.text-black .grid.md\\:grid-cols-4');
         
@@ -467,11 +469,12 @@ class EstalaraAdmin {
         }
 
         // Load statistics from CMS
-        console.log('✅ Statistics: Loading', this.content.statistics.length, 'statistics on', isAgentsPage ? 'agents.html' : 'about.html');
+        const pageName = isAgentsPage ? 'agents.html' : isAgenciesPage ? 'agencies.html' : 'about.html';
+        console.log('✅ Statistics: Loading', this.content.statistics.length, 'statistics on', pageName);
         
         statsSection.innerHTML = this.content.statistics.map(stat => `
             <div class="reveal">
-                <div class="stat-number font-display text-black text-5xl font-bold mb-4">${stat.number}</div>
+                <div class="stat-number font-display text-black">${stat.number}</div>
                 <p class="text-gray-600 font-semibold">${stat.label}</p>
             </div>
         `).join('');
