@@ -2170,10 +2170,11 @@ function loadStatistics() {
     document.getElementById('stat4-label').value = admin.statistics?.[3]?.label || '';
 }
 
-function saveStatistics() {
+async function saveStatistics() {
     const admin = loadAdminData();
     
-    admin.statistics = [
+    // Collect all statistics, filtering out empty entries
+    const allStats = [
         {
             number: document.getElementById('stat1-number').value,
             label: document.getElementById('stat1-label').value
@@ -2192,6 +2193,20 @@ function saveStatistics() {
         }
     ];
     
-    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    // Only include statistics where both number and label have values
+    admin.statistics = allStats.filter(stat => stat.number && stat.label);
+    
+    console.log('💾 Saving statistics:', admin.statistics);
+    
+    // Save to both Firebase and localStorage
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        await window.saveAdminDataToFirebase(admin);
+        console.log('✅ Statistics saved to Firebase and localStorage');
+    } else {
+        // Fallback to localStorage only
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        console.log('✅ Statistics saved to localStorage only');
+    }
+    
     showNotification('Statistics saved successfully!', 'success');
 }

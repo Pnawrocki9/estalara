@@ -47,6 +47,7 @@ class ContentStore {
             console.log('✅ ContentStore: Ready');
             console.log(`   - Navigation: ${this.content.navigation?.length || 0} items`);
             console.log(`   - Live Properties: ${this.content.liveProperties?.length || 0} items`);
+            console.log(`   - Statistics: ${this.content.statistics?.length || 0} items`);
             console.log(`   - How It Works: ${this.content.howItWorks ? '✅ Available' : '❌ Missing'}`);
             if (this.content.howItWorks) {
                 console.log(`     Steps: ${this.content.howItWorks.steps?.length || 0}`);
@@ -132,10 +133,20 @@ class ContentStore {
             
             // Keep statistics array from top level if it exists
             if (Array.isArray(data.statistics)) {
+                console.log('📊 ContentStore: Found statistics in top-level data:', data.statistics.length);
                 normalized.statistics = data.statistics;
+            } else {
+                console.log('📊 ContentStore: No statistics found in data');
             }
             
             return normalized;
+        }
+        
+        // Check for statistics in non-wrapped data
+        if (Array.isArray(data.statistics)) {
+            console.log('📊 ContentStore: Found statistics in direct data:', data.statistics.length);
+        } else {
+            console.log('📊 ContentStore: No statistics in direct data');
         }
         
         return data;
@@ -269,6 +280,14 @@ class ContentStore {
                 result.whiteLabel = this.defaults.whiteLabel;
             }
             // Statistics: Only use what's in CMS, do not auto-populate defaults
+            // Explicitly preserve statistics if they exist
+            if (Array.isArray(data.statistics) && data.statistics.length > 0) {
+                result.statistics = data.statistics;
+                console.log('📊 ContentStore: Preserving statistics from data:', data.statistics.length, 'items');
+            } else if (!result.statistics) {
+                // If no statistics in data and no statistics in result, use empty array
+                result.statistics = [];
+            }
         }
         
         return result;
