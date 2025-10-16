@@ -37,9 +37,9 @@ class ContentStore {
             // Always merge with defaults to ensure all fields exist
             this.content = this.mergeWithDefaults(this.content);
             
-            // Validate content is complete
+            // Validate content is complete after merging with defaults
             if (!this.validateContent(this.content)) {
-                console.warn('⚠️ ContentStore: Loaded content is incomplete, using full defaults');
+                console.warn('⚠️ ContentStore: Loaded content is incomplete after merge, using full defaults');
                 this.content = this.defaults;
             }
             
@@ -74,12 +74,16 @@ class ContentStore {
     async loadFromSources() {
         // Try localStorage first for instant loading on repeat visits
         const localData = this.loadFromLocalStorage();
-        if (localData && this.validateContent(localData)) {
+        if (localData) {
             console.log('📥 ContentStore: Loaded from localStorage (fast path)');
-            
+
+            // Merge local data with defaults so UI can render even if partial
+            const normalizedLocal = this.normalizeData(localData);
+            const mergedLocal = this.mergeWithDefaults(normalizedLocal);
+
             // Load from Firebase in background to check for updates
             this.loadFromFirebase().then(firebaseData => {
-                if (firebaseData && this.validateContent(firebaseData)) {
+                if (firebaseData) {
                     const normalized = this.normalizeData(firebaseData);
                     const merged = this.mergeWithDefaults(normalized);
                     // Only update if data changed
@@ -97,15 +101,13 @@ class ContentStore {
             }).catch(() => {
                 // Firebase failed, but we already have localStorage data
             });
-            
-            // Also merge localStorage data with defaults to ensure all fields exist
-            const normalized = this.normalizeData(localData);
-            return this.mergeWithDefaults(normalized);
+
+            return mergedLocal;
         }
-        
+
         // Try Firebase (first time or localStorage unavailable)
         const firebaseData = await this.loadFromFirebase();
-        if (firebaseData && this.validateContent(firebaseData)) {
+        if (firebaseData) {
             console.log('📥 ContentStore: Loaded from Firebase');
             const normalized = this.normalizeData(firebaseData);
             const merged = this.mergeWithDefaults(normalized);
