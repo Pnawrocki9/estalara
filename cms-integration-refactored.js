@@ -133,8 +133,18 @@ class EstalaraAdmin {
         const pageData = this.content.pages?.[currentPage] || {};
         const hero = pageData.hero || {};
         
+        // Support both structures:
+        // New: pages.home.hero.title
+        // Old: pages.home.heroTitle
         const heroTitle = hero.title || pageData.heroTitle || this.content.heroTitle;
         const heroSubtitle = hero.subtitle || pageData.heroSubtitle || this.content.heroSubtitle;
+        
+        console.log(`🎯 Hero Load [${currentPage}]:`, {
+            hasNewHero: !!hero.title,
+            hasOldHero: !!pageData.heroTitle,
+            usingTitle: heroTitle?.substring(0, 30) + '...',
+            usingSubtitle: heroSubtitle?.substring(0, 50) + '...'
+        });
         
         // CTA buttons - support both old single-button and new two-button structure
         const cta1Text = pageData.heroCta1Text || hero.ctaText;
