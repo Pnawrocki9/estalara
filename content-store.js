@@ -132,9 +132,13 @@ class ContentStore {
             }
             
             // Keep statistics array from top level if it exists
+            // Check both data.statistics and data.content.statistics
             if (Array.isArray(data.statistics)) {
                 console.log('📊 ContentStore: Found statistics in top-level data:', data.statistics.length);
                 normalized.statistics = data.statistics;
+            } else if (Array.isArray(data.content.statistics)) {
+                console.log('📊 ContentStore: Found statistics in content wrapper:', data.content.statistics.length);
+                normalized.statistics = data.content.statistics;
             } else {
                 console.log('📊 ContentStore: No statistics found in data');
             }
@@ -284,9 +288,10 @@ class ContentStore {
             if (Array.isArray(data.statistics) && data.statistics.length > 0) {
                 result.statistics = data.statistics;
                 console.log('📊 ContentStore: Preserving statistics from data:', data.statistics.length, 'items');
-            } else if (!result.statistics) {
-                // If no statistics in data and no statistics in result, use empty array
+            } else {
+                // If no statistics in data, use empty array (don't show stale/default data)
                 result.statistics = [];
+                console.log('📊 ContentStore: No statistics in data, using empty array');
             }
         }
         
