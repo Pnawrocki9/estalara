@@ -24,20 +24,24 @@ Widzisz błąd: **"Firebase connection failed. Please check your configuration a
 
 ### Krok 2: Ustaw Poprawne Reguły Bezpieczeństwa
 
-W zakładce **Rules** wpisz:
+⚠️ **UWAGA:** Poniższe reguły są przestarzałe i niebezpieczne!  
+**Użyj nowych, bezpiecznych reguł z pliku `database.rules.email-based.json`**
 
-```json
+Zobacz: `FIREBASE_SECURITY_RULES.md` - pełny przewodnik po bezpiecznych regułach
+
+~~W zakładce **Rules** wpisz:~~
+
+~~```json
 {
   "rules": {
     ".read": true,
     ".write": "auth != null"
   }
 }
-```
+```~~
 
-**Wyjaśnienie:**
-- `.read: true` = każdy może czytać dane (potrzebne do wyświetlania strony)
-- `.write: "auth != null"` = tylko zalogowani użytkownicy mogą zapisywać
+**NOWE BEZPIECZNE REGUŁY:**
+Skopiuj zawartość z pliku `database.rules.email-based.json` lub `database.rules.production.json`
 
 Kliknij **"Publish"**
 
