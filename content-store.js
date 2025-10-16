@@ -130,6 +130,11 @@ class ContentStore {
                 normalized.properties = data.properties;
             }
             
+            // Keep statistics array from top level if it exists
+            if (Array.isArray(data.statistics)) {
+                normalized.statistics = data.statistics;
+            }
+            
             return normalized;
         }
         
@@ -262,6 +267,10 @@ class ContentStore {
             // Ensure whiteLabel exists
             if (!result.whiteLabel || typeof result.whiteLabel !== 'object') {
                 result.whiteLabel = this.defaults.whiteLabel;
+            }
+            // Ensure statistics exist
+            if (!Array.isArray(result.statistics) || result.statistics.length === 0) {
+                result.statistics = this.defaults.statistics;
             }
         }
         
