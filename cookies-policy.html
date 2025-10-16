@@ -55,47 +55,31 @@
             font-family: 'Playfair Display', serif;
         }
         
-        .content-section {
-            margin-bottom: 2.5rem;
-        }
-        
-        .content-section h2 {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            margin-top: 2rem;
-        }
-        
-        .content-section h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
+        .legal-content h1, .legal-content h2, .legal-content h3, .legal-content h4 {
+            color: #FFFFFF;
             margin-top: 1.5rem;
-        }
-        
-        .content-section p {
-            margin-bottom: 1rem;
-            line-height: 1.75;
-            color: #D1D5DB;
-        }
-        
-        .content-section ul, .content-section ol {
-            margin-left: 1.5rem;
             margin-bottom: 1rem;
         }
-        
-        .content-section li {
-            margin-bottom: 0.5rem;
-            line-height: 1.75;
-            color: #D1D5DB;
+        .legal-content h1 { font-size: 2.5rem; font-weight: 700; }
+        .legal-content h2 { font-size: 1.75rem; font-weight: 700; }
+        .legal-content h3 { font-size: 1.25rem; font-weight: 600; }
+        .legal-content p, .legal-content li {
+            color: #CCCCCC;
+            line-height: 1.8;
+            margin-bottom: 1rem;
         }
-        
-        .editable-title {
-            transition: color 0.3s ease;
+        .legal-content ul, .legal-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
         }
-        
-        .editable-text {
-            transition: all 0.3s ease;
+        .legal-content ul { list-style-type: disc; }
+        .legal-content ol { list-style-type: decimal; }
+        .legal-content a {
+            color: #60A5FA;
+            text-decoration: underline;
+        }
+        .legal-content a:hover {
+            color: #93C5FD;
         }
     </style>
 </head>
@@ -150,52 +134,10 @@
     <!-- Main Content -->
     <main class="pt-32 pb-20">
         <div class="max-w-4xl mx-auto px-6">
-            <h1 id="cookies-main-title" class="text-5xl md:text-6xl font-bold mb-6 font-display editable-title" style="color: #FFFFFF; font-weight: 900;">Cookies Policy</h1>
-            <p id="cookies-effective-date" class="text-xl text-gray-400 mb-4 editable-text" style="color: #9CA3AF;">Effective Date: January 1, 2025</p>
-            <p id="cookies-last-updated" class="text-xl text-gray-400 mb-12 editable-text" style="color: #9CA3AF;">Last Updated: January 1, 2025</p>
-            
-            <div class="content-section">
-                <h2 id="cookies-section1-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">1. What Are Cookies?</h2>
-                <p id="cookies-section1-content" class="editable-text" style="color: #D1D5DB;">Cookies are small text files that are stored on your device when you visit our website. They help us provide you with a better experience by remembering your preferences, understanding how you use our site, and improving our services. Cookies can be "persistent" (remain on your device until deleted) or "session" (deleted when you close your browser).</p>
-            </div>
-            
-            <div class="content-section">
-                <h2 id="cookies-section2-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">2. Types of Cookies We Use</h2>
-                <p id="cookies-section2-content" class="editable-text" style="color: #D1D5DB;">We use the following types of cookies on our website:<br><br>
-                • <strong>Essential Cookies:</strong> Required for basic website functionality<br>
-                • <strong>Performance Cookies:</strong> Help us understand how visitors interact with our site<br>
-                • <strong>Functionality Cookies:</strong> Remember your preferences and settings<br>
-                • <strong>Analytics Cookies:</strong> Collect anonymous data about site usage<br>
-                • <strong>Marketing Cookies:</strong> Used to deliver relevant advertisements</p>
-            </div>
-            
-            <div class="content-section">
-                <h2 id="cookies-section3-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">3. How We Use Cookies</h2>
-                <p id="cookies-section3-content" class="editable-text" style="color: #D1D5DB;">We use cookies to:<br><br>
-                • Maintain your login session and keep you signed in<br>
-                • Remember your preferences and settings<br>
-                • Understand how you use our website<br>
-                • Improve our website performance and user experience<br>
-                • Provide personalized content and recommendations<br>
-                • Measure the effectiveness of our marketing campaigns</p>
-            </div>
-            
-            <div class="content-section">
-                <h2 id="cookies-section4-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">4. Managing Cookies</h2>
-                <p id="cookies-section4-content" class="editable-text" style="color: #D1D5DB;">You can control and manage cookies through your browser settings. Most browsers allow you to:<br><br>
-                • View what cookies are stored on your device<br>
-                • Delete all or specific cookies<br>
-                • Block cookies from specific websites<br>
-                • Block all third-party cookies<br>
-                • Clear all cookies when you close the browser<br><br>
-                Please note that disabling cookies may affect the functionality of our website and limit your ability to use certain features.</p>
-            </div>
-            
-            <div class="content-section">
-                <h2 id="cookies-section5-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">5. Contact Us</h2>
-                <p id="cookies-section5-content" class="editable-text" style="color: #D1D5DB;">If you have any questions about our use of cookies, please contact us at:<br><br>
-                <strong>Email:</strong> privacy@estalara.com<br>
-                <strong>Address:</strong> Time2Show, Inc., Dover, DE, USA</p>
+            <div id="legal-content-container" class="legal-content">
+                <!-- Content will be loaded from CMS -->
+                <h1>Cookies Policy</h1>
+                <p>Loading content...</p>
             </div>
         </div>
     </main>
@@ -269,6 +211,66 @@
                 });
             }
         });
+        
+        // Load legal content from CMS
+        function loadLegalContent() {
+            const pageType = 'cookies'; // This page's identifier
+            
+            // Try to get data from localStorage first (for quick load)
+            const adminData = localStorage.getItem('estalaraAdminData');
+            if (adminData) {
+                try {
+                    const data = JSON.parse(adminData);
+                    if (data.legalPages && data.legalPages[pageType]) {
+                        const pageData = data.legalPages[pageType];
+                        
+                        // Check if page is visible
+                        if (pageData.visible === false) {
+                            document.getElementById('legal-content-container').innerHTML = 
+                                '<h1>Page Not Available</h1><p>This page is currently not available.</p>';
+                            return;
+                        }
+                        
+                        // Load content
+                        document.getElementById('legal-content-container').innerHTML = pageData.content;
+                    }
+                } catch (e) {
+                    console.error('Error loading legal content from localStorage:', e);
+                }
+            }
+            
+            // Also try to load from Firebase if available
+            if (window.contentStore) {
+                window.contentStore.initialize().then(() => {
+                    window.contentStore.loadAdminData().then(data => {
+                        if (data && data.legalPages && data.legalPages[pageType]) {
+                            const pageData = data.legalPages[pageType];
+                            
+                            // Check if page is visible
+                            if (pageData.visible === false) {
+                                document.getElementById('legal-content-container').innerHTML = 
+                                    '<h1>Page Not Available</h1><p>This page is currently not available.</p>';
+                                return;
+                            }
+                            
+                            // Load content
+                            document.getElementById('legal-content-container').innerHTML = pageData.content;
+                        }
+                    }).catch(err => {
+                        console.error('Error loading from Firebase:', err);
+                    });
+                }).catch(err => {
+                    console.error('Error initializing content store:', err);
+                });
+            }
+        }
+        
+        // Load content when page is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadLegalContent);
+        } else {
+            loadLegalContent();
+        }
     </script>
 </body>
 </html>

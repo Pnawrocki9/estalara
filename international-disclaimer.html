@@ -6,20 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <!-- Primary Meta Tags -->
-    <title>Terms of Service | Estalara</title>
-    <meta name="title" content="Terms of Service | Estalara">
-    <meta name="description" content="Estalara terms of service. Understand your rights and responsibilities when using our global real estate platform for agents and investors.">
-    <meta name="keywords" content="terms of service, user agreement, estalara terms, platform terms, legal terms">
+    <title>International Disclaimer | Estalara</title>
+    <meta name="title" content="International Disclaimer | Estalara">
+    <meta name="description" content="International disclaimer for Estalara's global real estate platform. Important information for international users and cross-border transactions.">
+    <meta name="keywords" content="international disclaimer, cross-border, global real estate, estalara international">
     <meta name="author" content="Estalara">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <link rel="canonical" href="https://estalara.com/terms.html">
+    <link rel="canonical" href="https://estalara.com/international-disclaimer.html">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://estalara.com/terms.html">
-    <meta property="og:title" content="Terms of Service | Estalara">
-    <meta property="og:description" content="Read Estalara's terms of service. Understand your rights when using our global real estate platform.">
-    <meta property="og:image" content="https://estalara.com/assets/og-image-terms.jpg">
+    <meta property="og:url" content="https://estalara.com/international-disclaimer.html">
+    <meta property="og:title" content="International Disclaimer | Estalara">
+    <meta property="og:description" content="Important international disclaimer for Estalara users worldwide.">
+    <meta property="og:image" content="https://estalara.com/assets/og-image-legal.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Estalara">
@@ -27,23 +27,16 @@
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://estalara.com/terms.html">
-    <meta name="twitter:title" content="Terms of Service | Estalara">
-    <meta name="twitter:description" content="Read Estalara's terms of service for our global real estate platform.">
-    <meta name="twitter:image" content="https://estalara.com/assets/twitter-image-terms.jpg">
+    <meta name="twitter:url" content="https://estalara.com/international-disclaimer.html">
+    <meta name="twitter:title" content="International Disclaimer | Estalara">
+    <meta name="twitter:description" content="Important international disclaimer for Estalara users worldwide.">
+    <meta name="twitter:image" content="https://estalara.com/assets/twitter-image-legal.jpg">
     <meta name="twitter:site" content="@estalara">
     <meta name="twitter:creator" content="@estalara">
     
-    <!-- Hreflang Tags (International) -->
-    <link rel="alternate" hreflang="en" href="https://estalara.com/terms.html">
-    <link rel="alternate" hreflang="es" href="https://estalara.com/es/terms.html">
-    <link rel="alternate" hreflang="fr" href="https://estalara.com/fr/terms.html">
-    <link rel="alternate" hreflang="de" href="https://estalara.com/de/terms.html">
-    <link rel="alternate" hreflang="x-default" href="https://estalara.com/terms.html">
-    
     <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="assets/EstalaraLogo.png">
+    <link rel="shortcut icon" type="image/png" href="assets/EstalaraLogo.png">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -85,15 +78,14 @@
         }
     </style>
     
-    <!-- Firebase SDK (for loading CMS data) - Deferred -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" defer></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
     <script src="firebase-init.js" defer></script>
     
-    <!-- CMS System (Refactored) - Load in order with defer -->
+    <!-- CMS Integration -->
     <script src="content-store.js" defer></script>
-    <script src="cms-integration-refactored.js" defer></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -111,11 +103,11 @@
     </header>
     
     <!-- Main Content -->
-    <main class="pt-32 pb-20" id="hero">
+    <main class="pt-32 pb-20">
         <div class="max-w-4xl mx-auto px-6">
             <div id="legal-content-container" class="legal-content">
                 <!-- Content will be loaded from CMS -->
-                <h1>Terms & Conditions</h1>
+                <h1>International Disclaimer</h1>
                 <p>Loading content...</p>
             </div>
         </div>
@@ -136,7 +128,7 @@
                 <div class="flex flex-col md:flex-row gap-4 md:gap-8 text-sm">
                     <a href="faq.html" class="text-gray-400 hover:text-white transition-colors">FAQ</a>
                     <a href="privacy.html" class="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="terms.html" class="text-white font-semibold">Terms & Conditions</a>
+                    <a href="terms.html" class="text-gray-400 hover:text-white transition-colors">Terms & Conditions</a>
                     <a href="cookies-policy.html" class="text-gray-400 hover:text-white transition-colors">Cookies Policy</a>
                 </div>
             </div>
@@ -146,7 +138,7 @@
     <script>
         // Load legal content from CMS
         function loadLegalContent() {
-            const pageType = 'terms'; // This page's identifier
+            const pageType = 'disclaimer'; // This page's identifier
             
             // Try to get data from localStorage first (for quick load)
             const adminData = localStorage.getItem('estalaraAdminData');
