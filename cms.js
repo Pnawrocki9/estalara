@@ -1196,6 +1196,8 @@ function showFrontendTab(tabName) {
         loadAboutContent();
     } else if (tabName === 'statistics') {
         loadStatistics();
+    } else if (tabName === 'legalpages') {
+        loadLegalPageEditor();
     }
 }
 
@@ -2256,4 +2258,132 @@ async function saveStatistics() {
     }
     
     showNotification('Statistics saved successfully!', 'success');
+}
+
+// ===== LEGAL PAGES FUNCTIONS =====
+
+function loadLegalPageEditor() {
+    const pageType = document.getElementById('legal-page-selector').value;
+    const admin = loadAdminData();
+    
+    // Initialize legal pages data if it doesn't exist
+    if (!admin.legalPages) {
+        admin.legalPages = {
+            terms: {
+                mainTitle: { text: 'Terms & Conditions', color: '#FFFFFF', weight: '900' },
+                effectiveDate: { text: 'Effective Date: January 1, 2025', color: '#9CA3AF' },
+                lastUpdated: { text: 'Last Updated: January 1, 2025', color: '#9CA3AF' },
+                sections: [
+                    { title: { text: '1. Introduction', color: '#FFFFFF', weight: '700' }, content: { text: 'Welcome to Estalara! These Terms & Conditions govern your access to and use of the Estalara platform...', color: '#D1D5DB' } },
+                    { title: { text: '2. Acceptance of Terms', color: '#FFFFFF', weight: '700' }, content: { text: 'By creating an account or using any part of our Services...', color: '#D1D5DB' } },
+                    { title: { text: '3. User Accounts', color: '#FFFFFF', weight: '700' }, content: { text: 'You are responsible for maintaining the confidentiality of your account credentials...', color: '#D1D5DB' } },
+                    { title: { text: '4. Intellectual Property', color: '#FFFFFF', weight: '700' }, content: { text: 'All content, features, and functionality of the Services...', color: '#D1D5DB' } },
+                    { title: { text: '5. Contact Information', color: '#FFFFFF', weight: '700' }, content: { text: 'If you have any questions about these Terms & Conditions, please contact us at legal@estalara.com', color: '#D1D5DB' } }
+                ]
+            },
+            gdpr: {
+                mainTitle: { text: 'GDPR Compliance', color: '#FFFFFF', weight: '900' },
+                effectiveDate: { text: 'Effective Date: January 1, 2025', color: '#9CA3AF' },
+                lastUpdated: { text: 'Last Updated: January 1, 2025', color: '#9CA3AF' },
+                sections: [
+                    { title: { text: '1. Introduction to GDPR', color: '#FFFFFF', weight: '700' }, content: { text: 'The General Data Protection Regulation (GDPR) is a comprehensive data protection law...', color: '#D1D5DB' } },
+                    { title: { text: '2. Your GDPR Rights', color: '#FFFFFF', weight: '700' }, content: { text: 'Under GDPR, you have the following rights regarding your personal data...', color: '#D1D5DB' } },
+                    { title: { text: '3. Legal Basis for Processing', color: '#FFFFFF', weight: '700' }, content: { text: 'We process your personal data based on the following legal grounds...', color: '#D1D5DB' } },
+                    { title: { text: '4. Data Protection Officer', color: '#FFFFFF', weight: '700' }, content: { text: 'For any GDPR-related inquiries or to exercise your rights, please contact our Data Protection Officer...', color: '#D1D5DB' } },
+                    { title: { text: '5. International Data Transfers', color: '#FFFFFF', weight: '700' }, content: { text: 'When we transfer your personal data outside the European Economic Area (EEA)...', color: '#D1D5DB' } }
+                ]
+            },
+            cookies: {
+                mainTitle: { text: 'Cookies Policy', color: '#FFFFFF', weight: '900' },
+                effectiveDate: { text: 'Effective Date: January 1, 2025', color: '#9CA3AF' },
+                lastUpdated: { text: 'Last Updated: January 1, 2025', color: '#9CA3AF' },
+                sections: [
+                    { title: { text: '1. What Are Cookies?', color: '#FFFFFF', weight: '700' }, content: { text: 'Cookies are small text files that are stored on your device when you visit our website...', color: '#D1D5DB' } },
+                    { title: { text: '2. Types of Cookies We Use', color: '#FFFFFF', weight: '700' }, content: { text: 'We use the following types of cookies on our website...', color: '#D1D5DB' } },
+                    { title: { text: '3. How We Use Cookies', color: '#FFFFFF', weight: '700' }, content: { text: 'We use cookies to maintain your login session and keep you signed in...', color: '#D1D5DB' } },
+                    { title: { text: '4. Managing Cookies', color: '#FFFFFF', weight: '700' }, content: { text: 'You can control and manage cookies through your browser settings...', color: '#D1D5DB' } },
+                    { title: { text: '5. Contact Us', color: '#FFFFFF', weight: '700' }, content: { text: 'If you have any questions about our use of cookies, please contact us at privacy@estalara.com', color: '#D1D5DB' } }
+                ]
+            }
+        };
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    }
+    
+    const pageData = admin.legalPages[pageType];
+    
+    // Load main title
+    document.getElementById('legal-main-title').value = pageData.mainTitle.text;
+    document.getElementById('legal-title-color').value = pageData.mainTitle.color;
+    document.getElementById('legal-title-weight').value = pageData.mainTitle.weight;
+    
+    // Load dates
+    document.getElementById('legal-effective-date').value = pageData.effectiveDate.text;
+    document.getElementById('legal-last-updated').value = pageData.lastUpdated.text;
+    document.getElementById('legal-date-color').value = pageData.effectiveDate.color;
+    
+    // Load sections
+    for (let i = 0; i < 5; i++) {
+        const section = pageData.sections[i];
+        if (section) {
+            document.getElementById(`legal-section${i + 1}-title`).value = section.title.text;
+            document.getElementById(`legal-section${i + 1}-content`).value = section.content.text;
+            document.getElementById(`legal-section${i + 1}-title-color`).value = section.title.color;
+            document.getElementById(`legal-section${i + 1}-title-weight`).value = section.title.weight;
+            document.getElementById(`legal-section${i + 1}-text-color`).value = section.content.color;
+        }
+    }
+}
+
+async function saveLegalPageContent() {
+    const pageType = document.getElementById('legal-page-selector').value;
+    const admin = loadAdminData();
+    
+    if (!admin.legalPages) {
+        admin.legalPages = { terms: {}, gdpr: {}, cookies: {} };
+    }
+    
+    // Save main title
+    admin.legalPages[pageType] = {
+        mainTitle: {
+            text: document.getElementById('legal-main-title').value,
+            color: document.getElementById('legal-title-color').value,
+            weight: document.getElementById('legal-title-weight').value
+        },
+        effectiveDate: {
+            text: document.getElementById('legal-effective-date').value,
+            color: document.getElementById('legal-date-color').value
+        },
+        lastUpdated: {
+            text: document.getElementById('legal-last-updated').value,
+            color: document.getElementById('legal-date-color').value
+        },
+        sections: []
+    };
+    
+    // Save sections
+    for (let i = 0; i < 5; i++) {
+        const section = {
+            title: {
+                text: document.getElementById(`legal-section${i + 1}-title`).value,
+                color: document.getElementById(`legal-section${i + 1}-title-color`).value,
+                weight: document.getElementById(`legal-section${i + 1}-title-weight`).value
+            },
+            content: {
+                text: document.getElementById(`legal-section${i + 1}-content`).value,
+                color: document.getElementById(`legal-section${i + 1}-text-color`).value
+            }
+        };
+        admin.legalPages[pageType].sections.push(section);
+    }
+    
+    // Save to both Firebase and localStorage
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        await window.saveAdminDataToFirebase(admin);
+        console.log('✅ Legal page content saved to Firebase and localStorage');
+    } else {
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        console.log('✅ Legal page content saved to localStorage only');
+    }
+    
+    showNotification('Legal page content saved successfully!', 'success');
 }

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Primary Meta Tags -->
+    <title>GDPR | Estalara</title>
+    <meta name="title" content="GDPR | Estalara">
+    <meta name="description" content="Learn about Estalara's GDPR compliance and how we protect your personal data in accordance with EU regulations.">
+    <meta name="keywords" content="GDPR, data protection, privacy rights, EU regulations, personal data">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://estalara.com/gdpr.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://estalara.com/gdpr.html">
+    <meta property="og:title" content="GDPR | Estalara">
+    <meta property="og:description" content="Learn about Estalara's GDPR compliance and data protection policies.">
+    <meta property="og:image" content="https://estalara.com/assets/og-image-gdpr.jpg">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://estalara.com/gdpr.html">
+    <meta name="twitter:title" content="GDPR | Estalara">
+    <meta name="twitter:description" content="Learn about Estalara's GDPR compliance and data protection policies.">
+    <meta name="twitter:image" content="https://estalara.com/assets/twitter-image-gdpr.jpg">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="assets/EstalaraLogo.png">
+    <link rel="shortcut icon" type="image/png" href="assets/EstalaraLogo.png">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .content-section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .content-section h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .content-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        
+        .content-section p {
+            margin-bottom: 1rem;
+            line-height: 1.75;
+            color: #D1D5DB;
+        }
+        
+        .content-section ul, .content-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .content-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.75;
+            color: #D1D5DB;
+        }
+        
+        .editable-title {
+            transition: color 0.3s ease;
+        }
+        
+        .editable-text {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-[100] bg-black border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-3">
+            <!-- Logo -->
+            <a href="index.html" class="block">
+                <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-8 md:h-10" loading="eager">
+            </a>
+
+            <!-- Hamburger (mobile only) -->
+            <button id="menu-toggle" aria-label="Open menu" aria-expanded="false"
+                    class="md:hidden p-2 rounded hover:bg-white/10 focus:outline-none focus:ring focus:ring-white/30 z-[101] relative">
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white"></span>
+            </button>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-6">
+                <ul class="flex items-center gap-6">
+                    <!-- Navigation items loaded dynamically from CMS -->
+                </ul>
+                <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition ml-2">
+                    Estalara Marketplace
+                </a>
+            </nav>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu"
+                 class="hidden
+                        flex-col
+                        fixed left-0 right-0 top-[60px]
+                        max-h-[calc(100vh-60px)] overflow-y-auto
+                        z-[95]
+                        bg-black px-6 py-6
+                        gap-4
+                        border-b border-white/10
+                        shadow-2xl">
+                <ul class="mobile-nav flex flex-col gap-4">
+                    <!-- Mobile navigation items loaded dynamically from CMS -->
+                </ul>
+                <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition">
+                    Estalara Marketplace
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="pt-32 pb-20">
+        <div class="max-w-4xl mx-auto px-6">
+            <h1 id="gdpr-main-title" class="text-5xl md:text-6xl font-bold mb-6 font-display editable-title" style="color: #FFFFFF; font-weight: 900;">GDPR Compliance</h1>
+            <p id="gdpr-effective-date" class="text-xl text-gray-400 mb-4 editable-text" style="color: #9CA3AF;">Effective Date: January 1, 2025</p>
+            <p id="gdpr-last-updated" class="text-xl text-gray-400 mb-12 editable-text" style="color: #9CA3AF;">Last Updated: January 1, 2025</p>
+            
+            <div class="content-section">
+                <h2 id="gdpr-section1-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">1. Introduction to GDPR</h2>
+                <p id="gdpr-section1-content" class="editable-text" style="color: #D1D5DB;">The General Data Protection Regulation (GDPR) is a comprehensive data protection law that came into effect on May 25, 2018. At Estalara, we are committed to protecting your personal data and ensuring compliance with GDPR requirements. This page outlines how we handle your data in accordance with GDPR principles.</p>
+            </div>
+            
+            <div class="content-section">
+                <h2 id="gdpr-section2-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">2. Your GDPR Rights</h2>
+                <p id="gdpr-section2-content" class="editable-text" style="color: #D1D5DB;">Under GDPR, you have the following rights regarding your personal data:<br><br>
+                • <strong>Right to Access:</strong> You can request access to your personal data<br>
+                • <strong>Right to Rectification:</strong> You can request correction of inaccurate data<br>
+                • <strong>Right to Erasure:</strong> You can request deletion of your personal data<br>
+                • <strong>Right to Restrict Processing:</strong> You can request limitation of data processing<br>
+                • <strong>Right to Data Portability:</strong> You can request transfer of your data<br>
+                • <strong>Right to Object:</strong> You can object to certain types of processing</p>
+            </div>
+            
+            <div class="content-section">
+                <h2 id="gdpr-section3-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">3. Legal Basis for Processing</h2>
+                <p id="gdpr-section3-content" class="editable-text" style="color: #D1D5DB;">We process your personal data based on the following legal grounds:<br><br>
+                • <strong>Consent:</strong> Where you have given explicit consent<br>
+                • <strong>Contract Performance:</strong> To fulfill our contractual obligations<br>
+                • <strong>Legal Obligations:</strong> To comply with legal requirements<br>
+                • <strong>Legitimate Interests:</strong> For our legitimate business interests, provided your rights are not overridden</p>
+            </div>
+            
+            <div class="content-section">
+                <h2 id="gdpr-section4-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">4. Data Protection Officer</h2>
+                <p id="gdpr-section4-content" class="editable-text" style="color: #D1D5DB;">For any GDPR-related inquiries or to exercise your rights, please contact our Data Protection Officer at:<br><br>
+                <strong>Email:</strong> dpo@estalara.com<br>
+                <strong>Address:</strong> Time2Show, Inc., Dover, DE, USA</p>
+            </div>
+            
+            <div class="content-section">
+                <h2 id="gdpr-section5-title" class="editable-title" style="color: #FFFFFF; font-weight: 700;">5. International Data Transfers</h2>
+                <p id="gdpr-section5-content" class="editable-text" style="color: #D1D5DB;">When we transfer your personal data outside the European Economic Area (EEA), we ensure appropriate safeguards are in place, including Standard Contractual Clauses approved by the European Commission. We take all necessary measures to ensure your data is treated securely and in accordance with GDPR requirements.</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-10 mb-4" loading="lazy">
+                    <h3 class="footer-company-name text-lg font-bold mb-2">Estalara</h3>
+                    <p class="footer-tagline text-gray-400 text-sm mb-2">Go LIVE. Go GLOBAL.</p>
+                    <p class="footer-description text-gray-400 text-sm mb-4">
+                        Connecting real estate agents and global investors through AI and live experiences.
+                    </p>
+                </div>
+                
+                <!-- Footer Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">LEGAL</h4>
+                    <nav>
+                        <ul class="footer-links flex flex-col gap-2">
+                            <li><a href="terms-conditions.html" class="text-gray-400 hover:text-white transition-colors">Terms & Conditions</a></li>
+                            <li><a href="gdpr.html" class="text-white font-semibold">GDPR</a></li>
+                            <li><a href="cookies-policy.html" class="text-gray-400 hover:text-white transition-colors">Cookies Policy</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <!-- Social Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Follow Us</h4>
+                    <div class="social-links flex gap-4">
+                        <!-- Social links loaded from CMS -->
+                    </div>
+                    <p class="text-gray-400 text-sm mt-8">
+                        Time2Show, Inc., Dover, DE, USA<br>
+                        <span id="contact-email">estalara@estalara.com</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-800 text-center">
+                <p id="footer-text" class="text-gray-400 text-sm">© 2025 Estalara. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+    <script src="firebase-init.js" defer></script>
+    
+    <!-- CMS System -->
+    <script src="main.js" defer></script>
+    <script src="content-store.js" defer></script>
+    <script src="cms-integration-refactored.js" defer></script>
+    
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('flex');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

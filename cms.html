@@ -286,6 +286,9 @@
                             <button onclick="showFrontendTab('statistics')" id="tab-statistics" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 📊 Statistics
                             </button>
+                            <button onclick="showFrontendTab('legalpages')" id="tab-legalpages" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                ⚖️ Legal Pages
+                            </button>
                         </nav>
                     </div>
 
@@ -683,6 +686,253 @@
                             </div>
 
                             <button onclick="saveStatistics()" class="cms-btn cms-btn-success">💾 Save Statistics</button>
+                        </div>
+                    </div>
+
+                    <!-- Legal Pages Tab -->
+                    <div id="frontend-legalpages" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Legal Pages Editor</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit content, colors, and font styles for Terms & Conditions, GDPR, and Cookies Policy pages</p>
+                        
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
+                            <p class="text-sm text-blue-900 mb-2">
+                                <strong>⚖️ Legal Pages:</strong> Customize the content and appearance of your legal pages. You can edit text, change colors, and adjust font weights.
+                            </p>
+                        </div>
+
+                        <!-- Page Selector -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Legal Page</label>
+                            <select id="legal-page-selector" class="cms-input w-full md:w-1/2" onchange="loadLegalPageEditor()">
+                                <option value="terms">Terms & Conditions</option>
+                                <option value="gdpr">GDPR</option>
+                                <option value="cookies">Cookies Policy</option>
+                            </select>
+                        </div>
+
+                        <div id="legal-page-editor-content" class="space-y-6">
+                            <!-- Main Title -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Main Title</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Title Text</label>
+                                        <input type="text" id="legal-main-title" class="cms-input" placeholder="Terms & Conditions">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Color</label>
+                                            <input type="color" id="legal-title-color" class="cms-input h-10" value="#FFFFFF">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Font Weight</label>
+                                            <select id="legal-title-weight" class="cms-input">
+                                                <option value="400">Normal (400)</option>
+                                                <option value="500">Medium (500)</option>
+                                                <option value="600">Semi-Bold (600)</option>
+                                                <option value="700">Bold (700)</option>
+                                                <option value="900" selected>Black (900)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dates -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Dates</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Effective Date</label>
+                                        <input type="text" id="legal-effective-date" class="cms-input" placeholder="Effective Date: January 1, 2025">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Last Updated</label>
+                                        <input type="text" id="legal-last-updated" class="cms-input" placeholder="Last Updated: January 1, 2025">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Text Color</label>
+                                        <input type="color" id="legal-date-color" class="cms-input h-10" value="#9CA3AF">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 1 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Section 1</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
+                                        <input type="text" id="legal-section1-title" class="cms-input" placeholder="1. Introduction">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Content</label>
+                                        <textarea id="legal-section1-content" class="cms-input" rows="4" placeholder="Section content..."></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Color</label>
+                                            <input type="color" id="legal-section1-title-color" class="cms-input h-10" value="#FFFFFF">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Weight</label>
+                                            <select id="legal-section1-title-weight" class="cms-input">
+                                                <option value="400">Normal</option>
+                                                <option value="500">Medium</option>
+                                                <option value="600">Semi-Bold</option>
+                                                <option value="700" selected>Bold</option>
+                                                <option value="900">Black</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+                                            <input type="color" id="legal-section1-text-color" class="cms-input h-10" value="#D1D5DB">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 2 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Section 2</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
+                                        <input type="text" id="legal-section2-title" class="cms-input" placeholder="2. Title">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Content</label>
+                                        <textarea id="legal-section2-content" class="cms-input" rows="4" placeholder="Section content..."></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Color</label>
+                                            <input type="color" id="legal-section2-title-color" class="cms-input h-10" value="#FFFFFF">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Weight</label>
+                                            <select id="legal-section2-title-weight" class="cms-input">
+                                                <option value="400">Normal</option>
+                                                <option value="500">Medium</option>
+                                                <option value="600">Semi-Bold</option>
+                                                <option value="700" selected>Bold</option>
+                                                <option value="900">Black</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+                                            <input type="color" id="legal-section2-text-color" class="cms-input h-10" value="#D1D5DB">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 3 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Section 3</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
+                                        <input type="text" id="legal-section3-title" class="cms-input" placeholder="3. Title">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Content</label>
+                                        <textarea id="legal-section3-content" class="cms-input" rows="4" placeholder="Section content..."></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Color</label>
+                                            <input type="color" id="legal-section3-title-color" class="cms-input h-10" value="#FFFFFF">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Weight</label>
+                                            <select id="legal-section3-title-weight" class="cms-input">
+                                                <option value="400">Normal</option>
+                                                <option value="500">Medium</option>
+                                                <option value="600">Semi-Bold</option>
+                                                <option value="700" selected>Bold</option>
+                                                <option value="900">Black</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+                                            <input type="color" id="legal-section3-text-color" class="cms-input h-10" value="#D1D5DB">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 4 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Section 4</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
+                                        <input type="text" id="legal-section4-title" class="cms-input" placeholder="4. Title">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Content</label>
+                                        <textarea id="legal-section4-content" class="cms-input" rows="4" placeholder="Section content..."></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Color</label>
+                                            <input type="color" id="legal-section4-title-color" class="cms-input h-10" value="#FFFFFF">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Weight</label>
+                                            <select id="legal-section4-title-weight" class="cms-input">
+                                                <option value="400">Normal</option>
+                                                <option value="500">Medium</option>
+                                                <option value="600">Semi-Bold</option>
+                                                <option value="700" selected>Bold</option>
+                                                <option value="900">Black</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+                                            <input type="color" id="legal-section4-text-color" class="cms-input h-10" value="#D1D5DB">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section 5 -->
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Section 5</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Title</label>
+                                        <input type="text" id="legal-section5-title" class="cms-input" placeholder="5. Title">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Section Content</label>
+                                        <textarea id="legal-section5-content" class="cms-input" rows="4" placeholder="Section content..."></textarea>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Color</label>
+                                            <input type="color" id="legal-section5-title-color" class="cms-input h-10" value="#FFFFFF">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Title Weight</label>
+                                            <select id="legal-section5-title-weight" class="cms-input">
+                                                <option value="400">Normal</option>
+                                                <option value="500">Medium</option>
+                                                <option value="600">Semi-Bold</option>
+                                                <option value="700" selected>Bold</option>
+                                                <option value="900">Black</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+                                            <input type="color" id="legal-section5-text-color" class="cms-input h-10" value="#D1D5DB">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button onclick="saveLegalPageContent()" class="cms-btn cms-btn-success">💾 Save Legal Page Content</button>
                         </div>
                     </div>
                 </div>
