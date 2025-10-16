@@ -1339,16 +1339,31 @@ function loadHeroEditor() {
     
     const page = admin.pages?.[pageId] || {};
     
+    // Load from NEW structure first, fallback to OLD structure
+    const heroTitle = page.hero?.title || page.heroTitle || '';
+    const heroSubtitle = page.hero?.subtitle || page.heroSubtitle || '';
+    const cta1Text = page.hero?.ctaText || page.heroCta1Text || '';
+    const cta1Link = page.hero?.ctaUrl || page.heroCta1Link || '';
+    const cta2Text = page.heroCta2Text || '';
+    const cta2Link = page.heroCta2Link || '';
+    
+    console.log(`📝 Loading hero editor for ${pageId}:`, {
+        hasNewFormat: !!page.hero,
+        hasOldFormat: !!(page.heroTitle || page.heroSubtitle),
+        title: heroTitle,
+        subtitle: heroSubtitle?.substring(0, 50) + '...'
+    });
+    
     container.innerHTML = `
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Hero Title</label>
-            <input type="text" id="hero-title" class="cms-input" value="${page.heroTitle || ''}" placeholder="Enter hero title">
+            <input type="text" id="hero-title" class="cms-input" value="${heroTitle}" placeholder="Enter hero title">
             <p class="text-xs text-gray-500 mt-1">Main headline displayed in the hero section</p>
         </div>
         
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Hero Subtitle</label>
-            <textarea id="hero-subtitle" class="cms-input" rows="3" placeholder="Enter hero subtitle">${page.heroSubtitle || ''}</textarea>
+            <textarea id="hero-subtitle" class="cms-input" rows="3" placeholder="Enter hero subtitle">${heroSubtitle}</textarea>
             <p class="text-xs text-gray-500 mt-1">Supporting text below the hero title</p>
         </div>
         
@@ -1357,12 +1372,12 @@ function loadHeroEditor() {
             <div class="grid grid-cols-1 gap-3">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
-                    <input type="text" id="hero-cta1-text" class="cms-input" value="${page.heroCta1Text || ''}" placeholder="e.g., Get Started →">
+                    <input type="text" id="hero-cta1-text" class="cms-input" value="${cta1Text}" placeholder="e.g., Get Started →">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Button Link</label>
-                    <input type="text" id="hero-cta1-link" class="cms-input" value="${page.heroCta1Link || ''}" placeholder="e.g., https://app.estalara.com">
+                    <input type="text" id="hero-cta1-link" class="cms-input" value="${cta1Link}" placeholder="e.g., https://app.estalara.com">
                 </div>
             </div>
         </div>
@@ -1372,12 +1387,12 @@ function loadHeroEditor() {
             <div class="grid grid-cols-1 gap-3">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
-                    <input type="text" id="hero-cta2-text" class="cms-input" value="${page.heroCta2Text || ''}" placeholder="e.g., Learn More">
+                    <input type="text" id="hero-cta2-text" class="cms-input" value="${cta2Text}" placeholder="e.g., Learn More">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Button Link</label>
-                    <input type="text" id="hero-cta2-link" class="cms-input" value="${page.heroCta2Link || ''}" placeholder="e.g., #about">
+                    <input type="text" id="hero-cta2-link" class="cms-input" value="${cta2Link}" placeholder="e.g., #about">
                 </div>
             </div>
         </div>
@@ -1391,14 +1406,46 @@ function saveFrontendHero() {
     if (!admin.pages) admin.pages = {};
     if (!admin.pages[pageId]) admin.pages[pageId] = {};
     
-    admin.pages[pageId].heroTitle = document.getElementById('hero-title').value;
-    admin.pages[pageId].heroSubtitle = document.getElementById('hero-subtitle').value;
-    admin.pages[pageId].heroCta1Text = document.getElementById('hero-cta1-text').value;
-    admin.pages[pageId].heroCta1Link = document.getElementById('hero-cta1-link').value;
-    admin.pages[pageId].heroCta2Text = document.getElementById('hero-cta2-text').value;
-    admin.pages[pageId].heroCta2Link = document.getElementById('hero-cta2-link').value;
+    const heroTitle = document.getElementById('hero-title').value;
+    const heroSubtitle = document.getElementById('hero-subtitle').value;
+    const cta1Text = document.getElementById('hero-cta1-text').value;
+    const cta1Link = document.getElementById('hero-cta1-link').value;
+    const cta2Text = document.getElementById('hero-cta2-text').value;
+    const cta2Link = document.getElementById('hero-cta2-link').value;
+    
+    // Save in NEW structure (pages.home.hero.*)
+    if (!admin.pages[pageId].hero) {
+        admin.pages[pageId].hero = {};
+    }
+    admin.pages[pageId].hero.title = heroTitle;
+    admin.pages[pageId].hero.subtitle = heroSubtitle;
+    admin.pages[pageId].hero.ctaText = cta1Text;
+    admin.pages[pageId].hero.ctaUrl = cta1Link;
+    
+    // Also save in OLD structure for backward compatibility
+    admin.pages[pageId].heroTitle = heroTitle;
+    admin.pages[pageId].heroSubtitle = heroSubtitle;
+    admin.pages[pageId].heroCta1Text = cta1Text;
+    admin.pages[pageId].heroCta1Link = cta1Link;
+    admin.pages[pageId].heroCta2Text = cta2Text;
+    admin.pages[pageId].heroCta2Link = cta2Link;
+    
+    console.log(`💾 Saving hero for ${pageId}:`, {
+        newFormat: admin.pages[pageId].hero,
+        oldFormat: { heroTitle, heroSubtitle }
+    });
     
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    // Also save to Firebase if available
+    if (window.cmsFirebaseAdapter) {
+        window.cmsFirebaseAdapter.saveAdminData(admin).then(() => {
+            console.log('✅ Hero data saved to Firebase');
+        }).catch(err => {
+            console.warn('⚠️ Firebase save failed:', err);
+        });
+    }
+    
     showNotification('Hero section saved successfully!', 'success');
 }
 

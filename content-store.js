@@ -145,6 +145,9 @@ class ContentStore {
                 console.log('📊 ContentStore: No statistics found in data');
             }
             
+            // Migrate old CMS format to new structure
+            normalized.pages = this.migratePageStructure(normalized.pages || data.pages);
+            
             return normalized;
         }
         
@@ -155,7 +158,57 @@ class ContentStore {
             console.log('📊 ContentStore: No statistics in direct data');
         }
         
+        // Also migrate pages if data is in root level
+        if (data.pages) {
+            data.pages = this.migratePageStructure(data.pages);
+        }
+        
         return data;
+    }
+    
+    /**
+     * Migrate old CMS page structure to new hero structure
+     * Old: pages.home.heroTitle, pages.home.heroSubtitle
+     * New: pages.home.hero.title, pages.home.hero.subtitle
+     */
+    migratePageStructure(pages) {
+        if (!pages || typeof pages !== 'object') return pages;
+        
+        const migratedPages = {};
+        
+        for (const [pageId, pageData] of Object.entries(pages)) {
+            migratedPages[pageId] = { ...pageData };
+            
+            // Check if old format exists (heroTitle/heroSubtitle at page level)
+            const hasOldFormat = pageData.heroTitle || pageData.heroSubtitle || 
+                                 pageData.heroCta1Text || pageData.heroCta2Text;
+            const hasNewFormat = pageData.hero && typeof pageData.hero === 'object';
+            
+            if (hasOldFormat && !hasNewFormat) {
+                // Migrate old format to new
+                console.log(`🔄 ContentStore: Migrating ${pageId} page from old to new hero structure`);
+                
+                migratedPages[pageId].hero = {
+                    title: pageData.heroTitle || '',
+                    subtitle: pageData.heroSubtitle || '',
+                    ctaText: pageData.heroCta1Text || '',
+                    ctaUrl: pageData.heroCta1Link || ''
+                };
+                
+                // Keep CTA buttons for backward compatibility
+                migratedPages[pageId].heroCta1Text = pageData.heroCta1Text;
+                migratedPages[pageId].heroCta1Link = pageData.heroCta1Link;
+                migratedPages[pageId].heroCta2Text = pageData.heroCta2Text;
+                migratedPages[pageId].heroCta2Link = pageData.heroCta2Link;
+                
+                console.log(`✅ Migrated ${pageId}:`, {
+                    title: migratedPages[pageId].hero.title,
+                    subtitle: migratedPages[pageId].hero.subtitle?.substring(0, 50) + '...'
+                });
+            }
+        }
+        
+        return migratedPages;
     }
     
     /**
