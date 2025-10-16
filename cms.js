@@ -1194,6 +1194,8 @@ function showFrontendTab(tabName) {
         loadAgentsFeatures();
     } else if (tabName === 'aboutcontent') {
         loadAboutContent();
+    } else if (tabName === 'statistics') {
+        loadStatistics();
     }
 }
 
@@ -2150,4 +2152,56 @@ function saveAboutContent() {
     
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     showNotification('About page content saved successfully!', 'success');
+}
+
+// Statistics Functions
+function loadStatistics() {
+    const admin = loadAdminData();
+    
+    // Initialize with default values if not present
+    if (!admin.statistics) {
+        admin.statistics = [
+            { number: '500+', label: 'Active Agents' },
+            { number: '10K+', label: 'Global Investors' },
+            { number: '€2.5B+', label: 'Property Value' },
+            { number: '95%', label: 'Close Rate' }
+        ];
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    }
+    
+    // Load values into form
+    document.getElementById('stat1-number').value = admin.statistics[0]?.number || '';
+    document.getElementById('stat1-label').value = admin.statistics[0]?.label || '';
+    document.getElementById('stat2-number').value = admin.statistics[1]?.number || '';
+    document.getElementById('stat2-label').value = admin.statistics[1]?.label || '';
+    document.getElementById('stat3-number').value = admin.statistics[2]?.number || '';
+    document.getElementById('stat3-label').value = admin.statistics[2]?.label || '';
+    document.getElementById('stat4-number').value = admin.statistics[3]?.number || '';
+    document.getElementById('stat4-label').value = admin.statistics[3]?.label || '';
+}
+
+function saveStatistics() {
+    const admin = loadAdminData();
+    
+    admin.statistics = [
+        {
+            number: document.getElementById('stat1-number').value,
+            label: document.getElementById('stat1-label').value
+        },
+        {
+            number: document.getElementById('stat2-number').value,
+            label: document.getElementById('stat2-label').value
+        },
+        {
+            number: document.getElementById('stat3-number').value,
+            label: document.getElementById('stat3-label').value
+        },
+        {
+            number: document.getElementById('stat4-number').value,
+            label: document.getElementById('stat4-label').value
+        }
+    ];
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    showNotification('Statistics saved successfully!', 'success');
 }

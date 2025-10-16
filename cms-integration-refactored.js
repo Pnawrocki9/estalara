@@ -44,6 +44,7 @@ class EstalaraAdmin {
         this.loadWhiteLabel();
         this.loadAboutContent();
         this.loadSectionHeadings();
+        this.loadStatistics();
     }
 
     /**
@@ -433,6 +434,27 @@ class EstalaraAdmin {
                     <ul class="text-sm text-gray-500 space-y-2">
                         ${feature.bullets.map(bullet => `<li>• ${bullet}</li>`).join('')}
                     </ul>
+                </div>
+            `).join('');
+        }
+    }
+
+    /**
+     * Load statistics section
+     */
+    loadStatistics() {
+        // Only load on agents.html
+        if (!window.location.pathname.includes('agents.html')) return;
+
+        const statsSection = document.querySelector('.py-20.bg-white.text-black');
+        if (!statsSection || !this.content.statistics) return;
+
+        const statsGrid = statsSection.querySelector('.grid');
+        if (statsGrid && this.content.statistics && this.content.statistics.length >= 4) {
+            statsGrid.innerHTML = this.content.statistics.map(stat => `
+                <div>
+                    <div class="stat-number font-display text-black">${stat.number}</div>
+                    <p class="text-gray-600 font-semibold">${stat.label}</p>
                 </div>
             `).join('');
         }
