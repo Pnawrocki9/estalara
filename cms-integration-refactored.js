@@ -443,20 +443,42 @@ class EstalaraAdmin {
      * Load statistics section
      */
     loadStatistics() {
-        // Only load on agents.html
-        if (!window.location.pathname.includes('agents.html')) return;
+        // Load on both agents.html and about.html
+        const isAgentsPage = window.location.pathname.includes('agents.html');
+        const isAboutPage = window.location.pathname.includes('about.html');
+        
+        if (!isAgentsPage && !isAboutPage) return;
+        if (!this.content.statistics) return;
 
-        const statsSection = document.querySelector('.py-20.bg-white.text-black');
-        if (!statsSection || !this.content.statistics) return;
-
-        const statsGrid = statsSection.querySelector('.grid');
-        if (statsGrid && this.content.statistics && this.content.statistics.length >= 4) {
-            statsGrid.innerHTML = this.content.statistics.map(stat => `
-                <div>
-                    <div class="stat-number font-display text-black">${stat.number}</div>
+        // Find statistics section - works on both pages
+        // agents.html: .py-20.bg-white.text-black
+        // about.html: .py-32.bg-white.text-black
+        const statsSection = document.querySelector('section.bg-white.text-black .grid.md\\:grid-cols-4');
+        
+        if (statsSection && this.content.statistics.length >= 4) {
+            console.log('✅ Statistics: Loading', this.content.statistics.length, 'statistics on', isAgentsPage ? 'agents.html' : 'about.html');
+            
+            statsSection.innerHTML = this.content.statistics.map(stat => `
+                <div class="reveal">
+                    <div class="stat-number font-display text-black text-5xl font-bold mb-4">${stat.number}</div>
                     <p class="text-gray-600 font-semibold">${stat.label}</p>
                 </div>
             `).join('');
+            
+            // Re-register reveal animations for newly injected elements
+            try {
+                const newReveals = statsSection.querySelectorAll('.reveal');
+                if (typeof window.observeReveals === 'function') {
+                    window.observeReveals(newReveals);
+                } else {
+                    // Fallback: ensure visibility if observer isn't ready
+                    newReveals.forEach(el => el.classList.add('active'));
+                }
+            } catch (e) {
+                console.warn('⚠️ Statistics: Failed to register animations:', e);
+            }
+        } else {
+            console.warn('⚠️ Statistics: Section not found or insufficient data');
         }
     }
 
