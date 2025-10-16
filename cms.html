@@ -289,6 +289,9 @@
                             <button onclick="showFrontendTab('legalpages')" id="tab-legalpages" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 ⚖️ Legal Pages
                             </button>
+                            <button onclick="showFrontendTab('faq')" id="tab-faq" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                ❓ FAQ
+                            </button>
                         </nav>
                     </div>
 
@@ -935,6 +938,39 @@
                             <button onclick="saveLegalPageContent()" class="cms-btn cms-btn-success">💾 Save Legal Page Content</button>
                         </div>
                     </div>
+
+                    <!-- FAQ Tab -->
+                    <div id="frontend-faq" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">FAQ Section Editor</h3>
+                        <p class="text-sm text-gray-600 mb-6">Manage frequently asked questions on the FAQ page</p>
+                        
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
+                            <p class="text-sm text-blue-900 mb-2">
+                                <strong>❓ FAQ Editor:</strong> Add, edit, and organize questions and answers. Questions are organized by category for better user experience.
+                            </p>
+                        </div>
+
+                        <!-- Category Selector -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
+                            <select id="faq-category-selector" class="cms-input w-full md:w-1/2" onchange="loadFaqCategoryEditor()">
+                                <option value="general">General Questions</option>
+                                <option value="agents">For Agents</option>
+                                <option value="investors">For Investors</option>
+                                <option value="technical">Technical & Support</option>
+                            </select>
+                        </div>
+
+                        <!-- FAQ Items Container -->
+                        <div id="faq-items-container" class="space-y-4 mb-6">
+                            <!-- FAQ items will be loaded here -->
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button onclick="addFaqItem()" class="cms-btn cms-btn-primary">+ Add Question</button>
+                            <button onclick="saveFaqContent()" class="cms-btn cms-btn-success">💾 Save FAQ</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Preview Panel -->
@@ -1224,6 +1260,17 @@
     </div>
 
     <script>
+        // Add event listeners for FAQ form inputs
+        document.addEventListener('DOMContentLoaded', () => {
+            // FAQ form input event listeners
+            const faqForm = document.getElementById('faq-items-container');
+            if (faqForm) {
+                faqForm.addEventListener('input', (e) => {
+                    // Auto-save indication could be added here
+                });
+            }
+        });
+        
         // Protection: Redirect to login if not authenticated
         window.addEventListener('DOMContentLoaded', async () => {
             // Check if we were just redirected from login
