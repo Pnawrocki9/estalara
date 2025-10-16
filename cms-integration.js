@@ -1116,7 +1116,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             <p class="text-gray-600 mb-4">${property.description}</p>
             ${detailsHTML}
             <div class="flex justify-between items-center">
-                <span class="font-bold text-lg">${typeof property.price === 'number' ? '€' + property.price.toLocaleString() : (typeof property.price === 'string' && property.price.startsWith('€') ? property.price : '€' + (property.price || '0'))}</span>
+                <span class="font-bold text-lg">${typeof property.price === 'number' ? '$' + property.price.toLocaleString() : (typeof property.price === 'string' && property.price.startsWith('$') ? property.price : '$' + (property.price || '0'))}</span>
                 <a href="${property.link || 'https://app.estalara.com'}"
                    target="_blank"
                    class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors">
