@@ -2404,26 +2404,36 @@ async function loadFaqCategoryEditor() {
             investors: [],
             technical: []
         };
-        
-        // Check if we can load defaults from content-store
-        if (window.contentStore) {
-            console.log('📥 FAQ: No FAQ data found, loading defaults from content-store...');
-            try {
-                const content = await window.contentStore.getContent();
-                if (content.faq) {
-                    admin.faq = content.faq;
-                    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
-                    console.log('✅ FAQ: Initialized with default content from frontend');
-                    
-                    // Also save to Firebase if available
-                    if (typeof window.saveAdminDataToFirebase === 'function') {
-                        await window.saveAdminDataToFirebase(admin);
-                        console.log('✅ FAQ: Defaults synced to Firebase');
-                    }
+    }
+    
+    // Check if all categories are empty (should sync from content-store)
+    const allCategoriesEmpty = !admin.faq.general?.length && 
+                                !admin.faq.agents?.length && 
+                                !admin.faq.investors?.length && 
+                                !admin.faq.technical?.length;
+    
+    // Load defaults from content-store if no FAQ data exists or all categories are empty
+    if (allCategoriesEmpty && window.contentStore) {
+        console.log('📥 FAQ: No FAQ data found, loading defaults from content-store...');
+        try {
+            const content = await window.contentStore.getContent();
+            if (content.faq) {
+                admin.faq = content.faq;
+                localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+                console.log('✅ FAQ: Initialized with default content from frontend');
+                console.log('   - General:', content.faq.general?.length || 0, 'questions');
+                console.log('   - Agents:', content.faq.agents?.length || 0, 'questions');
+                console.log('   - Investors:', content.faq.investors?.length || 0, 'questions');
+                console.log('   - Technical:', content.faq.technical?.length || 0, 'questions');
+                
+                // Also save to Firebase if available
+                if (typeof window.saveAdminDataToFirebase === 'function') {
+                    await window.saveAdminDataToFirebase(admin);
+                    console.log('✅ FAQ: Defaults synced to Firebase');
                 }
-            } catch (error) {
-                console.error('❌ FAQ: Failed to load defaults from content-store:', error);
             }
+        } catch (error) {
+            console.error('❌ FAQ: Failed to load defaults from content-store:', error);
         }
     }
     
@@ -2549,4 +2559,48 @@ async function saveFaqContent() {
     
     showNotification(`FAQ content for ${category} saved successfully!`, 'success');
     await loadFaqCategoryEditor();
+}
+
+async function syncFaqFromFrontend() {
+    if (!confirm('This will replace all FAQ content with the latest from the frontend. Are you sure?')) {
+        return;
+    }
+    
+    try {
+        console.log('🔄 FAQ: Manually syncing from content-store...');
+        
+        if (!window.contentStore) {
+            throw new Error('ContentStore not available');
+        }
+        
+        const content = await window.contentStore.getContent();
+        if (!content.faq) {
+            throw new Error('No FAQ data found in content-store');
+        }
+        
+        const admin = loadAdminData();
+        admin.faq = content.faq;
+        
+        // Save to localStorage
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        
+        // Save to Firebase if available
+        if (typeof window.saveAdminDataToFirebase === 'function') {
+            await window.saveAdminDataToFirebase(admin);
+            console.log('✅ FAQ: Synced to Firebase');
+        }
+        
+        console.log('✅ FAQ: Synced from frontend');
+        console.log('   - General:', content.faq.general?.length || 0, 'questions');
+        console.log('   - Agents:', content.faq.agents?.length || 0, 'questions');
+        console.log('   - Investors:', content.faq.investors?.length || 0, 'questions');
+        console.log('   - Technical:', content.faq.technical?.length || 0, 'questions');
+        
+        showNotification('FAQ content synced from frontend successfully!', 'success');
+        await loadFaqCategoryEditor();
+        
+    } catch (error) {
+        console.error('❌ FAQ: Sync failed:', error);
+        showNotification('Failed to sync FAQ from frontend: ' + error.message, 'error');
+    }
 }
