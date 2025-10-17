@@ -2313,7 +2313,7 @@ async function saveSuccessJourney() {
     
     // Save to Firebase
     try {
-        const result = await window.cmsFirebaseAdapter.saveData(admin);
+        const result = await window.cmsFirebaseAdapter.saveAdminData(admin);
         if (result.success) {
             showNotification('Success Journey saved successfully!', 'success');
         } else {
