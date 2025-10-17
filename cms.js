@@ -1153,7 +1153,7 @@ showSection = function(sectionId) {
 // ===== FRONTEND EDITOR FUNCTIONS =====
 
 // Tab switching for Frontend Editor
-function showFrontendTab(tabName) {
+async function showFrontendTab(tabName) {
     // Hide all tabs
     document.querySelectorAll('.frontend-tab').forEach(tab => {
         tab.classList.add('hidden');
@@ -1199,7 +1199,7 @@ function showFrontendTab(tabName) {
     } else if (tabName === 'legalpages') {
         loadLegalPageEditor();
     } else if (tabName === 'faq') {
-        loadFaqCategoryEditor();
+        await loadFaqCategoryEditor();
     }
 }
 
@@ -2392,10 +2392,11 @@ async function saveLegalPageContent() {
 
 // ===== FAQ EDITOR FUNCTIONS =====
 
-function loadFaqCategoryEditor() {
+async function loadFaqCategoryEditor() {
     const category = document.getElementById('faq-category-selector').value;
     const admin = loadAdminData();
     
+    // Initialize FAQ structure if it doesn't exist
     if (!admin.faq) {
         admin.faq = {
             general: [],
@@ -2403,8 +2404,30 @@ function loadFaqCategoryEditor() {
             investors: [],
             technical: []
         };
+        
+        // Check if we can load defaults from content-store
+        if (window.contentStore) {
+            console.log('📥 FAQ: No FAQ data found, loading defaults from content-store...');
+            try {
+                const content = await window.contentStore.getContent();
+                if (content.faq) {
+                    admin.faq = content.faq;
+                    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+                    console.log('✅ FAQ: Initialized with default content from frontend');
+                    
+                    // Also save to Firebase if available
+                    if (typeof window.saveAdminDataToFirebase === 'function') {
+                        await window.saveAdminDataToFirebase(admin);
+                        console.log('✅ FAQ: Defaults synced to Firebase');
+                    }
+                }
+            } catch (error) {
+                console.error('❌ FAQ: Failed to load defaults from content-store:', error);
+            }
+        }
     }
     
+    // Ensure the specific category exists
     if (!admin.faq[category]) {
         admin.faq[category] = [];
     }
@@ -2440,7 +2463,7 @@ function loadFaqCategoryEditor() {
     }
 }
 
-function addFaqItem() {
+async function addFaqItem() {
     const category = document.getElementById('faq-category-selector').value;
     const admin = loadAdminData();
     
@@ -2463,10 +2486,10 @@ function addFaqItem() {
     });
     
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
-    loadFaqCategoryEditor();
+    await loadFaqCategoryEditor();
 }
 
-function removeFaqItem(index) {
+async function removeFaqItem(index) {
     if (!confirm('Are you sure you want to delete this question?')) {
         return;
     }
@@ -2477,7 +2500,7 @@ function removeFaqItem(index) {
     if (admin.faq && admin.faq[category]) {
         admin.faq[category].splice(index, 1);
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
-        loadFaqCategoryEditor();
+        await loadFaqCategoryEditor();
         showNotification('Question deleted successfully!', 'success');
     }
 }
@@ -2525,5 +2548,5 @@ async function saveFaqContent() {
     }
     
     showNotification(`FAQ content for ${category} saved successfully!`, 'success');
-    loadFaqCategoryEditor();
+    await loadFaqCategoryEditor();
 }
