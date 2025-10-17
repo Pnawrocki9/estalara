@@ -5,14 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Pricing to Menu - Estalara</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
-    <!-- Firebase Configuration -->
-    <script src="firebase-config.js"></script>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
     <div class="max-w-2xl w-full mx-auto p-8">
@@ -33,25 +25,16 @@
                 <ul class="list-disc list-inside mt-2 space-y-1">
                     <li>Doda link "Pricing" → "pricing.html" do menu nawigacji</li>
                     <li>Zapisze zmiany w localStorage</li>
-                    <li>Zsynchronizuje z Firebase</li>
                     <li>Menu będzie widoczne natychmiast</li>
                 </ul>
+                <p class="mt-4 text-xs text-yellow-400">
+                    💡 Aby zsynchronizować z Firebase, zapisz menu w panelu admin (cms.html)
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        let db = null;
-
-        // Initialize Firebase
-        function initFirebase() {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(window.firebaseConfig);
-            }
-            db = firebase.database();
-            console.log('✅ Firebase initialized');
-        }
-
         async function addPricingToMenu() {
             const button = document.getElementById('addButton');
             const status = document.getElementById('status');
@@ -60,9 +43,6 @@
             button.textContent = '⏳ Processing...';
             
             try {
-                // Initialize Firebase
-                initFirebase();
-                
                 status.innerHTML = '<p class="text-yellow-300">🔄 Loading current navigation data...</p>';
                 
                 // Load current admin data from localStorage
@@ -112,11 +92,6 @@
                 // Save to localStorage
                 localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
                 
-                status.innerHTML = '<p class="text-yellow-300">☁️ Syncing to Firebase...</p>';
-                
-                // Save to Firebase
-                await db.ref('admin').set(admin);
-                
                 // Success!
                 status.innerHTML = `
                     <div class="text-green-300">
@@ -126,6 +101,9 @@
                             <pre>${JSON.stringify(pricingItem, null, 2)}</pre>
                         </div>
                         <p class="mt-4 text-yellow-300">🔄 Please refresh your website to see the changes!</p>
+                        <p class="mt-2 text-gray-400 text-xs">
+                            💡 To sync with Firebase, save the navigation menu in the admin panel (cms.html)
+                        </p>
                     </div>
                 `;
                 
