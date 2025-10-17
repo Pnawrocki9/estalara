@@ -1760,8 +1760,9 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             // Clear existing links
             desktopNav.innerHTML = '';
 
-            // Add navigation items
+            // Add navigation items (only visible ones)
             this.content.navigation
+                .filter(item => item.visible !== false)
                 .sort((a, b) => (a.order || 0) - (b.order || 0))
                 .forEach(item => {
                     const li = document.createElement('li');
@@ -1778,8 +1779,9 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
             // Clear existing links
             mobileNav.innerHTML = '';
 
-            // Add navigation items to mobile menu
+            // Add navigation items to mobile menu (only visible ones)
             this.content.navigation
+                .filter(item => item.visible !== false)
                 .sort((a, b) => (a.order || 0) - (b.order || 0))
                 .forEach(item => {
                     const li = document.createElement('li');
