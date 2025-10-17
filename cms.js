@@ -2232,6 +2232,9 @@ function loadSuccessJourney() {
                 }
             ]
         };
+        // Save defaults to localStorage
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        console.log('✅ Success Journey: Initialized with default steps');
     }
     
     document.getElementById('sj-heading').value = admin.pages.agents.successJourney.heading || '';
