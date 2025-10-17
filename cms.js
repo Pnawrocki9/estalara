@@ -1241,20 +1241,28 @@ function loadNavigationEditor() {
     // Initialize navigation array if it doesn't exist
     if (!admin.navigation || !Array.isArray(admin.navigation)) {
         admin.navigation = [
-            { id: 1, label: 'Home', url: 'index.html', order: 1 },
-            { id: 2, label: 'For Agents', url: 'agents.html', order: 2 },
-            { id: 3, label: 'For Agencies', url: 'agencies.html', order: 3 },
-            { id: 4, label: 'For Investors', url: 'investors.html', order: 4 },
-            { id: 5, label: 'About', url: 'about.html', order: 5 }
+            { id: 1, label: 'Home', url: 'index.html', order: 1, visible: true },
+            { id: 2, label: 'For Agents', url: 'agents.html', order: 2, visible: true },
+            { id: 3, label: 'For Agencies', url: 'agencies.html', order: 3, visible: true },
+            { id: 4, label: 'For Investors', url: 'investors.html', order: 4, visible: false },
+            { id: 5, label: 'About', url: 'about.html', order: 5, visible: true }
         ];
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     }
+    
+    // Ensure all navigation items have a visible property (migration for existing data)
+    admin.navigation.forEach(item => {
+        if (typeof item.visible === 'undefined') {
+            // Set For Investors to hidden by default, others to visible
+            item.visible = item.label !== 'For Investors';
+        }
+    });
     
     container.innerHTML = admin.navigation
         .sort((a, b) => a.order - b.order)
         .map((item, index) => `
             <div class="cms-card p-4" data-nav-id="${item.id}">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Label</label>
                         <input type="text" value="${item.label}" class="cms-input" data-field="label">
@@ -1262,6 +1270,13 @@ function loadNavigationEditor() {
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">URL</label>
                         <input type="text" value="${item.url}" class="cms-input" data-field="url">
+                    </div>
+                    <div>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="checkbox" ${item.visible !== false ? 'checked' : ''} class="mr-2 h-4 w-4" data-field="visible" onchange="updateVisibilityLabel(this)">
+                            <span class="text-xs text-gray-600 visibility-label">${item.visible !== false ? '👁️ Visible' : '🚫 Hidden'}</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Show/Hide in menu</p>
                     </div>
                     <div class="flex items-end gap-2">
                         <button onclick="moveNavItem(${item.id}, -1)" class="cms-btn cms-btn-secondary text-sm" ${index === 0 ? 'disabled' : ''}>↑</button>
@@ -1273,6 +1288,14 @@ function loadNavigationEditor() {
         `).join('');
 }
 
+// Update visibility label when checkbox changes
+function updateVisibilityLabel(checkbox) {
+    const label = checkbox.parentElement.querySelector('.visibility-label');
+    if (label) {
+        label.textContent = checkbox.checked ? '👁️ Visible' : '🚫 Hidden';
+    }
+}
+
 function addNavigationItem() {
     const admin = loadAdminData();
     if (!admin.navigation) admin.navigation = [];
@@ -1282,7 +1305,8 @@ function addNavigationItem() {
         id: newId,
         label: 'New Link',
         url: '#',
-        order: admin.navigation.length + 1
+        order: admin.navigation.length + 1,
+        visible: true
     });
     
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
@@ -1328,11 +1352,22 @@ function saveFrontendNavigation() {
         if (navItem) {
             navItem.label = item.querySelector('[data-field="label"]').value;
             navItem.url = item.querySelector('[data-field="url"]').value;
+            navItem.visible = item.querySelector('[data-field="visible"]').checked;
         }
     });
     
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
-    showNotification('Navigation saved successfully!', 'success');
+    
+    // Also sync to Firebase if available
+    if (window.cmsFirebaseAdapter) {
+        window.cmsFirebaseAdapter.saveAdminData(admin).then(() => {
+            console.log('✅ Navigation synced to Firebase');
+        }).catch(err => {
+            console.error('❌ Firebase sync error:', err);
+        });
+    }
+    
+    showNotification('Navigation saved successfully! Refresh the frontend to see changes.', 'success');
 }
 
 // Hero Sections Functions

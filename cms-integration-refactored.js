@@ -56,10 +56,13 @@ class EstalaraAdmin {
     loadNavigation() {
         if (!this.content.navigation) return;
 
+        // Filter only visible navigation items
+        const visibleNavItems = this.content.navigation.filter(item => item.visible !== false);
+
         // Load desktop navigation
         const desktopNav = document.querySelector('header nav:not(#mobile-menu) ul');
         if (desktopNav) {
-            desktopNav.innerHTML = this.content.navigation.map(item => `
+            desktopNav.innerHTML = visibleNavItems.map(item => `
                 <li><a href="${item.url}" class="text-white hover:text-gray-300 transition-colors">${item.label}</a></li>
             `).join('');
         }
@@ -67,7 +70,7 @@ class EstalaraAdmin {
         // Load mobile navigation
         const mobileNav = document.querySelector('#mobile-menu ul.mobile-nav');
         if (mobileNav) {
-            mobileNav.innerHTML = this.content.navigation.map(item => `
+            mobileNav.innerHTML = visibleNavItems.map(item => `
                 <li><a href="${item.url}" class="text-white hover:text-gray-300 transition-colors block py-2">${item.label}</a></li>
             `).join('');
         }
