@@ -55,6 +55,11 @@
         ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
       },
       
+      "legalPages": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"
+      },
+      
       "settings": {
         ".read": true,
         ".write": "auth != null && auth.token.email.matches(/.*@estalara\\.com$/)"

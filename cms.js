@@ -2302,19 +2302,29 @@ function loadLegalPageEditor() {
     // Initialize legal pages data if it doesn't exist
     if (!admin.legalPages) {
         admin.legalPages = {
+            privacy: {
+                title: 'Privacy Policy',
+                content: '<h2>Privacy Policy</h2><p>Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information...</p>',
+                visible: true
+            },
+            termsofservice: {
+                title: 'Terms of Service',
+                content: '<h2>Terms of Service</h2><p>Welcome to Estalara! These Terms of Service govern your access to and use of the Estalara platform...</p>',
+                visible: true
+            },
             terms: {
                 title: 'Terms & Conditions',
                 content: '<h2>Terms & Conditions</h2><p>Welcome to Estalara. Please read these terms and conditions carefully...</p>',
                 visible: true
             },
+            gdpr: {
+                title: 'GDPR Compliance',
+                content: '<h2>GDPR Compliance</h2><p>The General Data Protection Regulation (GDPR) is a comprehensive data protection law. At Estalara, we are committed to protecting your personal data...</p>',
+                visible: true
+            },
             cookies: {
                 title: 'Cookies Policy',
                 content: '<h2>Cookies Policy</h2><p>This Cookies Policy explains how we use cookies and similar technologies...</p>',
-                visible: true
-            },
-            privacy: {
-                title: 'Privacy Policy',
-                content: '<h2>Privacy Policy</h2><p>Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information...</p>',
                 visible: true
             },
             disclaimer: {
