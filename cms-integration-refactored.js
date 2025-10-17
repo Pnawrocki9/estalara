@@ -41,6 +41,7 @@ class EstalaraAdmin {
         this.loadHowItWorks();
         this.loadHomeFeatures();
         this.loadAgentsFeatures();
+        this.loadSuccessJourney();
         this.loadWhiteLabel();
         this.loadAboutContent();
         this.loadSectionHeadings();
@@ -469,6 +470,62 @@ class EstalaraAdmin {
                     </ul>
                 </div>
             `).join('');
+        }
+    }
+
+    /**
+     * Load Success Journey section on agents page
+     */
+    loadSuccessJourney() {
+        // Only load on agents.html
+        if (!window.location.pathname.includes('agents.html')) {
+            return;
+        }
+
+        const section = document.querySelector('#success-journey');
+        if (!section) {
+            console.warn('⚠️ Success Journey: Section not found in DOM');
+            return;
+        }
+        
+        if (!this.content.pages?.agents?.successJourney) {
+            console.error('❌ Success Journey: No data in content!');
+            return;
+        }
+
+        const journey = this.content.pages.agents.successJourney;
+
+        console.log('✅ Success Journey: Loading data...', {
+            heading: journey.heading,
+            stepsCount: journey.steps?.length || 0
+        });
+
+        // Update section heading
+        const heading = section.querySelector('.section-text, h2');
+        if (heading && journey.heading) {
+            heading.textContent = journey.heading;
+        }
+
+        // Update section subtitle
+        const subtitle = section.querySelector('.body-text, p');
+        if (subtitle && journey.subtitle) {
+            subtitle.textContent = journey.subtitle;
+        }
+
+        // Update steps
+        const stepsContainer = section.querySelector('.grid');
+        if (stepsContainer && journey.steps) {
+            stepsContainer.innerHTML = journey.steps.map(step => `
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-black text-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">${step.number}</div>
+                    <h3 class="text-xl font-bold mb-4 text-black">${step.title}</h3>
+                    <p class="text-gray-600">${step.description}</p>
+                </div>
+            `).join('');
+
+            console.log(`✅ Success Journey: Loaded ${journey.steps.length} steps`);
+        } else {
+            console.error('❌ Success Journey: Steps container not found or no steps data');
         }
     }
 

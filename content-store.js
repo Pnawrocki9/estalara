@@ -518,7 +518,33 @@ class ContentStore {
                     heroCta1Text: "Start Livestreaming →",
                     heroCta1Link: "https://app.estalara.com",
                     heroCta2Text: "Explore Features",
-                    heroCta2Link: "#features"
+                    heroCta2Link: "#features",
+                    successJourney: {
+                        heading: "Your Success Journey",
+                        subtitle: "From signup to closing deals - your path to global real estate success",
+                        steps: [
+                            {
+                                number: "1",
+                                title: "Sign Up",
+                                description: "Create your agent profile and verify your credentials"
+                            },
+                            {
+                                number: "2",
+                                title: "List Properties",
+                                description: "Upload your listings with photos and detailed information"
+                            },
+                            {
+                                number: "3",
+                                title: "Go Live",
+                                description: "Start streaming to global investors and engage in real-time"
+                            },
+                            {
+                                number: "4",
+                                title: "Close Deals",
+                                description: "Convert leads into sales with our streamlined process"
+                            }
+                        ]
+                    }
                 },
                 agencies: {
                     hero: {
