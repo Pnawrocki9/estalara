@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Pricing to Menu - Estalara</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+    <div class="max-w-2xl w-full mx-auto p-8">
+        <div class="bg-gray-800 rounded-lg p-8 shadow-xl">
+            <h1 class="text-3xl font-bold mb-6">🔧 Add Pricing to Navigation Menu</h1>
+            
+            <div id="status" class="mb-6 p-4 rounded bg-gray-700">
+                <p class="text-gray-300">Ready to add Pricing menu item...</p>
+            </div>
+            
+            <button onclick="addPricingToMenu()" id="addButton" 
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition">
+                ➕ Add "Pricing" to Navigation Menu
+            </button>
+            
+            <div class="mt-6 text-sm text-gray-400">
+                <p><strong>Co zrobi ten skrypt:</strong></p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li>Doda link "Pricing" → "pricing.html" do menu nawigacji</li>
+                    <li>Zapisze zmiany w localStorage</li>
+                    <li>Zsynchronizuje z Firebase</li>
+                    <li>Menu będzie widoczne natychmiast</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let db = null;
+
+        // Initialize Firebase
+        function initFirebase() {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(window.firebaseConfig);
+            }
+            db = firebase.database();
+            console.log('✅ Firebase initialized');
+        }
+
+        async function addPricingToMenu() {
+            const button = document.getElementById('addButton');
+            const status = document.getElementById('status');
+            
+            button.disabled = true;
+            button.textContent = '⏳ Processing...';
+            
+            try {
+                // Initialize Firebase
+                initFirebase();
+                
+                status.innerHTML = '<p class="text-yellow-300">🔄 Loading current navigation data...</p>';
+                
+                // Load current admin data from localStorage
+                let adminData = localStorage.getItem('estalaraAdminData');
+                let admin = adminData ? JSON.parse(adminData) : {};
+                
+                // Initialize navigation array if it doesn't exist
+                if (!admin.navigation || !Array.isArray(admin.navigation)) {
+                    admin.navigation = [];
+                }
+                
+                // Check if Pricing already exists
+                const existingPricing = admin.navigation.find(item => 
+                    item.label === 'Pricing' || item.url === 'pricing.html'
+                );
+                
+                if (existingPricing) {
+                    status.innerHTML = `
+                        <p class="text-orange-300">⚠️ Pricing menu item already exists!</p>
+                        <pre class="mt-2 text-xs bg-gray-900 p-2 rounded">${JSON.stringify(existingPricing, null, 2)}</pre>
+                    `;
+                    button.disabled = false;
+                    button.textContent = '✅ Already Added';
+                    return;
+                }
+                
+                status.innerHTML = '<p class="text-yellow-300">➕ Adding Pricing to navigation...</p>';
+                
+                // Find the highest ID
+                const maxId = admin.navigation.length > 0 
+                    ? Math.max(...admin.navigation.map(n => n.id || 0))
+                    : 0;
+                
+                // Add Pricing menu item
+                const pricingItem = {
+                    id: maxId + 1,
+                    label: 'Pricing',
+                    url: 'pricing.html',
+                    order: admin.navigation.length + 1,
+                    visible: true
+                };
+                
+                admin.navigation.push(pricingItem);
+                
+                status.innerHTML = '<p class="text-yellow-300">💾 Saving to localStorage...</p>';
+                
+                // Save to localStorage
+                localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+                
+                status.innerHTML = '<p class="text-yellow-300">☁️ Syncing to Firebase...</p>';
+                
+                // Save to Firebase
+                await db.ref('admin').set(admin);
+                
+                // Success!
+                status.innerHTML = `
+                    <div class="text-green-300">
+                        <p class="text-xl mb-4">✅ Success! Pricing added to navigation menu!</p>
+                        <div class="bg-gray-900 p-4 rounded text-sm">
+                            <p class="mb-2"><strong>Added item:</strong></p>
+                            <pre>${JSON.stringify(pricingItem, null, 2)}</pre>
+                        </div>
+                        <p class="mt-4 text-yellow-300">🔄 Please refresh your website to see the changes!</p>
+                    </div>
+                `;
+                
+                button.className = 'w-full bg-green-600 text-white font-semibold py-4 px-6 rounded-lg';
+                button.textContent = '✅ Successfully Added!';
+                
+                console.log('✅ Pricing menu item added successfully:', pricingItem);
+                console.log('📋 Full navigation:', admin.navigation);
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                status.innerHTML = `
+                    <div class="text-red-300">
+                        <p class="text-xl mb-2">❌ Error occurred!</p>
+                        <p class="text-sm">${error.message}</p>
+                        <pre class="mt-2 text-xs bg-gray-900 p-2 rounded overflow-auto">${error.stack}</pre>
+                    </div>
+                `;
+                button.disabled = false;
+                button.textContent = '🔄 Try Again';
+            }
+        }
+    </script>
+</body>
+</html>
