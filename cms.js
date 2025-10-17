@@ -1037,6 +1037,14 @@ function resetPageStructure() {
             { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
             { id: 'about-content', type: 'section', title: 'About Content', visible: true, order: 2, editable: true }
         ],
+        pricing: [
+            { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+            { id: 'pricing', type: 'section', title: 'Pricing Cards', visible: true, order: 2, editable: true },
+            { id: 'how-it-works', type: 'section', title: 'How It Works', visible: true, order: 3, editable: true },
+            { id: 'value-proposition', type: 'section', title: 'Value Proposition', visible: true, order: 4, editable: true },
+            { id: 'faq', type: 'section', title: 'FAQ Section', visible: true, order: 5, editable: true },
+            { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 6, editable: true }
+        ],
         faq: [
             { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
             { id: 'general-questions', type: 'section', title: 'General Questions', visible: true, order: 2, editable: true },
