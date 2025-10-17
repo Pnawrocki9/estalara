@@ -989,6 +989,172 @@ class EstalaraAdmin {
     getContent() {
         return this.content;
     }
+
+    /**
+     * PAGE STRUCTURE MANAGEMENT METHODS
+     * These methods allow CMS to save and manage page structures
+     */
+
+    /**
+     * Get page structure for editing in CMS
+     */
+    getPageStructure(pageId) {
+        // If structure exists in content, return it
+        if (this.content.pageStructures && this.content.pageStructures[pageId]) {
+            return [...this.content.pageStructures[pageId]];
+        }
+        
+        // Otherwise return default structure for this page
+        const defaultStructures = {
+            home: [
+                { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                { id: 'how-it-works', type: 'section', title: 'How It Works', visible: true, order: 2, editable: true },
+                { id: 'live-properties', type: 'section', title: 'LIVE Properties', visible: true, order: 3, editable: false },
+                { id: 'features', type: 'section', title: 'Features', visible: true, order: 4, editable: true },
+                { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 5, editable: true }
+            ],
+            agents: [
+                { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                { id: 'stats', type: 'section', title: 'Stats Section', visible: true, order: 2, editable: true },
+                { id: 'features', type: 'section', title: 'Features Section', visible: true, order: 3, editable: true },
+                { id: 'how-it-works', type: 'section', title: 'How It Works', visible: true, order: 4, editable: true },
+                { id: 'testimonials', type: 'section', title: 'Testimonials', visible: true, order: 5, editable: true },
+                { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 6, editable: true }
+            ],
+            investors: [
+                { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                { id: 'investing-without-borders', type: 'section', title: 'Investing Without Borders', visible: true, order: 2, editable: true },
+                { id: 'stats', type: 'section', title: 'Investment Stats', visible: true, order: 3, editable: true }
+            ],
+            agencies: [
+                { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                { id: 'agency-live-selling', type: 'section', title: 'Live Selling & Social Media', visible: true, order: 2, editable: true },
+                { id: 'agency-white-label-offer', type: 'section', title: 'White Label Offer', visible: true, order: 3, editable: true },
+                { id: 'stats', type: 'section', title: 'Enterprise Stats', visible: true, order: 4, editable: true },
+                { id: 'enterprise-features', type: 'section', title: 'Enterprise Features', visible: true, order: 5, editable: true }
+            ],
+            about: [
+                { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                { id: 'about-content', type: 'section', title: 'About Content', visible: true, order: 2, editable: true }
+            ],
+            pricing: [
+                { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                { id: 'pricing', type: 'section', title: 'Pricing Cards', visible: true, order: 2, editable: true },
+                { id: 'how-it-works', type: 'section', title: 'How It Works', visible: true, order: 3, editable: true },
+                { id: 'value-proposition', type: 'section', title: 'Value Proposition', visible: true, order: 4, editable: true },
+                { id: 'faq', type: 'section', title: 'FAQ Section', visible: true, order: 5, editable: true },
+                { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 6, editable: true }
+            ],
+            faq: [
+                { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                { id: 'faq-content', type: 'section', title: 'FAQ Content', visible: true, order: 2, editable: true }
+            ]
+        };
+        
+        return defaultStructures[pageId] || [];
+    }
+
+    /**
+     * Update page structure and save to Firebase + localStorage
+     */
+    async updatePageStructure(pageId, structure) {
+        // Initialize pageStructures if it doesn't exist
+        if (!this.content.pageStructures) {
+            this.content.pageStructures = {};
+        }
+        
+        // Update the structure
+        this.content.pageStructures[pageId] = structure;
+        
+        // Save to ContentStore (which saves to both Firebase and localStorage)
+        await window.contentStore.saveContent(this.content);
+        
+        console.log(`✅ Page structure updated for: ${pageId}`);
+        
+        // Reload current page if we're on it
+        const path = window.location.pathname;
+        if ((pageId === 'home' && (path.includes('index.html') || path === '/')) ||
+            path.includes(`${pageId}.html`)) {
+            this.applyPageStructure(pageId);
+        }
+    }
+
+    /**
+     * Toggle section visibility
+     */
+    async toggleSectionVisibility(pageId, sectionId) {
+        const structure = this.getPageStructure(pageId);
+        const section = structure.find(s => s.id === sectionId);
+        
+        if (section) {
+            section.visible = !section.visible;
+            await this.updatePageStructure(pageId, structure);
+            console.log(`✅ Toggled visibility for section: ${sectionId} on page: ${pageId}`);
+        }
+    }
+
+    /**
+     * Add new section to page
+     */
+    async addSection(pageId, sectionData) {
+        const structure = this.getPageStructure(pageId);
+        const newSection = {
+            id: sectionData.id || `section-${Date.now()}`,
+            type: sectionData.type || 'section',
+            title: sectionData.title || 'New Section',
+            visible: true,
+            order: structure.length + 1,
+            editable: true,
+            ...sectionData
+        };
+        
+        structure.push(newSection);
+        await this.updatePageStructure(pageId, structure);
+        
+        console.log(`✅ Added section: ${newSection.id} to page: ${pageId}`);
+        return newSection;
+    }
+
+    /**
+     * Remove section from page
+     */
+    async removeSection(pageId, sectionId) {
+        let structure = this.getPageStructure(pageId);
+        structure = structure.filter(s => s.id !== sectionId);
+        
+        // Reorder remaining sections
+        structure.forEach((s, index) => {
+            s.order = index + 1;
+        });
+        
+        await this.updatePageStructure(pageId, structure);
+        console.log(`✅ Removed section: ${sectionId} from page: ${pageId}`);
+    }
+
+    /**
+     * Apply page structure (hide/show sections based on visibility)
+     */
+    applyPageStructure(pageId) {
+        const structure = this.getPageStructure(pageId);
+        
+        if (!structure || !Array.isArray(structure)) {
+            console.warn(`⚠️ No structure found for pageId: ${pageId}`);
+            return;
+        }
+        
+        structure.forEach(section => {
+            const element = document.getElementById(section.id);
+            if (element) {
+                if (section.visible) {
+                    element.style.display = '';
+                } else {
+                    element.style.display = 'none';
+                }
+            }
+        });
+        
+        console.log(`✅ Applied page structure for: ${pageId}`);
+    }
 }
 
 /**

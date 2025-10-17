@@ -584,6 +584,18 @@ class ContentStore {
                     heroCta2Text: "Learn Benefits",
                     heroCta2Link: "#benefits"
                 },
+                pricing: {
+                    hero: {
+                        title: "Simple, Transparent <span class=\"text-white\">PRICING</span>",
+                        subtitle: "No hidden fees. No surprises. Pay only for what you use and the results you get.",
+                        ctaText: "Start for Free →",
+                        ctaUrl: "https://app.estalara.com"
+                    },
+                    heroCta1Text: "Start for Free →",
+                    heroCta1Link: "https://app.estalara.com",
+                    heroCta2Text: "View Plans",
+                    heroCta2Link: "#pricing"
+                },
                 about: {
                     hero: {
                         title: "Revolutionizing <span class=\"text-white\">GLOBAL REAL ESTATE</span>",

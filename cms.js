@@ -985,6 +985,7 @@ function previewCurrentPage() {
         'agents': 'agents.html',
         'agencies': 'agencies.html',
         'investors': 'investors.html',
+        'pricing': 'pricing.html',
         'about': 'about.html',
         'faq': 'faq.html',
         'privacy': 'privacy.html',
