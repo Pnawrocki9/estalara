@@ -411,5 +411,36 @@
     
     <!-- Quick sync button: script contains guard to hide on public site -->
     <script src="quick-sync-button.js" defer></script>
+    
+    <!-- Page visibility check -->
+    <script>
+        // Check if this page should be visible based on CMS settings
+        window.addEventListener('DOMContentLoaded', () => {
+            // Wait for content store to be ready
+            const checkPageVisibility = async () => {
+                if (!window.contentStore) {
+                    setTimeout(checkPageVisibility, 100);
+                    return;
+                }
+                
+                try {
+                    const content = await window.contentStore.getContent();
+                    const investorsNavItem = content.navigation?.find(item => 
+                        item.url === 'investors.html' || item.label === 'For Investors'
+                    );
+                    
+                    // If the page is marked as hidden in CMS, redirect to home
+                    if (investorsNavItem && investorsNavItem.visible === false) {
+                        console.log('⚠️ Investors page is hidden in CMS, redirecting to home...');
+                        window.location.href = 'index.html';
+                    }
+                } catch (error) {
+                    console.error('❌ Error checking page visibility:', error);
+                }
+            };
+            
+            checkPageVisibility();
+        });
+    </script>
 </body>
 </html>
