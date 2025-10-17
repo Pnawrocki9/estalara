@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Pricing Section & Navigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">🔧 Fix Pricing Section & Navigation</h1>
+        
+        <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-700">
+            <p class="font-semibold mb-2">This tool will:</p>
+            <ul class="list-disc list-inside space-y-1 text-sm">
+                <li>Initialize page structures if they don't exist</li>
+                <li>Ensure Pricing page structure is available in CMS</li>
+                <li>Remove any "New Link" items from navigation</li>
+                <li>Ensure "Pricing" link is properly set in navigation</li>
+            </ul>
+        </div>
+
+        <div id="status" class="mb-6 space-y-2"></div>
+
+        <button onclick="fixData()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+            🚀 Fix Data Now
+        </button>
+
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h3 class="font-semibold mb-2">After running this fix:</h3>
+            <ol class="list-decimal list-inside space-y-1 text-sm text-gray-600">
+                <li>Go to CMS → Page Structure</li>
+                <li>Select "Pricing" from the dropdown</li>
+                <li>You should now see all pricing sections</li>
+                <li>Check the frontend navigation - "Pricing" should be visible</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            const colors = {
+                info: 'bg-blue-50 border-blue-500 text-blue-700',
+                success: 'bg-green-50 border-green-500 text-green-700',
+                warning: 'bg-yellow-50 border-yellow-500 text-yellow-700',
+                error: 'bg-red-50 border-red-500 text-red-700'
+            };
+            
+            const div = document.createElement('div');
+            div.className = `p-3 border-l-4 ${colors[type]} text-sm`;
+            div.textContent = message;
+            statusDiv.appendChild(div);
+        }
+
+        function fixData() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = '';
+            
+            try {
+                // Load current data
+                log('📥 Loading current data from localStorage...', 'info');
+                const stored = localStorage.getItem('estalaraAdminData');
+                let data;
+                
+                if (stored) {
+                    data = JSON.parse(stored);
+                    log('✅ Data loaded successfully', 'success');
+                } else {
+                    log('⚠️ No existing data found, creating new structure', 'warning');
+                    data = { version: 4 };
+                }
+
+                // Ensure version is set
+                if (!data.version) {
+                    data.version = 4;
+                    log('✅ Set data version to 4', 'success');
+                }
+
+                // Initialize pageStructures if it doesn't exist
+                if (!data.pageStructures) {
+                    data.pageStructures = {};
+                    log('✅ Initialized pageStructures object', 'success');
+                }
+
+                // Ensure pricing page structure exists
+                if (!data.pageStructures.pricing) {
+                    data.pageStructures.pricing = [
+                        { id: 'hero', type: 'hero', title: 'Hero Section', visible: true, order: 1, editable: false },
+                        { id: 'pricing', type: 'section', title: 'Pricing Cards', visible: true, order: 2, editable: true },
+                        { id: 'how-it-works', type: 'section', title: 'How It Works', visible: true, order: 3, editable: true },
+                        { id: 'value-proposition', type: 'section', title: 'Value Proposition', visible: true, order: 4, editable: true },
+                        { id: 'faq', type: 'section', title: 'FAQ Section', visible: true, order: 5, editable: true },
+                        { id: 'cta', type: 'section', title: 'CTA Section', visible: true, order: 6, editable: true }
+                    ];
+                    log('✅ Added Pricing page structure with 6 sections', 'success');
+                } else {
+                    log('ℹ️ Pricing page structure already exists', 'info');
+                }
+
+                // Fix navigation
+                if (!data.navigation) {
+                    data.navigation = [];
+                    log('⚠️ No navigation found, creating new array', 'warning');
+                }
+
+                // Remove any "New Link" items
+                const removedLinks = data.navigation.filter(item => item.label === 'New Link');
+                if (removedLinks.length > 0) {
+                    data.navigation = data.navigation.filter(item => item.label !== 'New Link');
+                    log(`✅ Removed ${removedLinks.length} "New Link" item(s)`, 'success');
+                }
+
+                // Ensure Pricing link exists
+                const pricingLink = data.navigation.find(item => 
+                    item.label === 'Pricing' || item.url === 'pricing.html'
+                );
+
+                if (!pricingLink) {
+                    // Add pricing link
+                    const maxId = Math.max(0, ...data.navigation.map(n => n.id || 0));
+                    data.navigation.push({
+                        id: maxId + 1,
+                        label: 'Pricing',
+                        url: 'pricing.html',
+                        order: data.navigation.length + 1,
+                        visible: true
+                    });
+                    log('✅ Added "Pricing" link to navigation', 'success');
+                } else {
+                    // Update existing pricing link to ensure it's correct
+                    pricingLink.label = 'Pricing';
+                    pricingLink.url = 'pricing.html';
+                    pricingLink.visible = true;
+                    log('✅ Updated existing "Pricing" link', 'success');
+                }
+
+                // Ensure navigation items are properly ordered
+                data.navigation.forEach((item, index) => {
+                    if (!item.order) {
+                        item.order = index + 1;
+                    }
+                    if (typeof item.visible === 'undefined') {
+                        item.visible = item.label !== 'For Investors';
+                    }
+                });
+                log('✅ Navigation items properly ordered', 'success');
+
+                // Save back to localStorage
+                localStorage.setItem('estalaraAdminData', JSON.stringify(data));
+                log('💾 Data saved to localStorage', 'success');
+
+                // Log summary
+                log('', 'info');
+                log('🎉 All fixes completed successfully!', 'success');
+                log(`📊 Navigation has ${data.navigation.length} items`, 'info');
+                log(`📄 PageStructures initialized for ${Object.keys(data.pageStructures).length} pages`, 'info');
+                
+                setTimeout(() => {
+                    log('', 'info');
+                    log('✨ You can now refresh the CMS page and check Page Structure → Pricing', 'success');
+                }, 1000);
+
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                console.error('Full error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
