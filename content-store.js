@@ -431,6 +431,7 @@ class ContentStore {
                 { label: "For Agents", url: "agents.html", visible: true },
                 { label: "For Agencies", url: "agencies.html", visible: true },
                 { label: "For Investors", url: "investors.html", visible: false },
+                { label: "Pricing", url: "pricing.html", visible: true },
                 { label: "About", url: "about.html", visible: true },
                 { label: "FAQ", url: "faq.html", visible: true }
             ],
