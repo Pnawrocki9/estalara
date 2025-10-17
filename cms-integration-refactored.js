@@ -46,6 +46,7 @@ class EstalaraAdmin {
         this.loadSectionHeadings();
         this.loadStatistics();
         this.loadLegalPages();
+        this.loadLegalFooterLinks(); // Also load footer links on all pages
         this.loadFaq();
     }
 
@@ -532,7 +533,7 @@ class EstalaraAdmin {
     }
 
     /**
-     * Load legal pages content (Terms, GDPR, Cookies)
+     * Load legal pages content (all legal pages from CMS)
      */
     loadLegalPages() {
         // Load admin data
@@ -543,58 +544,83 @@ class EstalaraAdmin {
         let pageType = null;
         const pathname = window.location.pathname;
         
-        if (pathname.includes('terms-conditions.html')) {
-            pageType = 'terms';
-        } else if (pathname.includes('gdpr.html')) {
-            pageType = 'gdpr';
-        } else if (pathname.includes('cookies-policy.html')) {
-            pageType = 'cookies';
+        // Map filenames to CMS page types
+        const pageMap = {
+            'privacy.html': 'privacy',
+            'terms.html': 'termsofservice',
+            'terms-conditions.html': 'terms',
+            'gdpr.html': 'gdpr',
+            'cookies-policy.html': 'cookies',
+            'disclaimer.html': 'disclaimer',
+            'streaming.html': 'streaming',
+            'dpa.html': 'dpa'
+        };
+        
+        // Find matching page type
+        for (const [filename, type] of Object.entries(pageMap)) {
+            if (pathname.includes(filename)) {
+                pageType = type;
+                break;
+            }
         }
 
         if (!pageType || !admin.legalPages[pageType]) return;
 
         const pageData = admin.legalPages[pageType];
 
-        // Apply main title
-        const mainTitle = document.getElementById(`${pageType}-main-title`);
-        if (mainTitle && pageData.mainTitle) {
-            mainTitle.textContent = pageData.mainTitle.text;
-            mainTitle.style.color = pageData.mainTitle.color;
-            mainTitle.style.fontWeight = pageData.mainTitle.weight;
+        // Apply title
+        const titleEl = document.getElementById('legal-page-title');
+        if (titleEl && pageData.title) {
+            titleEl.textContent = pageData.title;
         }
 
-        // Apply dates
-        const effectiveDate = document.getElementById(`${pageType}-effective-date`);
-        if (effectiveDate && pageData.effectiveDate) {
-            effectiveDate.textContent = pageData.effectiveDate.text;
-            effectiveDate.style.color = pageData.effectiveDate.color;
+        // Apply content from WYSIWYG editor
+        const contentEl = document.getElementById('legal-page-content');
+        if (contentEl && pageData.content) {
+            contentEl.innerHTML = pageData.content;
         }
-
-        const lastUpdated = document.getElementById(`${pageType}-last-updated`);
-        if (lastUpdated && pageData.lastUpdated) {
-            lastUpdated.textContent = pageData.lastUpdated.text;
-            lastUpdated.style.color = pageData.lastUpdated.color;
-        }
-
-        // Apply sections
-        if (pageData.sections) {
-            pageData.sections.forEach((section, index) => {
-                const sectionNum = index + 1;
-                
-                const sectionTitle = document.getElementById(`${pageType}-section${sectionNum}-title`);
-                if (sectionTitle && section.title) {
-                    sectionTitle.textContent = section.title.text;
-                    sectionTitle.style.color = section.title.color;
-                    sectionTitle.style.fontWeight = section.title.weight;
-                }
-
-                const sectionContent = document.getElementById(`${pageType}-section${sectionNum}-content`);
-                if (sectionContent && section.content) {
-                    sectionContent.innerHTML = section.content.text.replace(/\n/g, '<br>');
-                    sectionContent.style.color = section.content.color;
-                }
-            });
-        }
+        
+        // Load footer legal links
+        this.loadLegalFooterLinks();
+    }
+    
+    /**
+     * Load legal links in footer dynamically from CMS
+     */
+    loadLegalFooterLinks() {
+        const admin = JSON.parse(localStorage.getItem('estalaraAdminData') || '{}');
+        if (!admin.legalPages) return;
+        
+        // Map of page types to their URLs and labels
+        const legalPages = [
+            { type: 'privacy', url: 'privacy.html', label: 'Privacy Policy' },
+            { type: 'termsofservice', url: 'terms.html', label: 'Terms of Service' },
+            { type: 'terms', url: 'terms-conditions.html', label: 'Terms & Conditions' },
+            { type: 'gdpr', url: 'gdpr.html', label: 'GDPR' },
+            { type: 'cookies', url: 'cookies-policy.html', label: 'Cookies Policy' },
+            { type: 'disclaimer', url: 'disclaimer.html', label: 'International Disclaimer' },
+            { type: 'streaming', url: 'streaming.html', label: 'Live Streaming Consent' },
+            { type: 'dpa', url: 'dpa.html', label: 'Data Processing Agreement' }
+        ];
+        
+        // Filter visible pages
+        const visiblePages = legalPages.filter(page => {
+            const pageData = admin.legalPages[page.type];
+            return pageData && pageData.visible !== false;
+        });
+        
+        // Update all footer legal links containers
+        const footerLinksContainers = document.querySelectorAll('.footer-links');
+        footerLinksContainers.forEach(container => {
+            const currentPath = window.location.pathname;
+            container.innerHTML = visiblePages.map(page => {
+                const isActive = currentPath.includes(page.url);
+                const className = isActive 
+                    ? 'text-white font-semibold' 
+                    : 'text-gray-400 hover:text-white transition-colors';
+                return `<li><a href="${page.url}" class="${className}">${page.label}</a></li>`;
+            }).join('');
+        });
     }
 
     /**
