@@ -1210,6 +1210,8 @@ async function showFrontendTab(tabName) {
         loadLegalPageEditor();
     } else if (tabName === 'faq') {
         await loadFaqCategoryEditor();
+    } else if (tabName === 'testimonials') {
+        await loadTestimonialsEditor();
     }
 }
 
@@ -2807,4 +2809,186 @@ async function syncFaqFromFrontend() {
         console.error('❌ FAQ: Sync failed:', error);
         showNotification('Failed to sync FAQ from frontend: ' + error.message, 'error');
     }
+}
+
+// ===== TESTIMONIALS EDITOR FUNCTIONS =====
+
+async function loadTestimonialsEditor() {
+    const admin = loadAdminData();
+    
+    // Initialize testimonials structure if it doesn't exist
+    if (!admin.testimonials) {
+        // Load defaults from content-store
+        if (window.contentStore) {
+            await window.contentStore.ready;
+            const content = await window.contentStore.getContent();
+            if (content && content.testimonials) {
+                admin.testimonials = content.testimonials;
+            } else {
+                admin.testimonials = {
+                    heading: "What Agents Say",
+                    subtitle: "Hear from real estate professionals who transformed their business with Estalara",
+                    visible: true,
+                    items: []
+                };
+            }
+        }
+    }
+    
+    // Load section settings
+    document.getElementById('testimonials-section-visible').checked = admin.testimonials.visible !== false;
+    document.getElementById('testimonials-heading').value = admin.testimonials.heading || "What Agents Say";
+    document.getElementById('testimonials-subtitle').value = admin.testimonials.subtitle || "";
+    
+    // Load testimonial items
+    const container = document.getElementById('testimonials-items-container');
+    const items = admin.testimonials.items || [];
+    
+    if (items.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 bg-gray-50 rounded-lg">
+                <p class="text-gray-500">No testimonials yet. Click "Add Testimonial" to create your first one.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = items.map((item, index) => `
+        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <div class="flex justify-between items-start mb-3">
+                <h4 class="font-medium text-gray-900">Testimonial ${index + 1}</h4>
+                <button onclick="removeTestimonialItem(${index})" class="text-red-600 hover:text-red-800 text-sm">
+                    🗑️ Remove
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quote *</label>
+                    <textarea id="testimonial-quote-${index}" class="cms-input" rows="3" placeholder="Enter the testimonial quote...">${item.quote || ''}</textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                        <input type="text" id="testimonial-name-${index}" class="cms-input" placeholder="John Doe" value="${item.name || ''}">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Location *</label>
+                        <input type="text" id="testimonial-location-${index}" class="cms-input" placeholder="City, Country" value="${item.location || ''}">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Avatar URL (optional)</label>
+                    <input type="url" id="testimonial-avatar-${index}" class="cms-input" placeholder="https://example.com/avatar.jpg" value="${item.avatar || ''}">
+                    <p class="text-xs text-gray-500 mt-1">Leave empty for default placeholder</p>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addTestimonialItem() {
+    const admin = loadAdminData();
+    
+    if (!admin.testimonials) {
+        admin.testimonials = {
+            heading: "What Agents Say",
+            subtitle: "Hear from real estate professionals who transformed their business with Estalara",
+            visible: true,
+            items: []
+        };
+    }
+    
+    if (!admin.testimonials.items) {
+        admin.testimonials.items = [];
+    }
+    
+    // Add new empty testimonial
+    const newId = admin.testimonials.items.length > 0 
+        ? Math.max(...admin.testimonials.items.map(t => t.id || 0)) + 1 
+        : 1;
+    
+    admin.testimonials.items.push({
+        id: newId,
+        quote: "",
+        name: "",
+        location: "",
+        avatar: ""
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadTestimonialsEditor();
+}
+
+function removeTestimonialItem(index) {
+    if (!confirm('Are you sure you want to remove this testimonial?')) {
+        return;
+    }
+    
+    const admin = loadAdminData();
+    
+    if (admin.testimonials && admin.testimonials.items) {
+        admin.testimonials.items.splice(index, 1);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        loadTestimonialsEditor();
+        showNotification('Testimonial removed!', 'success');
+    }
+}
+
+async function saveTestimonialsContent() {
+    const admin = loadAdminData();
+    
+    if (!admin.testimonials) {
+        admin.testimonials = {
+            heading: "",
+            subtitle: "",
+            visible: true,
+            items: []
+        };
+    }
+    
+    // Save section settings
+    admin.testimonials.visible = document.getElementById('testimonials-section-visible').checked;
+    admin.testimonials.heading = document.getElementById('testimonials-heading').value;
+    admin.testimonials.subtitle = document.getElementById('testimonials-subtitle').value;
+    
+    // Get all testimonial items from the form
+    const items = [];
+    let index = 0;
+    
+    while (document.getElementById(`testimonial-quote-${index}`)) {
+        const quote = document.getElementById(`testimonial-quote-${index}`).value;
+        const name = document.getElementById(`testimonial-name-${index}`).value;
+        const location = document.getElementById(`testimonial-location-${index}`).value;
+        const avatar = document.getElementById(`testimonial-avatar-${index}`)?.value || "";
+        
+        if (quote.trim() || name.trim()) {
+            items.push({
+                id: admin.testimonials.items[index]?.id || index + 1,
+                quote: quote.trim(),
+                name: name.trim(),
+                location: location.trim(),
+                avatar: avatar.trim()
+            });
+        }
+        
+        index++;
+    }
+    
+    admin.testimonials.items = items;
+    
+    // Save to localStorage
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    // Save to Firebase if available
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        try {
+            await window.saveAdminDataToFirebase(admin);
+            console.log('✅ Testimonials: Saved to Firebase');
+        } catch (error) {
+            console.warn('⚠️ Testimonials: Could not save to Firebase:', error.message);
+        }
+    }
+    
+    showNotification('Testimonials saved successfully!', 'success');
+    console.log('✅ Testimonials saved:', items.length, 'items');
 }

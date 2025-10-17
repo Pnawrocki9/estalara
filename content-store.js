@@ -347,6 +347,10 @@ class ContentStore {
             if (!result.whiteLabel || typeof result.whiteLabel !== 'object') {
                 result.whiteLabel = this.defaults.whiteLabel;
             }
+            // Ensure testimonials exist
+            if (!result.testimonials || typeof result.testimonials !== 'object') {
+                result.testimonials = this.defaults.testimonials;
+            }
             // Statistics: Only use what's in CMS, do not auto-populate defaults
             // Explicitly preserve statistics if they exist
             if (Array.isArray(data.statistics) && data.statistics.length > 0) {
@@ -679,6 +683,36 @@ class ContentStore {
                 ],
                 contactLabel: "Enterprise Cooperation",
                 contactEmail: "peter@estalara.com"
+            },
+
+            // Testimonials for Agents page
+            testimonials: {
+                heading: "What Agents Say",
+                subtitle: "Hear from real estate professionals who transformed their business with Estalara",
+                visible: true,
+                items: [
+                    {
+                        id: 1,
+                        quote: "Estalara completely changed my business. I went from local sales to closing deals with international investors in just 3 months.",
+                        name: "Maria Rodriguez",
+                        location: "Madrid, Spain",
+                        avatar: "" // Empty for default placeholder
+                    },
+                    {
+                        id: 2,
+                        quote: "The AI lead generation is incredible. I'm getting qualified leads daily without any additional marketing spend.",
+                        name: "James Chen",
+                        location: "London, UK",
+                        avatar: ""
+                    },
+                    {
+                        id: 3,
+                        quote: "Livestreaming my listings to global audiences has opened up entirely new markets I never thought possible.",
+                        name: "Sophia Laurent",
+                        location: "Paris, France",
+                        avatar: ""
+                    }
+                ]
             },
 
             // Statistics removed - should only come from CMS data

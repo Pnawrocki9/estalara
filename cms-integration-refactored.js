@@ -42,6 +42,7 @@ class EstalaraAdmin {
         this.loadHomeFeatures();
         this.loadAgentsFeatures();
         this.loadSuccessJourney();
+        this.loadTestimonials();
         this.loadWhiteLabel();
         this.loadAboutContent();
         this.loadSectionHeadings();
@@ -532,6 +533,65 @@ class EstalaraAdmin {
             console.log(`✅ Success Journey: Loaded ${journey.steps.length} steps`);
         } else {
             console.error('❌ Success Journey: Steps container not found or no steps data');
+        }
+    }
+
+    /**
+     * Load testimonials section on agents page
+     */
+    loadTestimonials() {
+        // Only load on agents.html
+        if (!window.location.pathname.includes('agents.html')) {
+            return;
+        }
+
+        const testimonialsSection = document.querySelector('section.py-32:has(.grid.md\\:grid-cols-3)');
+        if (!testimonialsSection) {
+            console.warn('⚠️ Testimonials: Section not found in DOM');
+            return;
+        }
+
+        // Check if testimonials should be visible
+        if (this.content.testimonials?.visible === false) {
+            console.log('💬 Testimonials: Section is hidden via CMS');
+            testimonialsSection.style.display = 'none';
+            return;
+        } else {
+            testimonialsSection.style.display = 'block';
+        }
+
+        // Update section heading
+        const heading = testimonialsSection.querySelector('.section-text, h2');
+        if (heading && this.content.testimonials?.heading) {
+            heading.textContent = this.content.testimonials.heading;
+        }
+
+        // Update section subtitle
+        const subtitle = testimonialsSection.querySelector('.body-text, p');
+        if (subtitle && this.content.testimonials?.subtitle) {
+            subtitle.textContent = this.content.testimonials.subtitle;
+        }
+
+        // Load testimonial items
+        const testimonialsGrid = testimonialsSection.querySelector('.grid.md\\:grid-cols-3');
+        if (testimonialsGrid && this.content.testimonials?.items) {
+            testimonialsGrid.innerHTML = this.content.testimonials.items.map(item => `
+                <div class="bg-white text-black p-8">
+                    <p class="text-lg mb-6 italic">"${item.quote}"</p>
+                    <div class="flex items-center">
+                        ${item.avatar ? 
+                            `<img src="${item.avatar}" alt="${item.name}" class="w-12 h-12 rounded-full mr-4 object-cover">` :
+                            `<div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>`
+                        }
+                        <div>
+                            <p class="font-bold">${item.name}</p>
+                            <p class="text-gray-600 text-sm">${item.location}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            console.log(`✅ Testimonials: Loaded ${this.content.testimonials.items.length} testimonials`);
         }
     }
 

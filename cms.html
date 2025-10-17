@@ -302,6 +302,9 @@
                             <button onclick="showFrontendTab('faq')" id="tab-faq" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 ❓ FAQ
                             </button>
+                            <button onclick="showFrontendTab('testimonials')" id="tab-testimonials" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                💬 Testimonials
+                            </button>
                         </nav>
                     </div>
 
@@ -830,6 +833,49 @@
                             <button onclick="addFaqItem()" class="cms-btn cms-btn-primary">+ Add Question</button>
                             <button onclick="saveFaqContent()" class="cms-btn cms-btn-success">💾 Save FAQ</button>
                             <button onclick="syncFaqFromFrontend()" class="cms-btn cms-btn-secondary" title="Load FAQ questions from frontend defaults">🔄 Sync from Frontend</button>
+                        </div>
+                    </div>
+
+                    <!-- Testimonials Tab -->
+                    <div id="frontend-testimonials" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Testimonials Section (For Agents Page)</h3>
+                        <p class="text-sm text-gray-600 mb-6">Manage customer testimonials displayed on the For Agents page</p>
+                        
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
+                            <p class="text-sm text-blue-900 mb-2">
+                                <strong>💬 Testimonials:</strong> Add, edit, and organize testimonials from real estate agents. Use the Hide/Show toggle to control the entire section's visibility.
+                            </p>
+                        </div>
+
+                        <!-- Section Visibility Toggle -->
+                        <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" id="testimonials-section-visible" class="mr-3 h-5 w-5" checked>
+                                <span class="font-medium text-gray-900">Show testimonials section on Agents page</span>
+                            </label>
+                            <p class="text-xs text-gray-500 mt-2">Uncheck to hide the entire testimonials section from the For Agents page</p>
+                        </div>
+
+                        <!-- Section Heading and Subtitle -->
+                        <div class="space-y-4 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Heading</label>
+                                <input type="text" id="testimonials-heading" class="cms-input" placeholder="What Agents Say">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Subtitle</label>
+                                <input type="text" id="testimonials-subtitle" class="cms-input" placeholder="Hear from real estate professionals...">
+                            </div>
+                        </div>
+
+                        <!-- Testimonials Items Container -->
+                        <div id="testimonials-items-container" class="space-y-4 mb-6">
+                            <!-- Testimonial items will be loaded here -->
+                        </div>
+
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="addTestimonialItem()" class="cms-btn cms-btn-primary">+ Add Testimonial</button>
+                            <button onclick="saveTestimonialsContent()" class="cms-btn cms-btn-success">💾 Save Testimonials</button>
                         </div>
                     </div>
                 </div>
