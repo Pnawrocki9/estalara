@@ -1247,7 +1247,8 @@ function loadNavigationEditor() {
             { id: 2, label: 'For Agents', url: 'agents.html', order: 2, visible: true },
             { id: 3, label: 'For Agencies', url: 'agencies.html', order: 3, visible: true },
             { id: 4, label: 'For Investors', url: 'investors.html', order: 4, visible: false },
-            { id: 5, label: 'About', url: 'about.html', order: 5, visible: true }
+            { id: 5, label: 'Pricing', url: 'pricing.html', order: 5, visible: true },
+            { id: 6, label: 'About', url: 'about.html', order: 6, visible: true }
         ];
         localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     }
