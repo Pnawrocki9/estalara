@@ -72,7 +72,7 @@
             try {
                 if (window.cmsFirebaseAdapter) {
                     await window.cmsFirebaseAdapter.init();
-                    const result = await window.cmsFirebaseAdapter.saveData(admin);
+                    const result = await window.cmsFirebaseAdapter.saveAdminData(admin);
                     if (result.success) {
                         firebaseStatus = '✅ Synced to Firebase';
                         console.log('✅ Success Journey synced to Firebase!');
