@@ -2412,25 +2412,38 @@ async function loadFaqCategoryEditor() {
                                 !admin.faq.investors?.length && 
                                 !admin.faq.technical?.length;
     
-    // Load defaults from content-store if no FAQ data exists or all categories are empty
-    if (allCategoriesEmpty && window.contentStore) {
+    // Always load defaults from content-store if FAQ data is empty
+    if (allCategoriesEmpty) {
         console.log('📥 FAQ: No FAQ data found, loading defaults from content-store...');
         try {
-            const content = await window.contentStore.getContent();
-            if (content.faq) {
-                admin.faq = content.faq;
-                localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
-                console.log('✅ FAQ: Initialized with default content from frontend');
-                console.log('   - General:', content.faq.general?.length || 0, 'questions');
-                console.log('   - Agents:', content.faq.agents?.length || 0, 'questions');
-                console.log('   - Investors:', content.faq.investors?.length || 0, 'questions');
-                console.log('   - Technical:', content.faq.technical?.length || 0, 'questions');
+            // Ensure contentStore is ready before accessing
+            if (window.contentStore) {
+                await window.contentStore.ready; // Wait for contentStore to initialize
+                const content = await window.contentStore.getContent();
                 
-                // Also save to Firebase if available
-                if (typeof window.saveAdminDataToFirebase === 'function') {
-                    await window.saveAdminDataToFirebase(admin);
-                    console.log('✅ FAQ: Defaults synced to Firebase');
+                if (content && content.faq) {
+                    admin.faq = content.faq;
+                    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+                    console.log('✅ FAQ: Initialized with default content from frontend');
+                    console.log('   - General:', content.faq.general?.length || 0, 'questions');
+                    console.log('   - Agents:', content.faq.agents?.length || 0, 'questions');
+                    console.log('   - Investors:', content.faq.investors?.length || 0, 'questions');
+                    console.log('   - Technical:', content.faq.technical?.length || 0, 'questions');
+                    
+                    // Also save to Firebase if available
+                    if (typeof window.saveAdminDataToFirebase === 'function') {
+                        try {
+                            await window.saveAdminDataToFirebase(admin);
+                            console.log('✅ FAQ: Defaults synced to Firebase');
+                        } catch (firebaseError) {
+                            console.warn('⚠️ FAQ: Could not sync to Firebase:', firebaseError.message);
+                        }
+                    }
+                } else {
+                    console.warn('⚠️ FAQ: ContentStore has no FAQ data');
                 }
+            } else {
+                console.warn('⚠️ FAQ: ContentStore not available');
             }
         } catch (error) {
             console.error('❌ FAQ: Failed to load defaults from content-store:', error);
@@ -2573,8 +2586,11 @@ async function syncFaqFromFrontend() {
             throw new Error('ContentStore not available');
         }
         
+        // Ensure contentStore is ready before accessing
+        await window.contentStore.ready;
         const content = await window.contentStore.getContent();
-        if (!content.faq) {
+        
+        if (!content || !content.faq) {
             throw new Error('No FAQ data found in content-store');
         }
         
@@ -2586,8 +2602,12 @@ async function syncFaqFromFrontend() {
         
         // Save to Firebase if available
         if (typeof window.saveAdminDataToFirebase === 'function') {
-            await window.saveAdminDataToFirebase(admin);
-            console.log('✅ FAQ: Synced to Firebase');
+            try {
+                await window.saveAdminDataToFirebase(admin);
+                console.log('✅ FAQ: Synced to Firebase');
+            } catch (firebaseError) {
+                console.warn('⚠️ FAQ: Could not sync to Firebase:', firebaseError.message);
+            }
         }
         
         console.log('✅ FAQ: Synced from frontend');
