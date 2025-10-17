@@ -286,6 +286,9 @@
                             <button onclick="showFrontendTab('agentsfeatures')" id="tab-agentsfeatures" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 👔 Agents Features
                             </button>
+                            <button onclick="showFrontendTab('successjourney')" id="tab-successjourney" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                🚀 Success Journey
+                            </button>
                             <button onclick="showFrontendTab('aboutcontent')" id="tab-aboutcontent" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 📖 About Content
                             </button>
@@ -581,6 +584,33 @@
                         </div>
 
                         <button onclick="saveAgentsFeatures()" class="cms-btn cms-btn-success mt-4">💾 Save Agents Features</button>
+                    </div>
+
+                    <!-- Success Journey Tab -->
+                    <div id="frontend-successjourney" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Success Journey (Agents Page)</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit the 4-step success journey section on the Agents page</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Heading</label>
+                                <input type="text" id="sj-heading" class="cms-input" placeholder="Your Success Journey">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Subtitle</label>
+                                <textarea id="sj-subtitle" class="cms-input" rows="2" placeholder="From signup to closing deals..."></textarea>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-900 mb-3">Steps</h4>
+                                <div id="success-journey-steps-container" class="space-y-4">
+                                    <!-- Steps will be loaded here -->
+                                </div>
+                            </div>
+
+                            <button onclick="saveSuccessJourney()" class="cms-btn cms-btn-success">💾 Save Success Journey</button>
+                        </div>
                     </div>
 
                     <!-- About Content Tab -->

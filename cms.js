@@ -1192,6 +1192,8 @@ async function showFrontendTab(tabName) {
         loadHowItWorksEditor();
     } else if (tabName === 'agentsfeatures') {
         loadAgentsFeatures();
+    } else if (tabName === 'successjourney') {
+        loadSuccessJourney();
     } else if (tabName === 'aboutcontent') {
         loadAboutContent();
     } else if (tabName === 'statistics') {
@@ -2193,6 +2195,123 @@ function saveAgentsFeatures() {
     
     localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
     showNotification('Agents Features saved successfully!', 'success');
+}
+
+// ===== SUCCESS JOURNEY EDITOR =====
+
+function loadSuccessJourney() {
+    const admin = loadAdminData();
+    
+    // Ensure pages.agents.successJourney exists
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.agents) admin.pages.agents = {};
+    if (!admin.pages.agents.successJourney) {
+        admin.pages.agents.successJourney = {
+            heading: 'Your Success Journey',
+            subtitle: 'From signup to closing deals - your path to global real estate success',
+            steps: [
+                {
+                    number: '1',
+                    title: 'Sign Up',
+                    description: 'Create your agent profile and verify your credentials'
+                },
+                {
+                    number: '2',
+                    title: 'List Properties',
+                    description: 'Upload your listings with photos and detailed information'
+                },
+                {
+                    number: '3',
+                    title: 'Go Live',
+                    description: 'Start streaming to global investors and engage in real-time'
+                },
+                {
+                    number: '4',
+                    title: 'Close Deals',
+                    description: 'Convert leads into sales with our streamlined process'
+                }
+            ]
+        };
+    }
+    
+    document.getElementById('sj-heading').value = admin.pages.agents.successJourney.heading || '';
+    document.getElementById('sj-subtitle').value = admin.pages.agents.successJourney.subtitle || '';
+    
+    loadSuccessJourneySteps();
+}
+
+function loadSuccessJourneySteps() {
+    const admin = loadAdminData();
+    const container = document.getElementById('success-journey-steps-container');
+    
+    if (!admin.pages?.agents?.successJourney?.steps) {
+        container.innerHTML = '<p class="text-gray-500 text-sm">No steps configured.</p>';
+        return;
+    }
+    
+    const steps = admin.pages.agents.successJourney.steps;
+    
+    container.innerHTML = steps.map((step, index) => `
+        <div class="bg-white border border-gray-200 p-4 rounded-lg">
+            <div class="flex items-center justify-between mb-3">
+                <h5 class="font-medium text-gray-900">Step ${step.number}</h5>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" data-step="${index}" data-field="title" class="cms-input" value="${step.title}" placeholder="e.g., Sign Up">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea data-step="${index}" data-field="description" class="cms-input" rows="2" placeholder="Description...">${step.description}</textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function saveSuccessJourney() {
+    const admin = loadAdminData();
+    
+    // Ensure structure exists
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.agents) admin.pages.agents = {};
+    if (!admin.pages.agents.successJourney) admin.pages.agents.successJourney = {};
+    
+    // Save heading and subtitle
+    admin.pages.agents.successJourney.heading = document.getElementById('sj-heading').value;
+    admin.pages.agents.successJourney.subtitle = document.getElementById('sj-subtitle').value;
+    
+    // Save steps
+    const stepElements = Array.from(document.querySelectorAll('[data-step]'));
+    const stepIndices = [...new Set(stepElements.map(el => parseInt(el.dataset.step)))].sort((a, b) => a - b);
+    
+    admin.pages.agents.successJourney.steps = stepIndices.map((index, i) => {
+        const title = document.querySelector(`[data-step="${index}"][data-field="title"]`).value;
+        const description = document.querySelector(`[data-step="${index}"][data-field="description"]`).value;
+        
+        return {
+            number: `${i + 1}`,
+            title,
+            description
+        };
+    });
+    
+    // Save to localStorage
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    // Save to Firebase
+    try {
+        const result = await window.cmsFirebaseAdapter.saveData(admin);
+        if (result.success) {
+            showNotification('Success Journey saved successfully!', 'success');
+        } else {
+            showNotification('Saved locally, but Firebase sync failed', 'warning');
+        }
+    } catch (error) {
+        console.error('Firebase save error:', error);
+        showNotification('Saved locally, but Firebase sync failed', 'warning');
+    }
 }
 
 // ===== ABOUT CONTENT EDITOR =====
