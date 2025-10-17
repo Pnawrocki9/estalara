@@ -70,6 +70,41 @@
         .log div {
             margin: 5px 0;
         }
+        .login-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .login-input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .user-info {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -77,11 +112,30 @@
         <h1>📝 Populate FAQ to CMS</h1>
         <p>This tool will populate all FAQ questions from the frontend into the Firebase CMS database.</p>
         
-        <div class="status info" id="status">
-            Ready to populate FAQ content. Click the button below to start.
+        <!-- Authentication Section -->
+        <div id="loginSection" class="login-section" style="display: none;">
+            <h3 style="margin-top: 0;">🔐 Authentication Required</h3>
+            <p>You must sign in with your @estalara.com account to populate FAQ content.</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <input type="email" id="email" class="login-input" placeholder="admin@estalara.com" required>
+                <input type="password" id="password" class="login-input" placeholder="Password" required>
+                <button type="submit" style="margin-top: 10px;">Sign In</button>
+            </form>
         </div>
         
-        <button onclick="populateFAQ()" id="populateBtn">Populate FAQ to CMS</button>
+        <!-- User Info Section (shown when authenticated) -->
+        <div id="userInfo" class="user-info" style="display: none;">
+            <div>
+                <strong>✅ Signed in as:</strong> <span id="userEmail"></span>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+        </div>
+        
+        <div class="status info" id="status">
+            Initializing authentication...
+        </div>
+        
+        <button onclick="populateFAQ()" id="populateBtn" disabled>Populate FAQ to CMS</button>
         
         <div class="log" id="log" style="display: none;">
             <strong>Activity Log:</strong>
@@ -94,8 +148,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="firebase-init.js"></script>
+    <script src="firebase-auth.js"></script>
 
     <script>
+        let currentUser = null;
+
         function log(message) {
             const logDiv = document.getElementById('log');
             const logContent = document.getElementById('logContent');
@@ -111,6 +168,101 @@
             status.textContent = message;
             status.className = `status ${type}`;
         }
+
+        // Handle login
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            setStatus('Signing in...', 'info');
+            
+            try {
+                const result = await window.firebaseSignIn(email, password);
+                
+                if (result.success) {
+                    log('✅ Signed in successfully as ' + result.user.email);
+                    currentUser = result.user;
+                    updateUIForAuth(result.user);
+                } else {
+                    setStatus('❌ Login failed: ' + result.error, 'error');
+                    log('❌ Login failed: ' + result.error);
+                }
+            } catch (error) {
+                setStatus('❌ Login error: ' + error.message, 'error');
+                log('❌ Login error: ' + error.message);
+            }
+        }
+
+        // Handle logout
+        async function handleLogout() {
+            try {
+                await window.firebaseSignOut();
+                currentUser = null;
+                updateUIForNoAuth();
+                log('✅ Signed out successfully');
+            } catch (error) {
+                setStatus('❌ Logout error: ' + error.message, 'error');
+            }
+        }
+
+        // Update UI when authenticated
+        function updateUIForAuth(user) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('populateBtn').disabled = false;
+            setStatus('✅ Authenticated. Ready to populate FAQ content.', 'success');
+        }
+
+        // Update UI when not authenticated
+        function updateUIForNoAuth() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('populateBtn').disabled = true;
+            setStatus('⚠️ Please sign in to continue', 'info');
+        }
+
+        // Initialize authentication check
+        async function initAuth() {
+            try {
+                // Wait for Firebase to be ready
+                await window.firebaseReadyPromise;
+                log('✅ Firebase initialized');
+                
+                // Wait for auth service to be ready
+                let waitTime = 0;
+                const maxWait = 5000;
+                while (!window.authService && waitTime < maxWait) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    waitTime += 100;
+                }
+                
+                if (!window.authService) {
+                    setStatus('❌ Auth service failed to initialize', 'error');
+                    return;
+                }
+                
+                log('✅ Auth service initialized');
+                
+                // Check if already authenticated
+                const user = await window.authService.waitForAuth();
+                if (user) {
+                    currentUser = user;
+                    updateUIForAuth(user);
+                    log('✅ Already authenticated as ' + user.email);
+                } else {
+                    updateUIForNoAuth();
+                    log('⚠️ Not authenticated. Please sign in.');
+                }
+            } catch (error) {
+                setStatus('❌ Initialization error: ' + error.message, 'error');
+                log('❌ Initialization error: ' + error.message);
+            }
+        }
+
+        // Run auth initialization on page load
+        window.addEventListener('DOMContentLoaded', initAuth);
 
         const faqData = {
             general: [
@@ -193,10 +345,25 @@
 
         async function populateFAQ() {
             const btn = document.getElementById('populateBtn');
+            
+            // Check authentication
+            if (!currentUser) {
+                setStatus('❌ You must be signed in to populate FAQ content', 'error');
+                return;
+            }
+            
+            // Verify email domain
+            if (!currentUser.email.endsWith('@estalara.com')) {
+                setStatus('❌ Only @estalara.com accounts can populate FAQ content', 'error');
+                log('❌ Unauthorized email domain: ' + currentUser.email);
+                return;
+            }
+            
             btn.disabled = true;
             
             try {
                 log('Starting FAQ population...');
+                log('Authenticated as: ' + currentUser.email);
                 setStatus('Connecting to Firebase...', 'info');
                 
                 // Wait for Firebase to be ready
@@ -248,9 +415,16 @@
                 
             } catch (error) {
                 console.error('Error:', error);
-                setStatus('❌ Error: ' + error.message, 'error');
-                log('❌ Error: ' + error.message);
-                btn.disabled = false;
+                const errorMsg = error.code === 'PERMISSION_DENIED' 
+                    ? 'Permission denied. Make sure you are signed in with an @estalara.com account.' 
+                    : error.message;
+                setStatus('❌ Error: ' + errorMsg, 'error');
+                log('❌ Error: ' + errorMsg);
+                
+                // Re-enable button only if still authenticated
+                if (currentUser) {
+                    btn.disabled = false;
+                }
             }
         }
     </script>
