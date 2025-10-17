@@ -2288,6 +2288,7 @@ function initializeLegalPageEditor() {
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | help',
         content_style: 'body { font-family: Inter, sans-serif; font-size: 14px; color: #1f2937; }',
+        apiKey: 'ky30x9ok1b8ma7ozumb5hap24fs6xjcgyl4y5u6nncvd7dht',
         setup: function(editor) {
             legalPageEditor = editor;
         }
