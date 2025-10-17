@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- Primary Meta Tags -->
+    <title>Pricing - Estalara | Simple, Transparent, Performance-Based</title>
+    <meta name="title" content="Pricing - Estalara | Simple, Transparent, Performance-Based">
+    <meta name="description" content="Transparent pricing for Estalara's global real estate platform. Free listings, performance-based AI ads, and affordable hot leads. No hidden fees.">
+    <meta name="keywords" content="estalara pricing, real estate platform cost, property listing fees, AI marketing pricing">
+    <meta name="author" content="Estalara">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="https://estalara.com/pricing.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://estalara.com/pricing.html">
+    <meta property="og:title" content="Pricing - Estalara | Simple & Transparent">
+    <meta property="og:description" content="Free listings, performance-based AI ads, affordable hot leads. No hidden fees.">
+    <meta property="og:image" content="https://estalara.com/assets/og-image-pricing.jpg">
+    <meta property="og:site_name" content="Estalara">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://estalara.com/pricing.html">
+    <meta name="twitter:title" content="Pricing - Estalara | Simple & Transparent">
+    <meta name="twitter:image" content="https://estalara.com/assets/twitter-image-pricing.jpg">
+    
+    <!-- Hreflang Tags (International) -->
+    <link rel="alternate" hreflang="en" href="https://estalara.com/pricing.html">
+    <link rel="alternate" hreflang="es" href="https://estalara.com/es/pricing.html">
+    <link rel="alternate" hreflang="fr" href="https://estalara.com/fr/pricing.html">
+    <link rel="alternate" hreflang="de" href="https://estalara.com/de/pricing.html">
+    <link rel="alternate" hreflang="x-default" href="https://estalara.com/pricing.html">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="assets/EstalaraLogo.png">
+    <link rel="shortcut icon" type="image/png" href="assets/EstalaraLogo.png">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js" defer></script>
+    
+    <style>
+        :root {
+            --black: #000000;
+            --white: #FFFFFF;
+            --gray: #F5F5F5;
+            --green: #10b981;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-text {
+            font-size: clamp(3rem, 6vw, 5rem);
+            line-height: 0.9;
+            font-weight: 900;
+        }
+        
+        .section-text {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            font-weight: 700;
+        }
+        
+        .body-text {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.6;
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(45deg, var(--white), var(--gray));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .hero-content-visible {
+            opacity: 1;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        
+        .hero-title-container {
+            opacity: 0;
+            animation: fadeInTitle 0.4s ease-out 0.3s forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInTitle {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .btn-primary {
+            background: var(--white);
+            color: var(--black);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        .btn-secondary {
+            background: var(--black);
+            color: var(--white);
+            border: 2px solid var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+        
+        .pricing-card {
+            background: var(--white);
+            color: var(--black);
+            border-radius: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+        }
+        
+        .pricing-card.featured {
+            border: 3px solid var(--white);
+        }
+        
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--black);
+            color: var(--white);
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .price-large {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1;
+        }
+        
+        .feature-check {
+            width: 24px;
+            height: 24px;
+            background: var(--green);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+    </style>
+    
+    <!-- Structured Data / Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://estalara.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Pricing",
+          "item": "https://estalara.com/pricing.html"
+        }
+      ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particle-bg" class="particle-bg"></div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="menu-overlay" class="hidden fixed inset-0 bg-black/80 z-[90] md:hidden transition-opacity duration-300" aria-hidden="true"></div>
+    
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-[100] bg-black border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-3">
+            <!-- Logo -->
+            <a href="index.html" class="block">
+                <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-8 md:h-10" loading="eager">
+            </a>
+
+            <!-- Hamburger (mobile only) -->
+            <button id="menu-toggle" aria-label="Open menu" aria-expanded="false"
+                    class="md:hidden p-2 rounded hover:bg-white/10 focus:outline-none focus:ring focus:ring-white/30 z-[101] relative">
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white mb-1"></span>
+                <span class="block w-6 h-0.5 bg-white"></span>
+            </button>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center gap-6">
+                <ul class="flex items-center gap-6">
+                    <!-- Navigation items loaded dynamically from CMS -->
+                </ul>
+                <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition ml-2">
+                    Estalara Marketplace
+                </a>
+            </nav>
+            
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu"
+                 class="hidden
+                        flex-col
+                        fixed left-0 right-0 top-[60px]
+                        max-h-[calc(100vh-60px)] overflow-y-auto
+                        z-[95]
+                        bg-black px-6 py-6
+                        gap-4
+                        border-b border-white/10
+                        shadow-2xl">
+                <ul class="mobile-nav flex flex-col gap-4">
+                    <!-- Mobile navigation items loaded dynamically from CMS -->
+                </ul>
+                <a href="https://app.estalara.com" class="cta-button inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-white hover:bg-white/10 transition">
+                    Estalara Marketplace
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative pt-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="hero-title-container">
+                <h1 class="hero-text font-display gradient-text mb-8">
+                    Simple, Transparent <span class="text-white">PRICING</span>
+                </h1>
+            </div>
+            <div class="hero-content-visible">
+                <p class="body-text max-w-3xl mx-auto mb-12 text-gray-300">
+                    No hidden fees. No surprises. Pay only for what you use and the results you get.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                    <button class="btn-primary px-8 py-4 font-semibold text-lg">
+                        <a href="https://app.estalara.com" target="_blank">Start for Free →</a>
+                    </button>
+                    <button class="btn-secondary px-8 py-4 font-semibold text-lg">
+                        <a href="#pricing">View Plans</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Cards Section -->
+    <section id="pricing" class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">Choose What Works for You</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    Performance-based pricing designed for real estate professionals
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Free Listings -->
+                <div class="pricing-card p-8 reveal">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">Property Listings</h3>
+                        <p class="text-gray-600 text-sm">Add your properties to the platform</p>
+                    </div>
+                    <div class="mb-8">
+                        <div class="price-large text-black">FREE</div>
+                        <p class="text-gray-600 mt-2">Always Free</p>
+                    </div>
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Unlimited property listings</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">HD photos and videos</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Property management dashboard</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Basic analytics</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Global visibility</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition-colors">
+                        <a href="https://app.estalara.com" target="_blank">Get Started</a>
+                    </button>
+                </div>
+                
+                <!-- AI Generated Ads -->
+                <div class="pricing-card featured p-8 reveal">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">AI Generated Ads</h3>
+                        <p class="text-gray-600 text-sm">Automated marketing campaigns</p>
+                    </div>
+                    <div class="mb-8">
+                        <div class="price-large text-black">8%</div>
+                        <p class="text-gray-600 mt-2">of marketing budget</p>
+                    </div>
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">AI-powered ad creation</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Multi-platform distribution</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Targeted to qualified investors</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Performance optimization</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Detailed campaign analytics</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">A/B testing & refinement</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition-colors">
+                        <a href="https://app.estalara.com" target="_blank">Launch Campaign</a>
+                    </button>
+                </div>
+                
+                <!-- Hot Leads -->
+                <div class="pricing-card p-8 reveal">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold mb-2">Hot Leads</h3>
+                        <p class="text-gray-600 text-sm">High-quality engaged viewers</p>
+                    </div>
+                    <div class="mb-8">
+                        <div class="price-large text-black">$2.99</div>
+                        <p class="text-gray-600 mt-2">per qualified lead</p>
+                    </div>
+                    <div class="space-y-4 mb-8">
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">LIVE participants only</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Watched 50%+ of livestream</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Verified investor profiles</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Direct contact information</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">Engagement insights</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition-colors">
+                        <a href="https://app.estalara.com" target="_blank">Start Livestreaming</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">How Pricing Works</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Transparent and performance-based. You only pay for results.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                        📋
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">List for Free</h3>
+                    <p class="text-gray-300">
+                        Add unlimited properties to our platform at no cost. Reach global investors from day one without any upfront investment.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                        🎯
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Market Efficiently</h3>
+                    <p class="text-gray-300">
+                        Let AI create and optimize your marketing campaigns. Only pay a small percentage of your marketing spend—get better results for less.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                        🔥
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Convert Leads</h3>
+                    <p class="text-gray-300">
+                        Pay only for highly engaged leads who watched most of your livestream. These are serious buyers ready to invest.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Value Proposition -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8 text-black">Why Our Pricing Makes Sense</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-600">
+                    We succeed when you succeed. Our pricing is aligned with your results.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="reveal">
+                    <h3 class="text-3xl font-bold mb-6">No Upfront Costs</h3>
+                    <p class="text-gray-600 text-lg mb-6">
+                        Unlike traditional real estate platforms that charge hefty subscription fees or listing fees, 
+                        Estalara lets you start completely free. Add your properties, reach global investors, and 
+                        only pay when you choose to use our premium marketing services.
+                    </p>
+                    <p class="text-gray-600 text-lg">
+                        This means zero risk for you. Test the platform, see the quality of our investor network, 
+                        and decide which services make sense for your business.
+                    </p>
+                </div>
+                
+                <div class="reveal">
+                    <h3 class="text-3xl font-bold mb-6">Performance-Based Value</h3>
+                    <p class="text-gray-600 text-lg mb-6">
+                        Our AI-generated ads charge only a small percentage of your actual marketing spend, and you 
+                        control the budget. Hot leads are priced per qualified lead, so you know exactly what you're 
+                        getting—engaged viewers who spent significant time evaluating your property.
+                    </p>
+                    <p class="text-gray-600 text-lg">
+                        Compare this to traditional advertising where you pay thousands without knowing if anyone 
+                        was even interested. With Estalara, every dollar is tied to measurable engagement and results.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FAQ Section -->
+    <section class="py-32">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="section-text font-display mb-8">Common Questions</h2>
+                <p class="body-text max-w-2xl mx-auto text-gray-300">
+                    Everything you need to know about Estalara pricing
+                </p>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="bg-white text-black p-8 reveal">
+                    <h3 class="text-xl font-bold mb-4">Is there really no cost to list properties?</h3>
+                    <p class="text-gray-600">
+                        Absolutely. You can add unlimited property listings for free, forever. We want every agent 
+                        to have access to our global network of investors without any barriers to entry.
+                    </p>
+                </div>
+                
+                <div class="bg-white text-black p-8 reveal">
+                    <h3 class="text-xl font-bold mb-4">How does the 8% AI ad fee work?</h3>
+                    <p class="text-gray-600">
+                        When you choose to run an AI-generated ad campaign, you set your marketing budget. We charge 
+                        8% of that budget as our service fee. For example, if you allocate $1,000 for ads, we charge 
+                        $80 for creating, optimizing, and managing the entire campaign. You get professional marketing 
+                        without hiring an agency.
+                    </p>
+                </div>
+                
+                <div class="bg-white text-black p-8 reveal">
+                    <h3 class="text-xl font-bold mb-4">What qualifies as a "Hot Lead"?</h3>
+                    <p class="text-gray-600">
+                        A Hot Lead is someone who participated in your livestream and watched at least 50% of the 
+                        total duration. These are engaged viewers who spent real time evaluating your property, 
+                        not just casual browsers. You get their verified contact information and engagement insights.
+                    </p>
+                </div>
+                
+                <div class="bg-white text-black p-8 reveal">
+                    <h3 class="text-xl font-bold mb-4">Are there any hidden fees?</h3>
+                    <p class="text-gray-600">
+                        No. What you see is what you pay. Free listings are completely free. AI ads charge exactly 
+                        8% of your marketing budget. Hot leads are $2.99 each. No setup fees, no monthly subscriptions, 
+                        no surprise charges.
+                    </p>
+                </div>
+                
+                <div class="bg-white text-black p-8 reveal">
+                    <h3 class="text-xl font-bold mb-4">Can I try the platform before committing?</h3>
+                    <p class="text-gray-600">
+                        Yes! Start by listing your properties for free. Explore the platform, connect with our investor 
+                        network, and see the quality of engagement. When you're ready, you can opt into our paid services. 
+                        There's no pressure and no commitment required.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-32 bg-white text-black">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <h2 class="section-text font-display mb-8 text-black">Ready to Get Started?</h2>
+                <p class="body-text max-w-2xl mx-auto mb-12 text-gray-600">
+                    Join thousands of agents reaching global investors through Estalara. 
+                    Start with free listings and scale with performance-based services.
+                </p>
+                <button class="bg-black text-white px-12 py-4 font-semibold text-xl hover:bg-gray-800 transition-colors">
+                    <a href="https://app.estalara.com" target="_blank">Create Free Account →</a>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <img src="assets/EstalaraLogo.png" alt="ESTALARA" class="h-10 mb-4" loading="lazy">
+                    <h3 class="footer-company-name text-lg font-bold mb-2">Estalara</h3>
+                    <p class="footer-tagline text-gray-400 text-sm mb-2">Go LIVE. Go GLOBAL.</p>
+                    <p class="footer-description text-gray-400 text-sm mb-4">
+                        Connecting real estate agents and global investors through AI and live experiences.
+                    </p>
+                </div>
+                
+                <!-- Footer Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">LEGAL</h4>
+                    <nav>
+                        <ul class="footer-links flex flex-col gap-2">
+                            <li><a href="terms-conditions.html" class="text-gray-400 hover:text-white transition-colors">Terms & Conditions</a></li>
+                            <li><a href="gdpr.html" class="text-gray-400 hover:text-white transition-colors">GDPR</a></li>
+                            <li><a href="cookies-policy.html" class="text-gray-400 hover:text-white transition-colors">Cookies Policy</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                
+                <!-- Social Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Follow Us</h4>
+                    <div class="social-links flex gap-4">
+                        <!-- Social links loaded from CMS -->
+                    </div>
+                    <p class="text-gray-400 text-sm mt-8">
+                        Time2Show, Inc., Dover, DE, USA<br>
+                        <span id="contact-email">estalara@estalara.com</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t border-gray-800 text-center">
+                <p id="footer-text" class="text-gray-400 text-sm">© 2025 Estalara. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Firebase SDK (for loading CMS data) - Deferred -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+    <script src="firebase-init.js" defer></script>
+    
+    <!-- CMS System (Refactored) - Load in order with defer -->
+    <script src="main.js" defer></script>
+    <script src="content-store.js" defer></script>
+    <script src="cms-integration-refactored.js" defer></script>
+    
+    <!-- Quick sync button: script contains guard to hide on public site -->
+    <script src="quick-sync-button.js" defer></script>
+</body>
+</html>
