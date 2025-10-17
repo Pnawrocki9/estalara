@@ -57,8 +57,14 @@ class EstalaraAdmin {
     loadNavigation() {
         if (!this.content.navigation) return;
 
-        // Filter only visible navigation items
-        const visibleNavItems = this.content.navigation.filter(item => item.visible !== false);
+        // Filter only visible navigation items (explicitly visible: true)
+        const visibleNavItems = this.content.navigation.filter(item => item.visible === true);
+        
+        console.log('🔍 Navigation items:', this.content.navigation.length, 'total');
+        console.log('👁️ Visible items:', visibleNavItems.length);
+        this.content.navigation.forEach(item => {
+            console.log(`   - ${item.label}: visible=${item.visible} (${item.visible === true ? 'SHOWN' : 'HIDDEN'})`);
+        });
 
         // Load desktop navigation
         const desktopNav = document.querySelector('header nav:not(#mobile-menu) ul');
