@@ -1762,7 +1762,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
             // Add navigation items (only visible ones)
             this.content.navigation
-                .filter(item => item.visible !== false)
+                .filter(item => item.visible === true)
                 .sort((a, b) => (a.order || 0) - (b.order || 0))
                 .forEach(item => {
                     const li = document.createElement('li');
@@ -1781,7 +1781,7 @@ logoUrl: "assets/EstalaraLogo.png",            // Default hero content used on t
 
             // Add navigation items to mobile menu (only visible ones)
             this.content.navigation
-                .filter(item => item.visible !== false)
+                .filter(item => item.visible === true)
                 .sort((a, b) => (a.order || 0) - (b.order || 0))
                 .forEach(item => {
                     const li = document.createElement('li');

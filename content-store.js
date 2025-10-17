@@ -313,6 +313,15 @@ class ContentStore {
             // Ensure critical arrays exist
             if (!Array.isArray(result.navigation)) {
                 result.navigation = this.defaults.navigation;
+            } else {
+                // Migrate navigation items to ensure all have visible property
+                result.navigation = result.navigation.map(item => {
+                    if (typeof item.visible === 'undefined') {
+                        // Set For Investors to hidden by default, others to visible
+                        return { ...item, visible: item.label !== 'For Investors' };
+                    }
+                    return item;
+                });
             }
             if (!Array.isArray(result.liveProperties)) {
                 result.liveProperties = this.defaults.liveProperties;
@@ -418,12 +427,12 @@ class ContentStore {
             logoUrl: "assets/EstalaraLogo.png",
             
             navigation: [
-                { label: "Home", url: "index.html" },
-                { label: "For Agents", url: "agents.html" },
-                { label: "For Agencies", url: "agencies.html" },
-                { label: "For Investors", url: "investors.html" },
-                { label: "About", url: "about.html" },
-                { label: "FAQ", url: "faq.html" }
+                { label: "Home", url: "index.html", visible: true },
+                { label: "For Agents", url: "agents.html", visible: true },
+                { label: "For Agencies", url: "agencies.html", visible: true },
+                { label: "For Investors", url: "investors.html", visible: false },
+                { label: "About", url: "about.html", visible: true },
+                { label: "FAQ", url: "faq.html", visible: true }
             ],
             
             liveProperties: [

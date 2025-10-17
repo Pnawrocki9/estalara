@@ -1253,12 +1253,20 @@ function loadNavigationEditor() {
     }
     
     // Ensure all navigation items have a visible property (migration for existing data)
+    let needsSave = false;
     admin.navigation.forEach(item => {
         if (typeof item.visible === 'undefined') {
             // Set For Investors to hidden by default, others to visible
             item.visible = item.label !== 'For Investors';
+            needsSave = true;
         }
     });
+    
+    // Save migrated data
+    if (needsSave) {
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        console.log('✅ Navigation data migrated - visible property added to all items');
+    }
     
     container.innerHTML = admin.navigation
         .sort((a, b) => a.order - b.order)
