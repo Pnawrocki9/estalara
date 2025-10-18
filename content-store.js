@@ -594,7 +594,149 @@ class ContentStore {
                     heroCta1Text: "Start for Free →",
                     heroCta1Link: "https://app.estalara.com",
                     heroCta2Text: "View Plans",
-                    heroCta2Link: "#pricing"
+                    heroCta2Link: "#pricing",
+                    
+                    // Pricing Cards Section
+                    pricingSection: {
+                        heading: "Choose What Works for You",
+                        subtitle: "Performance-based pricing designed for real estate professionals"
+                    },
+                    
+                    pricingCards: [
+                        {
+                            id: "listings",
+                            title: "Property Listings",
+                            subtitle: "Add your properties to the platform",
+                            price: "FREE",
+                            priceDetail: "Always Free",
+                            features: [
+                                "Unlimited property listings",
+                                "HD photos and videos",
+                                "Property management dashboard",
+                                "Basic analytics",
+                                "Global visibility"
+                            ],
+                            buttonText: "Get Started",
+                            buttonUrl: "https://app.estalara.com",
+                            featured: false
+                        },
+                        {
+                            id: "ai-ads",
+                            title: "AI Generated Ads",
+                            subtitle: "Automated marketing campaigns",
+                            price: "8%",
+                            priceDetail: "of marketing budget",
+                            features: [
+                                "AI-powered ad creation",
+                                "Multi-platform distribution",
+                                "Targeted to qualified investors",
+                                "Performance optimization",
+                                "Detailed campaign analytics",
+                                "A/B testing & refinement"
+                            ],
+                            buttonText: "Launch Campaign",
+                            buttonUrl: "https://app.estalara.com",
+                            featured: true
+                        },
+                        {
+                            id: "hot-leads",
+                            title: "Hot Leads",
+                            subtitle: "High-quality engaged viewers",
+                            price: "$2.99",
+                            priceDetail: "per qualified lead",
+                            features: [
+                                "LIVE participants only",
+                                "Watched 50%+ of livestream",
+                                "Verified investor profiles",
+                                "Direct contact information",
+                                "Engagement insights"
+                            ],
+                            buttonText: "Start Livestreaming",
+                            buttonUrl: "https://app.estalara.com",
+                            featured: false
+                        }
+                    ],
+                    
+                    // How It Works Section (Pricing specific)
+                    howItWorks: {
+                        heading: "How Pricing Works",
+                        subtitle: "Transparent and performance-based. You only pay for results.",
+                        steps: [
+                            {
+                                icon: "📋",
+                                title: "List for Free",
+                                description: "Add unlimited properties to our platform at no cost. Reach global investors from day one without any upfront investment."
+                            },
+                            {
+                                icon: "🎯",
+                                title: "Market Efficiently",
+                                description: "Let AI create and optimize your marketing campaigns. Only pay a small percentage of your marketing spend—get better results for less."
+                            },
+                            {
+                                icon: "🔥",
+                                title: "Convert Leads",
+                                description: "Pay only for highly engaged leads who watched most of your livestream. These are serious buyers ready to invest."
+                            }
+                        ]
+                    },
+                    
+                    // Value Proposition Section
+                    valueProposition: {
+                        heading: "Why Our Pricing Makes Sense",
+                        subtitle: "We succeed when you succeed. Our pricing is aligned with your results.",
+                        points: [
+                            {
+                                title: "No Upfront Costs",
+                                content: [
+                                    "Unlike traditional real estate platforms that charge hefty subscription fees or listing fees, Estalara lets you start completely free. Add your properties, reach global investors, and only pay when you choose to use our premium marketing services.",
+                                    "This means zero risk for you. Test the platform, see the quality of our investor network, and decide which services make sense for your business."
+                                ]
+                            },
+                            {
+                                title: "Performance-Based Value",
+                                content: [
+                                    "Our AI-generated ads charge only a small percentage of your actual marketing spend, and you control the budget. Hot leads are priced per qualified lead, so you know exactly what you're getting—engaged viewers who spent significant time evaluating your property.",
+                                    "Compare this to traditional advertising where you pay thousands without knowing if anyone was even interested. With Estalara, every dollar is tied to measurable engagement and results."
+                                ]
+                            }
+                        ]
+                    },
+                    
+                    // FAQ Section
+                    faq: {
+                        heading: "Common Questions",
+                        subtitle: "Everything you need to know about Estalara pricing",
+                        questions: [
+                            {
+                                question: "Is there really no cost to list properties?",
+                                answer: "Absolutely. You can add unlimited property listings for free, forever. We want every agent to have access to our global network of investors without any barriers to entry."
+                            },
+                            {
+                                question: "How does the 8% AI ad fee work?",
+                                answer: "When you choose to run an AI-generated ad campaign, you set your marketing budget. We charge 8% of that budget as our service fee. For example, if you allocate $1,000 for ads, we charge $80 for creating, optimizing, and managing the entire campaign. You get professional marketing without hiring an agency."
+                            },
+                            {
+                                question: "What qualifies as a \"Hot Lead\"?",
+                                answer: "A Hot Lead is someone who participated in your livestream and watched at least 50% of the total duration. These are engaged viewers who spent real time evaluating your property, not just casual browsers. You get their verified contact information and engagement insights."
+                            },
+                            {
+                                question: "Are there any hidden fees?",
+                                answer: "No. What you see is what you pay. Free listings are completely free. AI ads charge exactly 8% of your marketing budget. Hot leads are $2.99 each. No setup fees, no monthly subscriptions, no surprise charges."
+                            },
+                            {
+                                question: "Can I try the platform before committing?",
+                                answer: "Yes! Start by listing your properties for free. Explore the platform, connect with our investor network, and see the quality of engagement. When you're ready, you can opt into our paid services. There's no pressure and no commitment required."
+                            }
+                        ]
+                    },
+                    
+                    // CTA Section
+                    cta: {
+                        heading: "Ready to Get Started?",
+                        subtitle: "Join thousands of agents reaching global investors through Estalara. Start with free listings and scale with performance-based services.",
+                        buttonText: "Create Free Account →",
+                        buttonUrl: "https://app.estalara.com"
+                    }
                 },
                 about: {
                     hero: {
