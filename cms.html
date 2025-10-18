@@ -302,6 +302,9 @@
                             <button onclick="showFrontendTab('faq')" id="tab-faq" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 ❓ FAQ
                             </button>
+                            <button onclick="showFrontendTab('pricing')" id="tab-pricing" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                💰 Pricing Page
+                            </button>
                             <button onclick="showFrontendTab('testimonials')" id="tab-testimonials" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 💬 Testimonials
                             </button>
@@ -833,6 +836,152 @@
                             <button onclick="addFaqItem()" class="cms-btn cms-btn-primary">+ Add Question</button>
                             <button onclick="saveFaqContent()" class="cms-btn cms-btn-success">💾 Save FAQ</button>
                             <button onclick="syncFaqFromFrontend()" class="cms-btn cms-btn-secondary" title="Load FAQ questions from frontend defaults">🔄 Sync from Frontend</button>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Page Tab -->
+                    <div id="frontend-pricing" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">💰 Pricing Page Editor</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit all sections of the Pricing page</p>
+                        
+                        <!-- Section Navigation -->
+                        <div class="mb-6 border-b border-gray-200">
+                            <nav class="flex space-x-2">
+                                <button onclick="showPricingSection('cards')" id="pricing-section-cards" class="px-4 py-2 border-b-2 border-blue-500 text-blue-600 font-medium">
+                                    Pricing Cards
+                                </button>
+                                <button onclick="showPricingSection('howitworks')" id="pricing-section-howitworks" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:border-gray-300">
+                                    How It Works
+                                </button>
+                                <button onclick="showPricingSection('valueproposition')" id="pricing-section-valueproposition" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:border-gray-300">
+                                    Value Proposition
+                                </button>
+                                <button onclick="showPricingSection('faq')" id="pricing-section-faq" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:border-gray-300">
+                                    FAQ
+                                </button>
+                                <button onclick="showPricingSection('cta')" id="pricing-section-cta" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:border-gray-300">
+                                    CTA Section
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Pricing Cards Section -->
+                        <div id="pricing-cards-section" class="pricing-section">
+                            <h4 class="text-md font-semibold mb-4">Pricing Cards Section</h4>
+                            
+                            <div class="space-y-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Section Heading</label>
+                                    <input type="text" id="pricing-section-heading" class="cms-input" placeholder="Choose What Works for You">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Section Subtitle</label>
+                                    <input type="text" id="pricing-section-subtitle" class="cms-input" placeholder="Performance-based pricing designed for real estate professionals">
+                                </div>
+                            </div>
+
+                            <h5 class="text-md font-semibold mb-4">Pricing Cards</h5>
+                            <div id="pricing-cards-container" class="space-y-6">
+                                <!-- Pricing cards will be loaded here -->
+                            </div>
+
+                            <button onclick="savePricingCards()" class="cms-btn cms-btn-success mt-4">💾 Save Pricing Cards</button>
+                        </div>
+
+                        <!-- How It Works Section -->
+                        <div id="pricing-howitworks-section" class="pricing-section hidden">
+                            <h4 class="text-md font-semibold mb-4">How It Works Section</h4>
+                            
+                            <div class="space-y-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Heading</label>
+                                    <input type="text" id="pricing-hiw-heading" class="cms-input" placeholder="How Pricing Works">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                                    <input type="text" id="pricing-hiw-subtitle" class="cms-input" placeholder="Transparent and performance-based">
+                                </div>
+                            </div>
+
+                            <h5 class="text-md font-semibold mb-4">Steps</h5>
+                            <div id="pricing-hiw-steps-container" class="space-y-4">
+                                <!-- Steps will be loaded here -->
+                            </div>
+
+                            <button onclick="savePricingHowItWorks()" class="cms-btn cms-btn-success mt-4">💾 Save How It Works</button>
+                        </div>
+
+                        <!-- Value Proposition Section -->
+                        <div id="pricing-valueproposition-section" class="pricing-section hidden">
+                            <h4 class="text-md font-semibold mb-4">Value Proposition Section</h4>
+                            
+                            <div class="space-y-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Heading</label>
+                                    <input type="text" id="pricing-vp-heading" class="cms-input" placeholder="Why Our Pricing Makes Sense">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                                    <input type="text" id="pricing-vp-subtitle" class="cms-input" placeholder="We succeed when you succeed">
+                                </div>
+                            </div>
+
+                            <h5 class="text-md font-semibold mb-4">Value Points</h5>
+                            <div id="pricing-vp-points-container" class="space-y-6">
+                                <!-- Value points will be loaded here -->
+                            </div>
+
+                            <button onclick="savePricingValueProposition()" class="cms-btn cms-btn-success mt-4">💾 Save Value Proposition</button>
+                        </div>
+
+                        <!-- FAQ Section -->
+                        <div id="pricing-faq-section" class="pricing-section hidden">
+                            <h4 class="text-md font-semibold mb-4">FAQ Section</h4>
+                            
+                            <div class="space-y-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Heading</label>
+                                    <input type="text" id="pricing-faq-heading" class="cms-input" placeholder="Common Questions">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                                    <input type="text" id="pricing-faq-subtitle" class="cms-input" placeholder="Everything you need to know">
+                                </div>
+                            </div>
+
+                            <h5 class="text-md font-semibold mb-4">Questions & Answers</h5>
+                            <div id="pricing-faq-questions-container" class="space-y-4">
+                                <!-- FAQ questions will be loaded here -->
+                            </div>
+
+                            <button onclick="addPricingFaqQuestion()" class="cms-btn cms-btn-primary mt-4">+ Add Question</button>
+                            <button onclick="savePricingFaq()" class="cms-btn cms-btn-success mt-4 ml-2">💾 Save FAQ</button>
+                        </div>
+
+                        <!-- CTA Section -->
+                        <div id="pricing-cta-section" class="pricing-section hidden">
+                            <h4 class="text-md font-semibold mb-4">Final CTA Section</h4>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Heading</label>
+                                    <input type="text" id="pricing-cta-heading" class="cms-input" placeholder="Ready to Get Started?">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                                    <textarea id="pricing-cta-subtitle" class="cms-input" rows="2" placeholder="Join thousands of agents..."></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
+                                    <input type="text" id="pricing-cta-button-text" class="cms-input" placeholder="Create Free Account →">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Button URL</label>
+                                    <input type="url" id="pricing-cta-button-url" class="cms-input" placeholder="https://app.estalara.com">
+                                </div>
+                            </div>
+
+                            <button onclick="savePricingCta()" class="cms-btn cms-btn-success mt-4">💾 Save CTA</button>
                         </div>
                     </div>
 

@@ -1213,6 +1213,8 @@ async function showFrontendTab(tabName) {
         await loadFaqCategoryEditor();
     } else if (tabName === 'testimonials') {
         await loadTestimonialsEditor();
+    } else if (tabName === 'pricing') {
+        showPricingSection('cards');
     }
 }
 
@@ -2992,4 +2994,396 @@ async function saveTestimonialsContent() {
     
     showNotification('Testimonials saved successfully!', 'success');
     console.log('✅ Testimonials saved:', items.length, 'items');
+}
+
+// ===== PRICING PAGE EDITOR FUNCTIONS =====
+
+function showPricingSection(sectionId) {
+    // Hide all pricing sections
+    document.querySelectorAll('.pricing-section').forEach(section => {
+        section.classList.add('hidden');
+    });
+    
+    // Remove active state from all pricing section buttons
+    document.querySelectorAll('[id^="pricing-section-"]').forEach(btn => {
+        btn.classList.remove('border-blue-500', 'text-blue-600');
+        btn.classList.add('border-transparent', 'text-gray-600');
+    });
+    
+    // Show selected section
+    document.getElementById(`pricing-${sectionId}-section`).classList.remove('hidden');
+    
+    // Add active state to selected button
+    const activeBtn = document.getElementById(`pricing-section-${sectionId}`);
+    activeBtn.classList.add('border-blue-500', 'text-blue-600');
+    activeBtn.classList.remove('border-transparent', 'text-gray-600');
+    
+    // Load data for specific section
+    if (sectionId === 'cards') {
+        loadPricingCards();
+    } else if (sectionId === 'howitworks') {
+        loadPricingHowItWorks();
+    } else if (sectionId === 'valueproposition') {
+        loadPricingValueProposition();
+    } else if (sectionId === 'faq') {
+        loadPricingFaq();
+    } else if (sectionId === 'cta') {
+        loadPricingCta();
+    }
+}
+
+function loadPricingCards() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.pricing) admin.pages.pricing = {};
+    
+    const pricing = admin.pages.pricing;
+    
+    // Load section heading/subtitle
+    document.getElementById('pricing-section-heading').value = pricing.pricingSection?.heading || 'Choose What Works for You';
+    document.getElementById('pricing-section-subtitle').value = pricing.pricingSection?.subtitle || 'Performance-based pricing designed for real estate professionals';
+    
+    // Load pricing cards
+    const cards = pricing.pricingCards || [];
+    const container = document.getElementById('pricing-cards-container');
+    
+    container.innerHTML = cards.map((card, index) => `
+        <div class="cms-card p-6" data-card-index="${index}">
+            <div class="grid grid-cols-1 gap-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Card Title</label>
+                        <input type="text" value="${card.title || ''}" class="cms-input" data-field="title">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
+                        <input type="text" value="${card.subtitle || ''}" class="cms-input" data-field="subtitle">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                        <input type="text" value="${card.price || ''}" class="cms-input" data-field="price">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Price Detail</label>
+                        <input type="text" value="${card.priceDetail || ''}" class="cms-input" data-field="priceDetail">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Features (one per line)</label>
+                    <textarea class="cms-input" rows="5" data-field="features">${(card.features || []).join('\n')}</textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                        <input type="text" value="${card.buttonText || ''}" class="cms-input" data-field="buttonText">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Button URL</label>
+                        <input type="url" value="${card.buttonUrl || ''}" class="cms-input" data-field="buttonUrl">
+                    </div>
+                </div>
+                <div>
+                    <label class="flex items-center">
+                        <input type="checkbox" ${card.featured ? 'checked' : ''} data-field="featured" class="mr-2">
+                        <span class="text-sm text-gray-700">Featured Card (Most Popular)</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function savePricingCards() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.pricing) admin.pages.pricing = {};
+    
+    // Save section heading
+    admin.pages.pricing.pricingSection = {
+        heading: document.getElementById('pricing-section-heading').value,
+        subtitle: document.getElementById('pricing-section-subtitle').value
+    };
+    
+    // Save cards
+    const cardElements = document.querySelectorAll('[data-card-index]');
+    admin.pages.pricing.pricingCards = [];
+    
+    cardElements.forEach((el, index) => {
+        const featuresText = el.querySelector('[data-field="features"]').value;
+        admin.pages.pricing.pricingCards.push({
+            id: ['listings', 'ai-ads', 'hot-leads'][index] || `card-${index}`,
+            title: el.querySelector('[data-field="title"]').value,
+            subtitle: el.querySelector('[data-field="subtitle"]').value,
+            price: el.querySelector('[data-field="price"]').value,
+            priceDetail: el.querySelector('[data-field="priceDetail"]').value,
+            features: featuresText.split('\n').filter(f => f.trim()),
+            buttonText: el.querySelector('[data-field="buttonText"]').value,
+            buttonUrl: el.querySelector('[data-field="buttonUrl"]').value,
+            featured: el.querySelector('[data-field="featured"]').checked
+        });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        window.saveAdminDataToFirebase(admin).catch(err => {
+            console.warn('⚠️ Firebase save failed:', err);
+        });
+    }
+    
+    showNotification('Pricing cards saved successfully!', 'success');
+}
+
+function loadPricingHowItWorks() {
+    const admin = loadAdminData();
+    const pricing = admin.pages?.pricing || {};
+    const hiw = pricing.howItWorks || {};
+    
+    document.getElementById('pricing-hiw-heading').value = hiw.heading || 'How Pricing Works';
+    document.getElementById('pricing-hiw-subtitle').value = hiw.subtitle || 'Transparent and performance-based. You only pay for results.';
+    
+    const steps = hiw.steps || [];
+    const container = document.getElementById('pricing-hiw-steps-container');
+    
+    container.innerHTML = steps.map((step, index) => `
+        <div class="cms-card p-4" data-step-index="${index}">
+            <div class="grid grid-cols-1 gap-3">
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Icon/Emoji</label>
+                        <input type="text" value="${step.icon || ''}" class="cms-input" data-field="icon">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                        <input type="text" value="${step.title || ''}" class="cms-input" data-field="title">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea class="cms-input" rows="2" data-field="description">${step.description || ''}</textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function savePricingHowItWorks() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.pricing) admin.pages.pricing = {};
+    
+    admin.pages.pricing.howItWorks = {
+        heading: document.getElementById('pricing-hiw-heading').value,
+        subtitle: document.getElementById('pricing-hiw-subtitle').value,
+        steps: []
+    };
+    
+    const stepElements = document.querySelectorAll('[data-step-index]');
+    stepElements.forEach(el => {
+        admin.pages.pricing.howItWorks.steps.push({
+            icon: el.querySelector('[data-field="icon"]').value,
+            title: el.querySelector('[data-field="title"]').value,
+            description: el.querySelector('[data-field="description"]').value
+        });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        window.saveAdminDataToFirebase(admin).catch(err => {
+            console.warn('⚠️ Firebase save failed:', err);
+        });
+    }
+    
+    showNotification('How It Works saved successfully!', 'success');
+}
+
+function loadPricingValueProposition() {
+    const admin = loadAdminData();
+    const pricing = admin.pages?.pricing || {};
+    const vp = pricing.valueProposition || {};
+    
+    document.getElementById('pricing-vp-heading').value = vp.heading || 'Why Our Pricing Makes Sense';
+    document.getElementById('pricing-vp-subtitle').value = vp.subtitle || 'We succeed when you succeed. Our pricing is aligned with your results.';
+    
+    const points = vp.points || [];
+    const container = document.getElementById('pricing-vp-points-container');
+    
+    container.innerHTML = points.map((point, index) => `
+        <div class="cms-card p-4" data-point-index="${index}">
+            <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" value="${point.title || ''}" class="cms-input" data-field="title">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Content (paragraphs, one per line)</label>
+                    <textarea class="cms-input" rows="4" data-field="content">${(point.content || []).join('\n\n')}</textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function savePricingValueProposition() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.pricing) admin.pages.pricing = {};
+    
+    admin.pages.pricing.valueProposition = {
+        heading: document.getElementById('pricing-vp-heading').value,
+        subtitle: document.getElementById('pricing-vp-subtitle').value,
+        points: []
+    };
+    
+    const pointElements = document.querySelectorAll('[data-point-index]');
+    pointElements.forEach(el => {
+        const contentText = el.querySelector('[data-field="content"]').value;
+        admin.pages.pricing.valueProposition.points.push({
+            title: el.querySelector('[data-field="title"]').value,
+            content: contentText.split('\n\n').filter(p => p.trim())
+        });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        window.saveAdminDataToFirebase(admin).catch(err => {
+            console.warn('⚠️ Firebase save failed:', err);
+        });
+    }
+    
+    showNotification('Value Proposition saved successfully!', 'success');
+}
+
+function loadPricingFaq() {
+    const admin = loadAdminData();
+    const pricing = admin.pages?.pricing || {};
+    const faq = pricing.faq || {};
+    
+    document.getElementById('pricing-faq-heading').value = faq.heading || 'Common Questions';
+    document.getElementById('pricing-faq-subtitle').value = faq.subtitle || 'Everything you need to know about Estalara pricing';
+    
+    const questions = faq.questions || [];
+    const container = document.getElementById('pricing-faq-questions-container');
+    
+    container.innerHTML = questions.map((q, index) => `
+        <div class="cms-card p-4" data-question-index="${index}">
+            <div class="grid grid-cols-1 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
+                    <input type="text" value="${q.question || ''}" class="cms-input" data-field="question">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
+                    <textarea class="cms-input" rows="3" data-field="answer">${q.answer || ''}</textarea>
+                </div>
+                <div>
+                    <button onclick="removePricingFaqQuestion(${index})" class="cms-btn cms-btn-danger text-sm">Delete Question</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addPricingFaqQuestion() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.pricing) admin.pages.pricing = {};
+    if (!admin.pages.pricing.faq) admin.pages.pricing.faq = { questions: [] };
+    if (!admin.pages.pricing.faq.questions) admin.pages.pricing.faq.questions = [];
+    
+    admin.pages.pricing.faq.questions.push({
+        question: 'New Question',
+        answer: 'Answer here'
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadPricingFaq();
+}
+
+function removePricingFaqQuestion(index) {
+    if (!confirm('Delete this question?')) return;
+    
+    const admin = loadAdminData();
+    
+    if (admin.pages?.pricing?.faq?.questions) {
+        admin.pages.pricing.faq.questions.splice(index, 1);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        loadPricingFaq();
+        showNotification('Question removed!', 'success');
+    }
+}
+
+function savePricingFaq() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.pricing) admin.pages.pricing = {};
+    
+    admin.pages.pricing.faq = {
+        heading: document.getElementById('pricing-faq-heading').value,
+        subtitle: document.getElementById('pricing-faq-subtitle').value,
+        questions: []
+    };
+    
+    const questionElements = document.querySelectorAll('[data-question-index]');
+    questionElements.forEach(el => {
+        admin.pages.pricing.faq.questions.push({
+            question: el.querySelector('[data-field="question"]').value,
+            answer: el.querySelector('[data-field="answer"]').value
+        });
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        window.saveAdminDataToFirebase(admin).catch(err => {
+            console.warn('⚠️ Firebase save failed:', err);
+        });
+    }
+    
+    showNotification('FAQ saved successfully!', 'success');
+}
+
+function loadPricingCta() {
+    const admin = loadAdminData();
+    const pricing = admin.pages?.pricing || {};
+    const cta = pricing.cta || {};
+    
+    document.getElementById('pricing-cta-heading').value = cta.heading || 'Ready to Get Started?';
+    document.getElementById('pricing-cta-subtitle').value = cta.subtitle || 'Join thousands of agents reaching global investors through Estalara. Start with free listings and scale with performance-based services.';
+    document.getElementById('pricing-cta-button-text').value = cta.buttonText || 'Create Free Account →';
+    document.getElementById('pricing-cta-button-url').value = cta.buttonUrl || 'https://app.estalara.com';
+}
+
+function savePricingCta() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.pricing) admin.pages.pricing = {};
+    
+    admin.pages.pricing.cta = {
+        heading: document.getElementById('pricing-cta-heading').value,
+        subtitle: document.getElementById('pricing-cta-subtitle').value,
+        buttonText: document.getElementById('pricing-cta-button-text').value,
+        buttonUrl: document.getElementById('pricing-cta-button-url').value
+    };
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    if (typeof window.saveAdminDataToFirebase === 'function') {
+        window.saveAdminDataToFirebase(admin).catch(err => {
+            console.warn('⚠️ Firebase save failed:', err);
+        });
+    }
+    
+    showNotification('CTA section saved successfully!', 'success');
 }
