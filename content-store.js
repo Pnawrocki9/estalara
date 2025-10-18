@@ -636,7 +636,7 @@ class ContentStore {
                             ],
                             buttonText: "SIGN UP NOW",
                             buttonUrl: "https://app.estalara.com/register",
-                            featured: false
+                            featured: true
                         },
                         {
                             id: "hot-leads",

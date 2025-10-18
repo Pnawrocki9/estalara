@@ -1299,132 +1299,149 @@ EstalaraAdmin.prototype.loadPricing = function() {
     
     console.log('💰 Loading pricing page content...');
     
+    // Get pricing data or fallback to defaults
     const pricing = this.content.pages?.pricing || {};
+    const defaults = window.contentStore?.defaults?.pages?.pricing || {};
+    
+    // Merge with defaults to ensure we always have data
+    const pricingData = {
+        pricingSection: pricing.pricingSection || defaults.pricingSection || {},
+        pricingCards: pricing.pricingCards && pricing.pricingCards.length > 0 ? pricing.pricingCards : (defaults.pricingCards || []),
+        howItWorks: pricing.howItWorks || defaults.howItWorks || {},
+        valueProposition: pricing.valueProposition || defaults.valueProposition || {},
+        faq: pricing.faq || defaults.faq || {},
+        cta: pricing.cta || defaults.cta || {}
+    };
+    
+    console.log('💰 Pricing data:', {
+        hasPricingSection: !!pricingData.pricingSection.heading,
+        cardsCount: pricingData.pricingCards.length,
+        hasHowItWorks: !!pricingData.howItWorks.heading,
+        hasValueProp: !!pricingData.valueProposition.heading,
+        hasFaq: !!pricingData.faq.heading,
+        hasCta: !!pricingData.cta.heading
+    });
     
     // Load Pricing Section Heading
-    if (pricing.pricingSection) {
-        const heading = document.querySelector('#pricing .section-text');
-        const subtitle = document.querySelector('#pricing .body-text');
-        if (heading) heading.innerHTML = pricing.pricingSection.heading || 'Choose What Works for You';
-        if (subtitle) subtitle.textContent = pricing.pricingSection.subtitle || 'Performance-based pricing designed for real estate professionals';
-    }
+    const heading = document.querySelector('#pricing .section-text');
+    const subtitle = document.querySelector('#pricing .body-text');
+    if (heading) heading.innerHTML = pricingData.pricingSection.heading || 'Choose What Works for You';
+    if (subtitle) subtitle.textContent = pricingData.pricingSection.subtitle || 'Performance-based pricing designed for real estate professionals';
     
     // Load Pricing Cards
-    if (pricing.pricingCards && pricing.pricingCards.length > 0) {
-        const cardsContainer = document.querySelector('#pricing .grid.md\\:grid-cols-3');
-        if (cardsContainer) {
-            cardsContainer.innerHTML = pricing.pricingCards.map(card => `
-                <div class="pricing-card ${card.featured ? 'featured' : ''} p-8 reveal">
-                    <div class="mb-6">
-                        <h3 class="text-2xl font-bold mb-2">${card.title}</h3>
-                        <p class="text-gray-600 text-sm">${card.subtitle}</p>
-                    </div>
-                    <div class="mb-8">
-                        <div class="price-large text-black">${card.price}</div>
-                        <p class="text-gray-600 mt-2">${card.priceDetail}</p>
-                    </div>
-                    <div class="space-y-4 mb-8">
-                        ${card.features.map(feature => `
-                            <div class="flex items-start gap-3">
-                                <span class="feature-check">✓</span>
-                                <span class="text-gray-700">${feature}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <button class="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition-colors">
-                        <a href="${card.buttonUrl}" target="_blank">${card.buttonText}</a>
-                    </button>
+    const cardsContainer = document.querySelector('#pricing .grid.md\\:grid-cols-3');
+    if (cardsContainer && pricingData.pricingCards.length > 0) {
+        cardsContainer.innerHTML = pricingData.pricingCards.map(card => `
+            <div class="pricing-card ${card.featured ? 'featured' : ''} p-8 reveal">
+                <div class="mb-6">
+                    <h3 class="text-2xl font-bold mb-2">${card.title}</h3>
+                    <p class="text-gray-600 text-sm">${card.subtitle}</p>
                 </div>
-            `).join('');
-        }
+                <div class="mb-8">
+                    <div class="price-large text-black">${card.price}</div>
+                    <p class="text-gray-600 mt-2">${card.priceDetail}</p>
+                </div>
+                <div class="space-y-4 mb-8">
+                    ${card.features.map(feature => `
+                        <div class="flex items-start gap-3">
+                            <span class="feature-check">✓</span>
+                            <span class="text-gray-700">${feature}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="w-full bg-black text-white py-3 font-semibold hover:bg-gray-800 transition-colors">
+                    <a href="${card.buttonUrl}" target="_blank">${card.buttonText}</a>
+                </button>
+            </div>
+        `).join('');
+        
+        console.log(`✅ Loaded ${pricingData.pricingCards.length} pricing cards`);
+    } else {
+        console.warn('⚠️ No pricing cards to display');
     }
     
     // Load How It Works Section (Pricing specific)
-    if (pricing.howItWorks) {
-        const hiwSection = document.querySelectorAll('section')[2]; // Third section is How It Works
-        if (hiwSection) {
-            const heading = hiwSection.querySelector('.section-text');
-            const subtitle = hiwSection.querySelector('.body-text');
-            if (heading) heading.textContent = pricing.howItWorks.heading || 'How Pricing Works';
-            if (subtitle) subtitle.textContent = pricing.howItWorks.subtitle || 'Transparent and performance-based';
-            
-            const stepsContainer = hiwSection.querySelector('.grid');
-            if (stepsContainer && pricing.howItWorks.steps) {
-                stepsContainer.innerHTML = pricing.howItWorks.steps.map(step => `
-                    <div class="text-center reveal">
-                        <div class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
-                            ${step.icon}
-                        </div>
-                        <h3 class="text-2xl font-bold mb-4">${step.title}</h3>
-                        <p class="text-gray-300">${step.description}</p>
+    const hiwSection = document.querySelectorAll('section')[2]; // Third section is How It Works
+    if (hiwSection && pricingData.howItWorks.heading) {
+        const heading = hiwSection.querySelector('.section-text');
+        const subtitle = hiwSection.querySelector('.body-text');
+        if (heading) heading.textContent = pricingData.howItWorks.heading || 'How Pricing Works';
+        if (subtitle) subtitle.textContent = pricingData.howItWorks.subtitle || 'Transparent and performance-based';
+        
+        const stepsContainer = hiwSection.querySelector('.grid');
+        if (stepsContainer && pricingData.howItWorks.steps && pricingData.howItWorks.steps.length > 0) {
+            stepsContainer.innerHTML = pricingData.howItWorks.steps.map(step => `
+                <div class="text-center reveal">
+                    <div class="w-20 h-20 bg-white text-black rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                        ${step.icon}
                     </div>
-                `).join('');
-            }
+                    <h3 class="text-2xl font-bold mb-4">${step.title}</h3>
+                    <p class="text-gray-300">${step.description}</p>
+                </div>
+            `).join('');
+            console.log(`✅ Loaded How It Works with ${pricingData.howItWorks.steps.length} steps`);
         }
     }
     
     // Load Value Proposition
-    if (pricing.valueProposition) {
-        const vpSection = document.querySelectorAll('section')[3]; // Fourth section
-        if (vpSection) {
-            const heading = vpSection.querySelector('.section-text');
-            const subtitle = vpSection.querySelector('.body-text');
-            if (heading) heading.textContent = pricing.valueProposition.heading || 'Why Our Pricing Makes Sense';
-            if (subtitle) subtitle.textContent = pricing.valueProposition.subtitle || 'We succeed when you succeed';
-            
-            const pointsContainer = vpSection.querySelector('.grid');
-            if (pointsContainer && pricing.valueProposition.points) {
-                pointsContainer.innerHTML = pricing.valueProposition.points.map(point => `
-                    <div class="reveal">
-                        <h3 class="text-3xl font-bold mb-6">${point.title}</h3>
-                        ${point.content.map(para => `
-                            <p class="text-gray-600 text-lg mb-6">${para}</p>
-                        `).join('')}
-                    </div>
-                `).join('');
-            }
+    const vpSection = document.querySelectorAll('section')[3]; // Fourth section
+    if (vpSection && pricingData.valueProposition.heading) {
+        const heading = vpSection.querySelector('.section-text');
+        const subtitle = vpSection.querySelector('.body-text');
+        if (heading) heading.textContent = pricingData.valueProposition.heading || 'Why Our Pricing Makes Sense';
+        if (subtitle) subtitle.textContent = pricingData.valueProposition.subtitle || 'We succeed when you succeed';
+        
+        const pointsContainer = vpSection.querySelector('.grid');
+        if (pointsContainer && pricingData.valueProposition.points && pricingData.valueProposition.points.length > 0) {
+            pointsContainer.innerHTML = pricingData.valueProposition.points.map(point => `
+                <div class="reveal">
+                    <h3 class="text-3xl font-bold mb-6">${point.title}</h3>
+                    ${point.content.map(para => `
+                        <p class="text-gray-600 text-lg mb-6">${para}</p>
+                    `).join('')}
+                </div>
+            `).join('');
+            console.log(`✅ Loaded Value Proposition with ${pricingData.valueProposition.points.length} points`);
         }
     }
     
     // Load FAQ
-    if (pricing.faq) {
-        const faqSection = document.querySelectorAll('section')[4]; // Fifth section
-        if (faqSection) {
-            const heading = faqSection.querySelector('.section-text');
-            const subtitle = faqSection.querySelector('.body-text');
-            if (heading) heading.textContent = pricing.faq.heading || 'Common Questions';
-            if (subtitle) subtitle.textContent = pricing.faq.subtitle || 'Everything you need to know';
-            
-            const faqContainer = faqSection.querySelector('.space-y-8');
-            if (faqContainer && pricing.faq.questions) {
-                faqContainer.innerHTML = pricing.faq.questions.map(q => `
-                    <div class="bg-white text-black p-8 reveal">
-                        <h3 class="text-xl font-bold mb-4">${q.question}</h3>
-                        <p class="text-gray-600">${q.answer}</p>
-                    </div>
-                `).join('');
-            }
+    const faqSection = document.querySelectorAll('section')[4]; // Fifth section
+    if (faqSection && pricingData.faq.heading) {
+        const heading = faqSection.querySelector('.section-text');
+        const subtitle = faqSection.querySelector('.body-text');
+        if (heading) heading.textContent = pricingData.faq.heading || 'Common Questions';
+        if (subtitle) subtitle.textContent = pricingData.faq.subtitle || 'Everything you need to know';
+        
+        const faqContainer = faqSection.querySelector('.space-y-8');
+        if (faqContainer && pricingData.faq.questions && pricingData.faq.questions.length > 0) {
+            faqContainer.innerHTML = pricingData.faq.questions.map(q => `
+                <div class="bg-white text-black p-8 reveal">
+                    <h3 class="text-xl font-bold mb-4">${q.question}</h3>
+                    <p class="text-gray-600">${q.answer}</p>
+                </div>
+            `).join('');
+            console.log(`✅ Loaded FAQ with ${pricingData.faq.questions.length} questions`);
         }
     }
     
     // Load CTA Section
-    if (pricing.cta) {
-        const ctaSection = document.querySelectorAll('section')[5]; // Sixth section
-        if (ctaSection) {
-            const heading = ctaSection.querySelector('.section-text');
-            const subtitle = ctaSection.querySelector('.body-text');
-            const button = ctaSection.querySelector('button a');
-            
-            if (heading) heading.textContent = pricing.cta.heading || 'Ready to Get Started?';
-            if (subtitle) subtitle.textContent = pricing.cta.subtitle || 'Join thousands of agents...';
-            if (button) {
-                button.textContent = pricing.cta.buttonText || 'Create Free Account →';
-                button.href = pricing.cta.buttonUrl || 'https://app.estalara.com';
-            }
+    const ctaSection = document.querySelectorAll('section')[5]; // Sixth section
+    if (ctaSection && pricingData.cta.heading) {
+        const heading = ctaSection.querySelector('.section-text');
+        const subtitle = ctaSection.querySelector('.body-text');
+        const button = ctaSection.querySelector('button a');
+        
+        if (heading) heading.textContent = pricingData.cta.heading || 'Ready to Get Started?';
+        if (subtitle) subtitle.textContent = pricingData.cta.subtitle || 'Join thousands of agents...';
+        if (button) {
+            button.textContent = pricingData.cta.buttonText || 'Create Free Account →';
+            button.href = pricingData.cta.buttonUrl || 'https://app.estalara.com';
         }
+        console.log('✅ Loaded CTA section');
     }
     
-    console.log('✅ Pricing page content loaded');
+    console.log('✅ Pricing page content fully loaded from', pricing.pricingCards ? 'CMS data' : 'defaults');
 };
 
 console.log('✅ CMS Integration loaded (Refactored)');
