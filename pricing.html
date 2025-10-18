@@ -661,5 +661,27 @@
     
     <!-- Quick sync button: script contains guard to hide on public site -->
     <script src="quick-sync-button.js" defer></script>
+    
+    <!-- Pricing Page Reveal Fix -->
+    <script>
+        // Ensure all reveal elements become visible on pricing page
+        (function() {
+            function activateReveals() {
+                const reveals = document.querySelectorAll('.reveal');
+                reveals.forEach(function(el, index) {
+                    // Add active class with staggered delay
+                    setTimeout(function() {
+                        el.classList.add('active');
+                    }, index * 100);
+                });
+            }
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', activateReveals);
+            } else {
+                activateReveals();
+            }
+        })();
+    </script>
 </body>
 </html>
