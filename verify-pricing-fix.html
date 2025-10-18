@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Pricing Fix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">✅ Verify Pricing Fix</h1>
+        
+        <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500">
+            <p class="text-blue-700 font-semibold">This page verifies that the Pricing section and navigation are properly configured.</p>
+        </div>
+
+        <button onclick="runVerification()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors mb-6">
+            🔍 Run Verification
+        </button>
+
+        <div id="results" class="space-y-4"></div>
+    </div>
+
+    <script>
+        function addResult(title, status, details, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            
+            const statusColors = {
+                pass: 'bg-green-50 border-green-500',
+                fail: 'bg-red-50 border-red-500',
+                warning: 'bg-yellow-50 border-yellow-500',
+                info: 'bg-blue-50 border-blue-500'
+            };
+            
+            const statusIcons = {
+                pass: '✅',
+                fail: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            const div = document.createElement('div');
+            div.className = `p-4 border-l-4 ${statusColors[type]}`;
+            div.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">${statusIcons[type]}</span>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800 mb-1">${title}</h3>
+                        <p class="text-sm text-gray-600">${details}</p>
+                        ${status ? `<div class="mt-2 text-xs font-mono bg-white p-2 rounded">${status}</div>` : ''}
+                    </div>
+                </div>
+            `;
+            resultsDiv.appendChild(div);
+        }
+
+        function runVerification() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            let allPassed = true;
+
+            try {
+                // Check if data exists
+                const stored = localStorage.getItem('estalaraAdminData');
+                if (!stored) {
+                    addResult(
+                        'No Data Found',
+                        null,
+                        'No CMS data found in localStorage. This is normal for a fresh installation. Please run the fix-pricing-data.html first.',
+                        'warning'
+                    );
+                    return;
+                }
+
+                const data = JSON.parse(stored);
+
+                // Check 1: Version
+                if (data.version === 4) {
+                    addResult(
+                        'Data Version',
+                        `Version: ${data.version}`,
+                        'Data version is correctly set to 4',
+                        'pass'
+                    );
+                } else {
+                    allPassed = false;
+                    addResult(
+                        'Data Version',
+                        `Version: ${data.version || 'undefined'}`,
+                        'Data version should be 4. Run the fix script.',
+                        'fail'
+                    );
+                }
+
+                // Check 2: Page Structures
+                if (data.pageStructures && data.pageStructures.pricing) {
+                    const pricingSections = data.pageStructures.pricing;
+                    addResult(
+                        'Pricing Page Structure',
+                        `Found ${pricingSections.length} sections`,
+                        `Sections: ${pricingSections.map(s => s.title).join(', ')}`,
+                        'pass'
+                    );
+
+                    // Check specific sections
+                    const requiredSections = ['Hero Section', 'Pricing Cards', 'How It Works', 'Value Proposition', 'FAQ Section', 'CTA Section'];
+                    const missingSections = requiredSections.filter(req => 
+                        !pricingSections.find(s => s.title === req)
+                    );
+                    
+                    if (missingSections.length > 0) {
+                        allPassed = false;
+                        addResult(
+                            'Missing Sections',
+                            null,
+                            `Missing: ${missingSections.join(', ')}`,
+                            'warning'
+                        );
+                    }
+                } else {
+                    allPassed = false;
+                    addResult(
+                        'Pricing Page Structure',
+                        'Not found',
+                        'Pricing page structure is missing. Run fix-pricing-data.html',
+                        'fail'
+                    );
+                }
+
+                // Check 3: Navigation
+                if (data.navigation && Array.isArray(data.navigation)) {
+                    const navItems = data.navigation.map(item => `${item.label} (${item.visible ? 'visible' : 'hidden'})`).join(', ');
+                    addResult(
+                        'Navigation Array',
+                        `Found ${data.navigation.length} items`,
+                        navItems,
+                        'info'
+                    );
+
+                    // Check for "New Link"
+                    const newLinks = data.navigation.filter(item => item.label === 'New Link');
+                    if (newLinks.length > 0) {
+                        allPassed = false;
+                        addResult(
+                            'Invalid Navigation Items',
+                            `Found ${newLinks.length} "New Link" item(s)`,
+                            'These should be removed. Run the fix script.',
+                            'fail'
+                        );
+                    } else {
+                        addResult(
+                            'No "New Link" Items',
+                            null,
+                            'No invalid "New Link" items found in navigation',
+                            'pass'
+                        );
+                    }
+
+                    // Check for Pricing link
+                    const pricingLink = data.navigation.find(item => 
+                        item.label === 'Pricing' || item.url === 'pricing.html'
+                    );
+                    
+                    if (pricingLink) {
+                        if (pricingLink.label === 'Pricing' && pricingLink.visible === true) {
+                            addResult(
+                                'Pricing Navigation Link',
+                                `Label: "${pricingLink.label}", URL: "${pricingLink.url}", Visible: ${pricingLink.visible}`,
+                                'Pricing link is correctly configured and visible',
+                                'pass'
+                            );
+                        } else if (!pricingLink.visible) {
+                            allPassed = false;
+                            addResult(
+                                'Pricing Navigation Link',
+                                `Visible: false`,
+                                'Pricing link exists but is hidden. Run the fix script to make it visible.',
+                                'warning'
+                            );
+                        } else {
+                            addResult(
+                                'Pricing Navigation Link',
+                                `Label: "${pricingLink.label}", URL: "${pricingLink.url}"`,
+                                'Pricing link found but label might need correction',
+                                'warning'
+                            );
+                        }
+                    } else {
+                        allPassed = false;
+                        addResult(
+                            'Pricing Navigation Link',
+                            'Not found',
+                            'Pricing link is missing from navigation. Run fix-pricing-data.html',
+                            'fail'
+                        );
+                    }
+                } else {
+                    allPassed = false;
+                    addResult(
+                        'Navigation Array',
+                        'Not found or invalid',
+                        'Navigation array is missing or not an array. Run the fix script.',
+                        'fail'
+                    );
+                }
+
+                // Final Summary
+                if (allPassed) {
+                    addResult(
+                        '🎉 All Checks Passed!',
+                        null,
+                        'Your Pricing section and navigation are correctly configured. You can now use the CMS to edit the Pricing page.',
+                        'pass'
+                    );
+                } else {
+                    addResult(
+                        '⚠️ Issues Found',
+                        null,
+                        'Some issues were detected. Please open fix-pricing-data.html and click "Fix Data Now" to resolve them.',
+                        'warning'
+                    );
+                }
+
+            } catch (error) {
+                addResult(
+                    'Verification Error',
+                    error.message,
+                    'An error occurred during verification. Check browser console for details.',
+                    'fail'
+                );
+                console.error('Verification error:', error);
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(runVerification, 500);
+        });
+    </script>
+</body>
+</html>
