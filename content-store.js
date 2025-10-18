@@ -616,8 +616,8 @@ class ContentStore {
                                 "Basic analytics",
                                 "Global visibility"
                             ],
-                            buttonText: "Get Started",
-                            buttonUrl: "https://app.estalara.com",
+                            buttonText: "SIGN UP NOW",
+                            buttonUrl: "https://app.estalara.com/register",
                             featured: false
                         },
                         {
@@ -634,9 +634,9 @@ class ContentStore {
                                 "Detailed campaign analytics",
                                 "A/B testing & refinement"
                             ],
-                            buttonText: "Launch Campaign",
-                            buttonUrl: "https://app.estalara.com",
-                            featured: true
+                            buttonText: "SIGN UP NOW",
+                            buttonUrl: "https://app.estalara.com/register",
+                            featured: false
                         },
                         {
                             id: "hot-leads",
@@ -651,8 +651,8 @@ class ContentStore {
                                 "Direct contact information",
                                 "Engagement insights"
                             ],
-                            buttonText: "Start Livestreaming",
-                            buttonUrl: "https://app.estalara.com",
+                            buttonText: "SIGN UP NOW",
+                            buttonUrl: "https://app.estalara.com/register",
                             featured: false
                         }
                     ],
