@@ -403,7 +403,8 @@ class EstalaraAdmin {
         if (window.location.pathname.includes('agents.html') || 
             window.location.pathname.includes('agencies.html') ||
             window.location.pathname.includes('investors.html') ||
-            window.location.pathname.includes('about.html')) {
+            window.location.pathname.includes('about.html') ||
+            window.location.pathname.includes('pricing.html')) {
             console.log('⏭️ [Features] Skipping - not on homepage');
             return;
         }
