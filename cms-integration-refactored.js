@@ -1356,6 +1356,19 @@ EstalaraAdmin.prototype.loadPricing = function() {
             </div>
         `).join('');
         
+        // Re-register reveal animations for newly injected pricing cards
+        try {
+            const newCards = cardsContainer.querySelectorAll('.pricing-card.reveal');
+            if (typeof window.observeReveals === 'function') {
+                window.observeReveals(newCards);
+            } else {
+                // Fallback: ensure visibility if observer isn't ready
+                newCards.forEach(el => el.classList.add('active'));
+            }
+        } catch (e) {
+            console.warn('⚠️ Pricing Cards: Failed to register animations:', e);
+        }
+        
         console.log(`✅ Loaded ${pricingData.pricingCards.length} pricing cards`);
     } else {
         console.warn('⚠️ No pricing cards to display');
@@ -1380,6 +1393,20 @@ EstalaraAdmin.prototype.loadPricing = function() {
                     <p class="text-gray-300">${step.description}</p>
                 </div>
             `).join('');
+            
+            // Re-register reveal animations for newly injected steps
+            try {
+                const newReveals = stepsContainer.querySelectorAll('.reveal');
+                if (typeof window.observeReveals === 'function') {
+                    window.observeReveals(newReveals);
+                } else {
+                    // Fallback: ensure visibility if observer isn't ready
+                    newReveals.forEach(el => el.classList.add('active'));
+                }
+            } catch (e) {
+                console.warn('⚠️ Pricing How It Works: Failed to register animations:', e);
+            }
+            
             console.log(`✅ Loaded How It Works with ${pricingData.howItWorks.steps.length} steps`);
         }
     }
@@ -1402,6 +1429,20 @@ EstalaraAdmin.prototype.loadPricing = function() {
                     `).join('')}
                 </div>
             `).join('');
+            
+            // Re-register reveal animations for newly injected value proposition points
+            try {
+                const newReveals = pointsContainer.querySelectorAll('.reveal');
+                if (typeof window.observeReveals === 'function') {
+                    window.observeReveals(newReveals);
+                } else {
+                    // Fallback: ensure visibility if observer isn't ready
+                    newReveals.forEach(el => el.classList.add('active'));
+                }
+            } catch (e) {
+                console.warn('⚠️ Value Proposition: Failed to register animations:', e);
+            }
+            
             console.log(`✅ Loaded Value Proposition with ${pricingData.valueProposition.points.length} points`);
         }
     }
@@ -1422,6 +1463,20 @@ EstalaraAdmin.prototype.loadPricing = function() {
                     <p class="text-gray-600">${q.answer}</p>
                 </div>
             `).join('');
+            
+            // Re-register reveal animations for newly injected FAQ items
+            try {
+                const newReveals = faqContainer.querySelectorAll('.reveal');
+                if (typeof window.observeReveals === 'function') {
+                    window.observeReveals(newReveals);
+                } else {
+                    // Fallback: ensure visibility if observer isn't ready
+                    newReveals.forEach(el => el.classList.add('active'));
+                }
+            } catch (e) {
+                console.warn('⚠️ FAQ: Failed to register animations:', e);
+            }
+            
             console.log(`✅ Loaded FAQ with ${pricingData.faq.questions.length} questions`);
         }
     }
