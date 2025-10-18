@@ -3040,6 +3040,14 @@ function loadPricingCards() {
     
     const pricing = admin.pages.pricing;
     
+    // Initialize with defaults from contentStore if empty
+    if (!pricing.pricingSection && window.contentStore?.defaults?.pages?.pricing?.pricingSection) {
+        pricing.pricingSection = window.contentStore.defaults.pages.pricing.pricingSection;
+    }
+    if (!pricing.pricingCards || pricing.pricingCards.length === 0) {
+        pricing.pricingCards = window.contentStore?.defaults?.pages?.pricing?.pricingCards || [];
+    }
+    
     // Load section heading/subtitle
     document.getElementById('pricing-section-heading').value = pricing.pricingSection?.heading || 'Choose What Works for You';
     document.getElementById('pricing-section-subtitle').value = pricing.pricingSection?.subtitle || 'Performance-based pricing designed for real estate professionals';
@@ -3141,6 +3149,12 @@ function savePricingCards() {
 function loadPricingHowItWorks() {
     const admin = loadAdminData();
     const pricing = admin.pages?.pricing || {};
+    
+    // Initialize with defaults from contentStore if empty
+    if (!pricing.howItWorks && window.contentStore?.defaults?.pages?.pricing?.howItWorks) {
+        pricing.howItWorks = window.contentStore.defaults.pages.pricing.howItWorks;
+    }
+    
     const hiw = pricing.howItWorks || {};
     
     document.getElementById('pricing-hiw-heading').value = hiw.heading || 'How Pricing Works';
@@ -3206,6 +3220,12 @@ function savePricingHowItWorks() {
 function loadPricingValueProposition() {
     const admin = loadAdminData();
     const pricing = admin.pages?.pricing || {};
+    
+    // Initialize with defaults from contentStore if empty
+    if (!pricing.valueProposition && window.contentStore?.defaults?.pages?.pricing?.valueProposition) {
+        pricing.valueProposition = window.contentStore.defaults.pages.pricing.valueProposition;
+    }
+    
     const vp = pricing.valueProposition || {};
     
     document.getElementById('pricing-vp-heading').value = vp.heading || 'Why Our Pricing Makes Sense';
@@ -3265,6 +3285,12 @@ function savePricingValueProposition() {
 function loadPricingFaq() {
     const admin = loadAdminData();
     const pricing = admin.pages?.pricing || {};
+    
+    // Initialize with defaults from contentStore if empty
+    if (!pricing.faq && window.contentStore?.defaults?.pages?.pricing?.faq) {
+        pricing.faq = window.contentStore.defaults.pages.pricing.faq;
+    }
+    
     const faq = pricing.faq || {};
     
     document.getElementById('pricing-faq-heading').value = faq.heading || 'Common Questions';
@@ -3356,6 +3382,12 @@ function savePricingFaq() {
 function loadPricingCta() {
     const admin = loadAdminData();
     const pricing = admin.pages?.pricing || {};
+    
+    // Initialize with defaults from contentStore if empty
+    if (!pricing.cta && window.contentStore?.defaults?.pages?.pricing?.cta) {
+        pricing.cta = window.contentStore.defaults.pages.pricing.cta;
+    }
+    
     const cta = pricing.cta || {};
     
     document.getElementById('pricing-cta-heading').value = cta.heading || 'Ready to Get Started?';
