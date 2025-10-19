@@ -290,6 +290,15 @@
                             <button onclick="showFrontendTab('successjourney')" id="tab-successjourney" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 🚀 Success Journey
                             </button>
+                            <button onclick="showFrontendTab('agencieslive')" id="tab-agencieslive" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                🏢 Agencies: Live Selling
+                            </button>
+                            <button onclick="showFrontendTab('whitelabel')" id="tab-whitelabel" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                🔧 Agencies: White Label
+                            </button>
+                            <button onclick="showFrontendTab('enterprisefeatures')" id="tab-enterprisefeatures" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
+                                🌐 Agencies: Enterprise
+                            </button>
                             <button onclick="showFrontendTab('aboutcontent')" id="tab-aboutcontent" class="px-6 py-3 border-b-2 border-transparent hover:border-gray-300 font-medium text-gray-600 whitespace-nowrap">
                                 📖 About Content
                             </button>
@@ -622,6 +631,131 @@
 
                             <button onclick="saveSuccessJourney()" class="cms-btn cms-btn-success">💾 Save Success Journey</button>
                         </div>
+                    </div>
+
+                    <!-- Agencies: Live Selling Tab -->
+                    <div id="frontend-agencieslive" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Agencies: Live Selling Section</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit the "Live selling meets social media" section on the Agencies page</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Title</label>
+                                <input type="text" id="agencies-live-title" class="cms-input" placeholder="Live selling meets social media">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Content</label>
+                                <textarea id="agencies-live-content" class="cms-input" rows="5" placeholder="Live tours and real‑time interaction build trust..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Icon (Emoji or Unicode)</label>
+                                <input type="text" id="agencies-live-icon" class="cms-input" placeholder="🎥 (optional)">
+                                <p class="text-xs text-gray-500 mt-1">Leave empty to hide icon</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                                <input type="text" id="agencies-live-image" class="cms-input" placeholder="https://... (optional)">
+                                <p class="text-xs text-gray-500 mt-1">Leave empty to hide image</p>
+                            </div>
+                        </div>
+
+                        <button onclick="saveAgenciesLiveSelling()" class="cms-btn cms-btn-success mt-4">💾 Save Live Selling Section</button>
+                    </div>
+
+                    <!-- Agencies: White Label Tab -->
+                    <div id="frontend-whitelabel" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Agencies: White Label Section</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit the White Label (Idol Brands) section on the Agencies page</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Main Title</label>
+                                <input type="text" id="whitelabel-title" class="cms-input" placeholder="Idol Brands — White label for real estate agencies">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
+                                <textarea id="whitelabel-subtitle" class="cms-input" rows="3" placeholder="We offer dedicated white label implementations..."></textarea>
+                            </div>
+                            
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="text-sm font-semibold text-gray-900 mb-3">Benefits Section</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Section Title</label>
+                                        <input type="text" id="whitelabel-benefits-title" class="cms-input" placeholder="What you get">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Benefits (one per line)</label>
+                                        <textarea id="whitelabel-benefits-list" class="cms-input" rows="4" placeholder="Your own branding: logo, colors, domain/subdomain&#10;Branded livestreams and short‑videos..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="text-sm font-semibold text-gray-900 mb-3">Why It Works Section</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Section Title</label>
+                                        <input type="text" id="whitelabel-why-title" class="cms-input" placeholder="Why it works">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Reasons (one per line)</label>
+                                        <textarea id="whitelabel-why-list" class="cms-input" rows="4" placeholder="Greater customer trust through consistent branding&#10;Faster implementations..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="text-sm font-semibold text-gray-900 mb-3">Contact Information</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Label</label>
+                                        <input type="text" id="whitelabel-contact-label" class="cms-input" placeholder="Enterprise Cooperation">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                                        <input type="email" id="whitelabel-contact-email" class="cms-input" placeholder="peter@estalara.com">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="saveWhiteLabel()" class="cms-btn cms-btn-success mt-4">💾 Save White Label Section</button>
+                    </div>
+
+                    <!-- Agencies: Enterprise Features Tab -->
+                    <div id="frontend-enterprisefeatures" class="frontend-tab p-6 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Agencies: Enterprise Features Section</h3>
+                        <p class="text-sm text-gray-600 mb-6">Edit the Enterprise Solutions section on the Agencies page</p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Heading</label>
+                                <input type="text" id="enterprise-heading" class="cms-input" placeholder="Enterprise Solutions for Growing Agencies">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Section Subtitle</label>
+                                <textarea id="enterprise-subtitle" class="cms-input" rows="2" placeholder="Comprehensive tools and features designed to help..."></textarea>
+                            </div>
+                            
+                            <div class="border-t pt-4 mt-4">
+                                <h4 class="text-sm font-semibold text-gray-900 mb-3">Feature Cards</h4>
+                                <p class="text-xs text-gray-500 mb-4">Each feature card includes an icon, title, description, and benefits list</p>
+                                
+                                <div id="enterprise-features-container" class="space-y-4">
+                                    <!-- Feature cards will be loaded here -->
+                                </div>
+                                
+                                <button onclick="addEnterpriseFeature()" class="cms-btn cms-btn-primary mt-4">+ Add Feature Card</button>
+                            </div>
+                        </div>
+
+                        <button onclick="saveEnterpriseFeatures()" class="cms-btn cms-btn-success mt-4">💾 Save Enterprise Features</button>
                     </div>
 
                     <!-- About Content Tab -->

@@ -44,6 +44,8 @@ class EstalaraAdmin {
         this.loadSuccessJourney();
         this.loadTestimonials();
         this.loadWhiteLabel();
+        this.loadAgenciesLiveSelling();
+        this.loadAgenciesEnterpriseFeatures();
         this.loadAboutContent();
         this.loadSectionHeadings();
         this.loadStatistics();
@@ -811,6 +813,101 @@ class EstalaraAdmin {
         }
 
         console.log('✅ White Label: Content loaded successfully');
+    }
+
+    /**
+     * Load Live Selling section (Agencies page)
+     */
+    loadAgenciesLiveSelling() {
+        // Only load on agencies.html
+        if (!window.location.pathname.includes('agencies.html')) return;
+        
+        const pageData = this.content.pages?.agencies;
+        if (!pageData?.liveSellingSection) return;
+
+        console.log('✅ Agencies Live Selling: Loading content...');
+
+        const section = pageData.liveSellingSection;
+
+        // Update title
+        const titleEl = document.querySelector('#agency-section1-title');
+        if (titleEl && section.title) {
+            titleEl.textContent = section.title;
+        }
+
+        // Update content/description
+        const contentEl = document.querySelector('#agency-section1-content');
+        if (contentEl && section.content) {
+            contentEl.textContent = section.content;
+        }
+
+        // Update icon if provided
+        const iconEl = document.querySelector('#agency-section1-icon');
+        if (iconEl && section.icon) {
+            iconEl.textContent = section.icon;
+            iconEl.style.display = 'block';
+        }
+
+        // Update image if provided
+        const imageEl = document.querySelector('#agency-section1-image');
+        if (imageEl && section.image) {
+            imageEl.src = section.image;
+            imageEl.style.display = 'block';
+        }
+
+        console.log('✅ Agencies Live Selling: Content loaded successfully');
+    }
+
+    /**
+     * Load Enterprise Features section (Agencies page)
+     */
+    loadAgenciesEnterpriseFeatures() {
+        // Only load on agencies.html
+        if (!window.location.pathname.includes('agencies.html')) return;
+        
+        const pageData = this.content.pages?.agencies;
+        if (!pageData?.enterpriseFeaturesSection) return;
+
+        console.log('✅ Agencies Enterprise Features: Loading content...');
+
+        const section = pageData.enterpriseFeaturesSection;
+        const sectionEl = document.querySelector('#enterprise-features');
+        
+        if (!sectionEl) {
+            console.warn('⚠️ Enterprise Features: Section not found in DOM');
+            return;
+        }
+
+        // Update heading
+        const headingEl = sectionEl.querySelector('.section-text');
+        if (headingEl && section.heading) {
+            headingEl.textContent = section.heading;
+        }
+
+        // Update subtitle
+        const subtitleEl = sectionEl.querySelector('.body-text');
+        if (subtitleEl && section.subtitle) {
+            subtitleEl.textContent = section.subtitle;
+        }
+
+        // Update feature cards
+        if (section.features && Array.isArray(section.features)) {
+            const featuresContainer = sectionEl.querySelector('.grid');
+            if (featuresContainer) {
+                featuresContainer.innerHTML = section.features.map(feature => `
+                    <div class="feature-card p-8 reveal">
+                        <div class="w-16 h-16 bg-black text-white rounded-lg flex items-center justify-center mb-6 text-2xl">${feature.icon}</div>
+                        <h3 class="text-2xl font-bold mb-4">${feature.title}</h3>
+                        <p class="text-gray-600 mb-6">${feature.description}</p>
+                        <ul class="text-sm text-gray-500 space-y-2">
+                            ${feature.benefits.map(benefit => `<li>• ${benefit}</li>`).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+            }
+        }
+
+        console.log('✅ Agencies Enterprise Features: Content loaded successfully');
     }
 
     /**
