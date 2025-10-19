@@ -299,6 +299,64 @@ class ContentStore {
     /**
      * Merge incomplete content with defaults
      */
+    /**
+     * Deep merge pages to ensure nested sections are preserved from defaults
+     */
+    deepMergePages(dataPages, defaultPages) {
+        const result = {};
+        
+        // First, copy all pages from defaults
+        for (const pageId in defaultPages) {
+            result[pageId] = { ...defaultPages[pageId] };
+        }
+        
+        // Then, deep merge data pages over defaults
+        for (const pageId in dataPages) {
+            if (!result[pageId]) {
+                result[pageId] = {};
+            }
+            
+            const dataPage = dataPages[pageId];
+            const defaultPage = defaultPages[pageId] || {};
+            
+            // Merge each property in the page
+            for (const key in dataPage) {
+                if (dataPage[key] !== undefined && dataPage[key] !== null) {
+                    // If it's an object (like enterpriseFeaturesSection), deep merge it
+                    if (typeof dataPage[key] === 'object' && !Array.isArray(dataPage[key]) && 
+                        defaultPage[key] && typeof defaultPage[key] === 'object') {
+                        result[pageId][key] = { ...defaultPage[key], ...dataPage[key] };
+                    } else {
+                        result[pageId][key] = dataPage[key];
+                    }
+                } else if (defaultPage[key] !== undefined) {
+                    // Use default if data value is null/undefined
+                    result[pageId][key] = defaultPage[key];
+                }
+            }
+            
+            // Ensure all default keys exist even if not in data
+            for (const key in defaultPage) {
+                if (result[pageId][key] === undefined) {
+                    result[pageId][key] = defaultPage[key];
+                }
+            }
+        }
+        
+        // Log enterprise features section status for debugging
+        if (result.agencies?.enterpriseFeaturesSection) {
+            console.log('🏢 ContentStore: Enterprise Features Section merged:', {
+                hasSection: true,
+                featuresCount: result.agencies.enterpriseFeaturesSection.features?.length || 0,
+                heading: result.agencies.enterpriseFeaturesSection.heading
+            });
+        } else {
+            console.warn('⚠️ ContentStore: Enterprise Features Section missing after merge!');
+        }
+        
+        return result;
+    }
+    
     mergeWithDefaults(data) {
         const result = { ...this.defaults };
         
@@ -328,6 +386,9 @@ class ContentStore {
             }
             if (!result.pages || typeof result.pages !== 'object') {
                 result.pages = this.defaults.pages;
+            } else {
+                // Deep merge pages to ensure nested sections like enterpriseFeaturesSection are preserved
+                result.pages = this.deepMergePages(result.pages, this.defaults.pages);
             }
             // Ensure howItWorks exists
             if (!result.howItWorks || typeof result.howItWorks !== 'object') {
