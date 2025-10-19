@@ -1215,6 +1215,12 @@ async function showFrontendTab(tabName) {
         await loadTestimonialsEditor();
     } else if (tabName === 'pricing') {
         showPricingSection('cards');
+    } else if (tabName === 'agencieslive') {
+        loadAgenciesLiveSelling();
+    } else if (tabName === 'whitelabel') {
+        loadWhiteLabel();
+    } else if (tabName === 'enterprisefeatures') {
+        loadEnterpriseFeatures();
     }
 }
 
@@ -2330,6 +2336,279 @@ async function saveSuccessJourney() {
         const result = await window.cmsFirebaseAdapter.saveAdminData(admin);
         if (result.success) {
             showNotification('Success Journey saved successfully!', 'success');
+        } else {
+            showNotification('Saved locally, but Firebase sync failed', 'warning');
+        }
+    } catch (error) {
+        console.error('Firebase save error:', error);
+        showNotification('Saved locally, but Firebase sync failed', 'warning');
+    }
+}
+
+// ===== AGENCIES: LIVE SELLING SECTION EDITOR =====
+
+function loadAgenciesLiveSelling() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.agencies) admin.pages.agencies = {};
+    if (!admin.pages.agencies.liveSellingSection) {
+        admin.pages.agencies.liveSellingSection = {
+            title: "Live selling meets social media",
+            content: "Live tours and real‑time interaction build trust. Modern buyers spend hours researching homes online, and authentic livestreams let them ask questions and feel the space before they visit. Short vertical clips on TikTok, Instagram and YouTube are becoming the new search engine for property discovery. When you broadcast real tours and behind‑the‑scenes insights, you attract clients who are ready to buy.",
+            icon: "",
+            image: ""
+        };
+    }
+    
+    const section = admin.pages.agencies.liveSellingSection;
+    document.getElementById('agencies-live-title').value = section.title || '';
+    document.getElementById('agencies-live-content').value = section.content || '';
+    document.getElementById('agencies-live-icon').value = section.icon || '';
+    document.getElementById('agencies-live-image').value = section.image || '';
+}
+
+async function saveAgenciesLiveSelling() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.agencies) admin.pages.agencies = {};
+    
+    admin.pages.agencies.liveSellingSection = {
+        title: document.getElementById('agencies-live-title').value,
+        content: document.getElementById('agencies-live-content').value,
+        icon: document.getElementById('agencies-live-icon').value,
+        image: document.getElementById('agencies-live-image').value
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    // Save to Firebase
+    try {
+        const result = await window.cmsFirebaseAdapter.saveAdminData(admin);
+        if (result.success) {
+            showNotification('Live Selling section saved successfully!', 'success');
+        } else {
+            showNotification('Saved locally, but Firebase sync failed', 'warning');
+        }
+    } catch (error) {
+        console.error('Firebase save error:', error);
+        showNotification('Saved locally, but Firebase sync failed', 'warning');
+    }
+}
+
+// ===== AGENCIES: WHITE LABEL SECTION EDITOR =====
+
+function loadWhiteLabel() {
+    const admin = loadAdminData();
+    
+    if (!admin.whiteLabel) {
+        admin.whiteLabel = {
+            title: "Idol Brands — White label for real estate agencies",
+            subtitle: "We offer dedicated white label implementations — your brand, our technology. Launch a complete live commerce and social video platform under your agency's branding: on your own domain, with custom visual identity and configuration tailored to your sales processes.",
+            benefitsTitle: "What you get",
+            benefits: [
+                "Your own branding: logo, colors, domain/subdomain",
+                "Branded livestreams and short‑videos — without exposure of our brand",
+                "Agent and manager panels with permissions",
+                "CRM/MLS integrations and Single Sign‑On (SSO)"
+            ],
+            whyTitle: "Why it works",
+            whyReasons: [
+                "Greater customer trust through consistent branding",
+                "Faster implementations and feature roadmap tailored to your needs",
+                "SLA, training and Enterprise support",
+                "Security and compliance (GDPR), scalable infrastructure"
+            ],
+            contactLabel: "Enterprise Cooperation",
+            contactEmail: "peter@estalara.com"
+        };
+    }
+    
+    const wl = admin.whiteLabel;
+    document.getElementById('whitelabel-title').value = wl.title || '';
+    document.getElementById('whitelabel-subtitle').value = wl.subtitle || '';
+    document.getElementById('whitelabel-benefits-title').value = wl.benefitsTitle || '';
+    document.getElementById('whitelabel-benefits-list').value = (wl.benefits || []).join('\n');
+    document.getElementById('whitelabel-why-title').value = wl.whyTitle || '';
+    document.getElementById('whitelabel-why-list').value = (wl.whyReasons || []).join('\n');
+    document.getElementById('whitelabel-contact-label').value = wl.contactLabel || '';
+    document.getElementById('whitelabel-contact-email').value = wl.contactEmail || '';
+}
+
+async function saveWhiteLabel() {
+    const admin = loadAdminData();
+    
+    admin.whiteLabel = {
+        title: document.getElementById('whitelabel-title').value,
+        subtitle: document.getElementById('whitelabel-subtitle').value,
+        benefitsTitle: document.getElementById('whitelabel-benefits-title').value,
+        benefits: document.getElementById('whitelabel-benefits-list').value.split('\n').filter(b => b.trim()),
+        whyTitle: document.getElementById('whitelabel-why-title').value,
+        whyReasons: document.getElementById('whitelabel-why-list').value.split('\n').filter(r => r.trim()),
+        contactLabel: document.getElementById('whitelabel-contact-label').value,
+        contactEmail: document.getElementById('whitelabel-contact-email').value
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    // Save to Firebase
+    try {
+        const result = await window.cmsFirebaseAdapter.saveAdminData(admin);
+        if (result.success) {
+            showNotification('White Label section saved successfully!', 'success');
+        } else {
+            showNotification('Saved locally, but Firebase sync failed', 'warning');
+        }
+    } catch (error) {
+        console.error('Firebase save error:', error);
+        showNotification('Saved locally, but Firebase sync failed', 'warning');
+    }
+}
+
+// ===== AGENCIES: ENTERPRISE FEATURES SECTION EDITOR =====
+
+function loadEnterpriseFeatures() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.agencies) admin.pages.agencies = {};
+    if (!admin.pages.agencies.enterpriseFeaturesSection) {
+        admin.pages.agencies.enterpriseFeaturesSection = {
+            heading: "Enterprise Solutions for Growing Agencies",
+            subtitle: "Comprehensive tools and features designed to help real estate agencies scale operations and expand globally",
+            features: [
+                {
+                    icon: "🏢",
+                    title: "Multi-Agent Management",
+                    description: "Manage all your agents from a single dashboard. Track performance, assign properties, and monitor global activities in real-time.",
+                    benefits: [
+                        "Centralized agent dashboard",
+                        "Performance analytics",
+                        "Role-based permissions",
+                        "Activity monitoring"
+                    ]
+                },
+                {
+                    icon: "🌐",
+                    title: "Global Market Access",
+                    description: "Expand your agency's reach to international markets with our global network and multilingual platform capabilities.",
+                    benefits: [
+                        "50+ country access",
+                        "Multi-language support",
+                        "Currency conversion",
+                        "Cultural insights"
+                    ]
+                },
+                {
+                    icon: "📊",
+                    title: "Advanced Analytics",
+                    description: "Get comprehensive insights into your agency's performance with detailed analytics, market trends, and ROI calculations.",
+                    benefits: [
+                        "Revenue tracking",
+                        "Market analysis",
+                        "Agent performance metrics",
+                        "Client behavior insights"
+                    ]
+                }
+            ]
+        };
+    }
+    
+    const section = admin.pages.agencies.enterpriseFeaturesSection;
+    document.getElementById('enterprise-heading').value = section.heading || '';
+    document.getElementById('enterprise-subtitle').value = section.subtitle || '';
+    
+    // Load feature cards
+    const container = document.getElementById('enterprise-features-container');
+    container.innerHTML = (section.features || []).map((feature, index) => `
+        <div class="bg-gray-50 p-4 rounded-lg" data-feature-index="${index}">
+            <div class="flex justify-between items-start mb-3">
+                <h5 class="font-medium text-gray-900">Feature Card #${index + 1}</h5>
+                <button onclick="deleteEnterpriseFeature(${index})" class="cms-btn cms-btn-danger text-xs">Delete</button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Icon (Emoji)</label>
+                    <input type="text" class="cms-input text-2xl" value="${feature.icon}" data-field="icon" placeholder="🏢">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text" class="cms-input" value="${feature.title}" data-field="title" placeholder="Feature Title">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                    <textarea class="cms-input" rows="2" data-field="description" placeholder="Feature description...">${feature.description}</textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Benefits (one per line)</label>
+                    <textarea class="cms-input" rows="3" data-field="benefits" placeholder="Benefit 1\nBenefit 2\nBenefit 3">${(feature.benefits || []).join('\n')}</textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function addEnterpriseFeature() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages.agencies.enterpriseFeaturesSection.features) {
+        admin.pages.agencies.enterpriseFeaturesSection.features = [];
+    }
+    
+    admin.pages.agencies.enterpriseFeaturesSection.features.push({
+        icon: "⭐",
+        title: "New Feature",
+        description: "Feature description here",
+        benefits: ["Benefit 1", "Benefit 2"]
+    });
+    
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    loadEnterpriseFeatures();
+}
+
+function deleteEnterpriseFeature(index) {
+    if (confirm('Delete this feature card?')) {
+        const admin = loadAdminData();
+        admin.pages.agencies.enterpriseFeaturesSection.features.splice(index, 1);
+        localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+        loadEnterpriseFeatures();
+    }
+}
+
+async function saveEnterpriseFeatures() {
+    const admin = loadAdminData();
+    
+    if (!admin.pages) admin.pages = {};
+    if (!admin.pages.agencies) admin.pages.agencies = {};
+    
+    admin.pages.agencies.enterpriseFeaturesSection = {
+        heading: document.getElementById('enterprise-heading').value,
+        subtitle: document.getElementById('enterprise-subtitle').value,
+        features: []
+    };
+    
+    // Collect all feature cards
+    document.querySelectorAll('[data-feature-index]').forEach(card => {
+        const feature = {
+            icon: card.querySelector('[data-field="icon"]').value,
+            title: card.querySelector('[data-field="title"]').value,
+            description: card.querySelector('[data-field="description"]').value,
+            benefits: card.querySelector('[data-field="benefits"]').value.split('\n').filter(b => b.trim())
+        };
+        admin.pages.agencies.enterpriseFeaturesSection.features.push(feature);
+    });
+    
+    // Save to localStorage
+    localStorage.setItem('estalaraAdminData', JSON.stringify(admin));
+    
+    // Save to Firebase
+    try {
+        const result = await window.cmsFirebaseAdapter.saveAdminData(admin);
+        if (result.success) {
+            showNotification('Enterprise Features saved successfully!', 'success');
         } else {
             showNotification('Saved locally, but Firebase sync failed', 'warning');
         }

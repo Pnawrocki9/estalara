@@ -570,7 +570,85 @@ class ContentStore {
                     heroCta1Text: "Scale Your Agency →",
                     heroCta1Link: "https://app.estalara.com",
                     heroCta2Text: "Explore Solutions",
-                    heroCta2Link: "#enterprise-features"
+                    heroCta2Link: "#enterprise-features",
+                    liveSellingSection: {
+                        title: "Live selling meets social media",
+                        content: "Live tours and real‑time interaction build trust. Modern buyers spend hours researching homes online, and authentic livestreams let them ask questions and feel the space before they visit. Short vertical clips on TikTok, Instagram and YouTube are becoming the new search engine for property discovery. When you broadcast real tours and behind‑the‑scenes insights, you attract clients who are ready to buy.",
+                        icon: "",
+                        image: ""
+                    },
+                    enterpriseFeaturesSection: {
+                        heading: "Enterprise Solutions for Growing Agencies",
+                        subtitle: "Comprehensive tools and features designed to help real estate agencies scale operations and expand globally",
+                        features: [
+                            {
+                                icon: "🏢",
+                                title: "Multi-Agent Management",
+                                description: "Manage all your agents from a single dashboard. Track performance, assign properties, and monitor global activities in real-time.",
+                                benefits: [
+                                    "Centralized agent dashboard",
+                                    "Performance analytics",
+                                    "Role-based permissions",
+                                    "Activity monitoring"
+                                ]
+                            },
+                            {
+                                icon: "🌐",
+                                title: "Global Market Access",
+                                description: "Expand your agency's reach to international markets with our global network and multilingual platform capabilities.",
+                                benefits: [
+                                    "50+ country access",
+                                    "Multi-language support",
+                                    "Currency conversion",
+                                    "Cultural insights"
+                                ]
+                            },
+                            {
+                                icon: "📊",
+                                title: "Advanced Analytics",
+                                description: "Get comprehensive insights into your agency's performance with detailed analytics, market trends, and ROI calculations.",
+                                benefits: [
+                                    "Revenue tracking",
+                                    "Market analysis",
+                                    "Agent performance metrics",
+                                    "Client behavior insights"
+                                ]
+                            },
+                            {
+                                icon: "🔧",
+                                title: "White-Label Solutions",
+                                description: "Customize the platform with your agency's branding while leveraging Estalara's powerful technology infrastructure.",
+                                benefits: [
+                                    "Custom branding",
+                                    "Branded livestreams",
+                                    "Custom domain support",
+                                    "Agency-specific features"
+                                ]
+                            },
+                            {
+                                icon: "⚡",
+                                title: "Automated Workflows",
+                                description: "Streamline your agency operations with automated processes for lead distribution, client matching, and follow-ups.",
+                                benefits: [
+                                    "Smart lead distribution",
+                                    "Automated follow-ups",
+                                    "Client matching algorithms",
+                                    "Workflow optimization"
+                                ]
+                            },
+                            {
+                                icon: "🤝",
+                                title: "Partnership Network",
+                                description: "Join our exclusive network of partner agencies and benefit from shared resources, referrals, and collaborative opportunities.",
+                                benefits: [
+                                    "Partner referrals",
+                                    "Shared resources",
+                                    "Collaborative opportunities",
+                                    "Network benefits"
+                                ]
+                            }
+                        ]
+                    }
                 },
                 investors: {
                     hero: {
