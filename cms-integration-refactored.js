@@ -924,7 +924,18 @@ class EstalaraAdmin {
         if (!window.location.pathname.includes('agencies.html')) return;
         
         const pageData = this.content.pages?.agencies;
-        if (!pageData?.enterpriseFeaturesSection) return;
+        
+        console.log('🔍 [Enterprise Features] Debug:', {
+            hasPages: !!this.content.pages,
+            hasAgencies: !!this.content.pages?.agencies,
+            hasEnterpriseSection: !!pageData?.enterpriseFeaturesSection,
+            featuresCount: pageData?.enterpriseFeaturesSection?.features?.length || 0
+        });
+        
+        if (!pageData?.enterpriseFeaturesSection) {
+            console.error('❌ Enterprise Features: No data found in this.content.pages.agencies.enterpriseFeaturesSection');
+            return;
+        }
 
         console.log('✅ Agencies Enterprise Features: Loading content...');
 
@@ -951,6 +962,14 @@ class EstalaraAdmin {
         // Update feature cards
         if (section.features && Array.isArray(section.features)) {
             const featuresContainer = sectionEl.querySelector('.grid');
+            
+            console.log('🔍 [Enterprise Features] Container check:', {
+                sectionFound: !!sectionEl,
+                gridFound: !!featuresContainer,
+                featuresArray: Array.isArray(section.features),
+                featuresLength: section.features.length
+            });
+            
             if (featuresContainer) {
                 featuresContainer.innerHTML = section.features.map(feature => `
                     <div class="feature-card p-8 reveal">
@@ -962,6 +981,20 @@ class EstalaraAdmin {
                         </ul>
                     </div>
                 `).join('');
+                
+                // Re-register reveal animations for newly injected feature cards
+                try {
+                    const newCards = featuresContainer.querySelectorAll('.feature-card.reveal');
+                    if (typeof window.observeReveals === 'function') {
+                        window.observeReveals(newCards);
+                    } else {
+                        // Fallback: ensure visibility if observer isn't ready
+                        newCards.forEach(el => el.classList.add('active'));
+                    }
+                    console.log(`✅ Agencies Enterprise Features: Loaded ${section.features.length} feature cards with animations`);
+                } catch (e) {
+                    console.warn('⚠️ Agencies Enterprise Features: Failed to register animations:', e);
+                }
             }
         }
 
