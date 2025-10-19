@@ -823,39 +823,97 @@ class EstalaraAdmin {
         if (!window.location.pathname.includes('agencies.html')) return;
         
         const pageData = this.content.pages?.agencies;
-        if (!pageData?.liveSellingSection) return;
+        if (!pageData) return;
 
-        console.log('✅ Agencies Live Selling: Loading content...');
+        console.log('✅ Agencies Sections: Loading content...');
 
-        const section = pageData.liveSellingSection;
+        // Load Section 1 (Live Selling)
+        const section1Title = pageData.section1Title || pageData.liveSellingSection?.title;
+        const section1Content = pageData.section1Content || pageData.liveSellingSection?.content;
+        const section1Icon = pageData.section1Icon || pageData.liveSellingSection?.icon;
+        const section1Image = pageData.section1Image || pageData.liveSellingSection?.image;
 
-        // Update title
-        const titleEl = document.querySelector('#agency-section1-title');
-        if (titleEl && section.title) {
-            titleEl.textContent = section.title;
+        if (section1Title) {
+            const titleEl = document.querySelector('#agency-section1-title');
+            if (titleEl) titleEl.textContent = section1Title;
         }
 
-        // Update content/description
-        const contentEl = document.querySelector('#agency-section1-content');
-        if (contentEl && section.content) {
-            contentEl.textContent = section.content;
+        if (section1Content) {
+            const contentEl = document.querySelector('#agency-section1-content');
+            if (contentEl) contentEl.textContent = section1Content;
         }
 
-        // Update icon if provided
-        const iconEl = document.querySelector('#agency-section1-icon');
-        if (iconEl && section.icon) {
-            iconEl.textContent = section.icon;
-            iconEl.style.display = 'block';
+        if (section1Icon) {
+            const iconEl = document.querySelector('#agency-section1-icon');
+            if (iconEl) {
+                iconEl.textContent = section1Icon;
+                iconEl.style.display = 'block';
+            }
         }
 
-        // Update image if provided
-        const imageEl = document.querySelector('#agency-section1-image');
-        if (imageEl && section.image) {
-            imageEl.src = section.image;
-            imageEl.style.display = 'block';
+        if (section1Image) {
+            const imageEl = document.querySelector('#agency-section1-image');
+            if (imageEl) {
+                imageEl.src = section1Image;
+                imageEl.style.display = 'block';
+            }
         }
 
-        console.log('✅ Agencies Live Selling: Content loaded successfully');
+        // Load Section 2 (Social Media)
+        if (pageData.section2Title) {
+            const titleEl = document.querySelector('#agency-section2-title');
+            if (titleEl) titleEl.textContent = pageData.section2Title;
+        }
+
+        if (pageData.section2Content) {
+            const contentEl = document.querySelector('#agency-section2-content');
+            if (contentEl) contentEl.textContent = pageData.section2Content;
+        }
+
+        if (pageData.section2Icon) {
+            const iconEl = document.querySelector('#agency-section2-icon');
+            if (iconEl) {
+                iconEl.textContent = pageData.section2Icon;
+                iconEl.style.display = 'block';
+            }
+        }
+
+        if (pageData.section2Image) {
+            const imageEl = document.querySelector('#agency-section2-image');
+            if (imageEl) {
+                imageEl.src = pageData.section2Image;
+                imageEl.style.display = 'block';
+            }
+        }
+
+        // Load Section 3 (Estalara Advantage)
+        if (pageData.section3Title) {
+            const titleEl = document.querySelector('#agency-section3-title');
+            if (titleEl) titleEl.textContent = pageData.section3Title;
+        }
+
+        if (pageData.section3Content) {
+            const contentEl = document.querySelector('#agency-section3-content');
+            if (contentEl) contentEl.textContent = pageData.section3Content;
+        }
+
+        if (pageData.section3Icon) {
+            const iconEl = document.querySelector('#agency-section3-icon');
+            if (iconEl) {
+                iconEl.textContent = pageData.section3Icon;
+                iconEl.style.display = 'block';
+            }
+        }
+
+        if (pageData.section3Image) {
+            const imageEl = document.querySelector('#agency-section3-image');
+            if (imageEl) {
+                imageEl.src = pageData.section3Image;
+                imageEl.style.display = 'block';
+            }
+        }
+
+        console.log('✅ Agencies Sections: All content loaded successfully');
     }
 
     /**
