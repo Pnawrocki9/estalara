@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weryfikacja Google Analytics - Estalara</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #1a73e8;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #1a73e8;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #1557b0;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        .measurement-id {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a73e8;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Weryfikacja Google Analytics</h1>
+        <p>Przewodnik krok po kroku, aby zobaczyć dane w Google Analytics</p>
+
+        <div class="measurement-id">
+            Measurement ID: G-G15DR28Y5J
+        </div>
+
+        <div id="status"></div>
+
+        <div class="step">
+            <h3>Krok 1: Sprawdź czy tag jest załadowany</h3>
+            <button onclick="checkGtagLoaded()">Sprawdź Tag</button>
+            <div id="gtag-status"></div>
+        </div>
+
+        <div class="step">
+            <h3>Krok 2: Wyślij testowe zdarzenie</h3>
+            <button onclick="sendTestEvent()">Wyślij Test Event</button>
+            <p>Kliknij przycisk, a następnie sprawdź w Google Analytics → Realtime → Events</p>
+            <div id="event-status"></div>
+        </div>
+
+        <div class="step">
+            <h3>Krok 3: Dostęp do Google Analytics</h3>
+            <ul>
+                <li>Przejdź do: <a href="https://analytics.google.com" target="_blank">https://analytics.google.com</a></li>
+                <li>Zaloguj się kontem Google z dostępem do właściwości <code>G-G15DR28Y5J</code></li>
+                <li>Wybierz właściwość Estalara z listy</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Krok 4: Sprawdź raporty w czasie rzeczywistym</h3>
+            <ul>
+                <li>W menu po lewej stronie kliknij <strong>"Reports"</strong></li>
+                <li>Następnie wybierz <strong>"Realtime"</strong></li>
+                <li>Otwórz <a href="https://estalara.com" target="_blank">https://estalara.com</a> w nowej karcie</li>
+                <li>Powinieneś zobaczyć aktywnego użytkownika (siebie) w raporcie</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>Krok 5: Sprawdź Network requests (zaawansowane)</h3>
+            <button onclick="openDevTools()">Pokaż instrukcje</button>
+            <div id="devtools-info" style="display: none; margin-top: 10px;">
+                <ol>
+                    <li>Naciśnij <code>F12</code> lub <code>Ctrl+Shift+I</code> (Windows) / <code>Cmd+Option+I</code> (Mac)</li>
+                    <li>Przejdź do zakładki <strong>"Network"</strong></li>
+                    <li>W filtrze wpisz: <code>google-analytics.com</code> lub <code>gtag</code></li>
+                    <li>Odśwież stronę</li>
+                    <li>Sprawdź czy widzisz requesty do Google Analytics (powinny mieć status 200)</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>Krok 6: Użyj Google Tag Assistant (opcjonalnie)</h3>
+            <ul>
+                <li>Zainstaluj rozszerzenie: <a href="https://chrome.google.com/webstore/detail/tag-assistant-legacy-by-g/kejbdjndbnbjgmefkgdddjlbokphdefk" target="_blank">Tag Assistant (Legacy)</a></li>
+                <li>Lub nowe: <a href="https://tagassistant.google.com/" target="_blank">Google Tag Assistant</a></li>
+                <li>Odwiedź stronę Estalara i kliknij ikonę rozszerzenia</li>
+                <li>Sprawdź czy tag Google Analytics jest wykrywany</li>
+            </ul>
+        </div>
+
+        <div class="info" style="margin-top: 30px;">
+            <strong>ℹ️ Ważne informacje:</strong>
+            <ul>
+                <li>Dane w raportach standardowych (nie Realtime) mogą pojawić się z opóźnieniem do 24-48 godzin</li>
+                <li>Raport Realtime pokazuje dane z ostatnich 30 minut</li>
+                <li>Jeśli nie widzisz danych, sprawdź czy masz odpowiednie uprawnienia do właściwości GA</li>
+                <li>Upewnij się, że nie masz aktywnego AdBlocka, który może blokować Google Analytics</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>❓ Jeśli nadal nie widzisz danych:</h3>
+            <ol>
+                <li>Sprawdź czy jesteś właścicielem/adminem właściwości <code>G-G15DR28Y5J</code> w Google Analytics</li>
+                <li>Sprawdź czy właściwość została utworzona (jeśli nie, musisz ją utworzyć w GA)</li>
+                <li>Wyłącz AdBlockera i odśwież stronę</li>
+                <li>Sprawdź konsolę przeglądarki (F12) pod kątem błędów</li>
+                <li>Upewnij się, że tracking nie jest zablokowany przez ustawienia prywatności przeglądarki</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Check if gtag is loaded
+        function checkGtagLoaded() {
+            const statusDiv = document.getElementById('gtag-status');
+            
+            if (typeof gtag !== 'undefined' && typeof dataLayer !== 'undefined') {
+                statusDiv.innerHTML = '<div class="success" style="margin-top: 10px;">✅ Google Tag (gtag.js) jest poprawnie załadowany!</div>';
+                console.log('✅ gtag loaded successfully');
+                console.log('dataLayer:', dataLayer);
+            } else {
+                statusDiv.innerHTML = '<div class="error" style="margin-top: 10px;">❌ Google Tag nie jest załadowany. Sprawdź czy jesteś na stronie Estalara.</div>';
+            }
+        }
+
+        // Send test event
+        function sendTestEvent() {
+            const statusDiv = document.getElementById('event-status');
+            
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'test_verification', {
+                    'event_category': 'verification',
+                    'event_label': 'GA Setup Test',
+                    'value': 1
+                });
+                
+                statusDiv.innerHTML = '<div class="success" style="margin-top: 10px;">✅ Zdarzenie testowe zostało wysłane! Sprawdź w GA → Realtime → Events → "test_verification"</div>';
+                console.log('✅ Test event sent: test_verification');
+            } else {
+                statusDiv.innerHTML = '<div class="error" style="margin-top: 10px;">❌ gtag nie jest dostępny. Otwórz tę stronę na estalara.com</div>';
+            }
+        }
+
+        // Show dev tools instructions
+        function openDevTools() {
+            const infoDiv = document.getElementById('devtools-info');
+            infoDiv.style.display = infoDiv.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', function() {
+            setTimeout(checkGtagLoaded, 1000);
+        });
+    </script>
+</body>
+</html>
